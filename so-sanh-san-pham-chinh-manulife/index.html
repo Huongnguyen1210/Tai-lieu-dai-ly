@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>So sánh sản phẩm bảo hiểm liên kết đơn vị Manulife</title>
+<style>
+  :root {
+    --green: #0B3B2E;
+    --green-light: #124A3A;
+    --gold: #B08D57;
+    --gold-light: #D4B483;
+    --cream: #F7F5F0;
+    --lightgreen: #EAF2EE;
+    --card: #FFFFFF;
+    --text: #1E1E1C;
+    --muted: #6b6b66;
+    --border: #E2E0D8;
+    --sidebar-w: 260px;
+    --sidebar-w-collapsed: 64px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    background: var(--cream);
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  #sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: var(--green);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.22s ease;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 20;
+  }
+  #sidebar.collapsed { width: var(--sidebar-w-collapsed); }
+
+  .sb-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    min-height: 66px;
+  }
+  .sb-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .sb-brand .mark {
+    width: 30px; height: 30px; border-radius: 7px;
+    background: var(--gold);
+    color: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 15px; flex-shrink: 0;
+  }
+  .sb-brand .txt { font-size: 14px; font-weight: 700; line-height: 1.2; }
+  .sb-brand .txt small { display: block; font-weight: 400; font-size: 11px; color: var(--gold-light); }
+  #sidebar.collapsed .sb-brand .txt { display: none; }
+
+  .sb-toggle {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.75);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sb-toggle:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+  .sb-section-label {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    padding: 18px 16px 6px;
+    white-space: nowrap;
+  }
+  #sidebar.collapsed .sb-section-label { opacity: 0; height: 0; padding: 8px 0 0; overflow: hidden; }
+
+  .sb-nav { flex: 1; overflow-y: auto; padding-bottom: 12px; }
+  .sb-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.82);
+    font-size: 13.5px;
+    text-align: left;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    white-space: nowrap;
+  }
+  .sb-btn .ic {
+    width: 20px; height: 20px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    border-radius: 5px;
+    background: rgba(255,255,255,0.08);
+  }
+  .sb-btn:hover { background: rgba(255,255,255,0.07); color: #fff; }
+  .sb-btn.active {
+    background: rgba(255,255,255,0.1);
+    border-left: 3px solid var(--gold);
+    color: #fff;
+    font-weight: 600;
+  }
+  .sb-btn.active .ic { background: var(--gold); color: var(--green); }
+  #sidebar.collapsed .sb-btn span.label { display: none; }
+  #sidebar.collapsed .sb-btn { justify-content: center; padding: 11px 0; }
+
+  .sb-bottom {
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding: 14px 16px 18px;
+  }
+  .sb-view-toggle {
+    display: flex;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 3px;
+    margin-bottom: 10px;
+  }
+  #sidebar.collapsed .sb-view-toggle,
+  #sidebar.collapsed .sb-hint { display: none; }
+  .sb-view-toggle button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    padding: 7px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .sb-view-toggle button.active { background: var(--gold); color: var(--green); font-weight: 700; }
+  .sb-hint { font-size: 11px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+
+  #backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 15;
+  }
+  #mobile-open-btn { display: none; }
+
+  /* ---------- MAIN ---------- */
+  #main {
+    flex: 1;
+    min-width: 0;
+    padding: 32px 40px 80px;
+  }
+  .page-head { margin-bottom: 26px; }
+  .page-head h1 {
+    color: var(--green);
+    font-size: 23px;
+    margin: 0 0 4px;
+  }
+  .page-head .sub {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .source-note {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 12.5px;
+    border-left: 3px solid var(--gold);
+    padding-left: 12px;
+    max-width: 900px;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  h2.section-title {
+    color: var(--green);
+    font-size: 17px;
+    margin: 28px 0 14px;
+  }
+  h2.section-title:first-child { margin-top: 0; }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  .prod-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .prod-card h3 {
+    margin: 0 0 8px;
+    color: var(--green);
+    font-size: 14.5px;
+  }
+  .prod-card .tagline {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  .prod-card p { font-size: 12.8px; line-height: 1.55; margin: 0 0 8px; color: var(--text); }
+  .prod-card p:last-child { margin-bottom: 0; }
+  .prod-card .kv { display: flex; justify-content: space-between; font-size: 12.5px; padding: 5px 0; border-top: 1px solid var(--border); gap: 8px; }
+  .prod-card .kv span { color: var(--muted); }
+  .prod-card .kv:first-of-type { border-top: none; margin-top: 6px; }
+  .prod-card .kv b { color: var(--green); text-align: right; }
+
+  .metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+  .metric-card {
+    background: var(--lightgreen);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .metric-card .label { font-size: 11.5px; color: var(--muted); margin-bottom: 4px; }
+  .metric-card .val { font-size: 19px; font-weight: 700; color: var(--green); }
+  .metric-card .val small { font-size: 12px; font-weight: 400; color: var(--muted); }
+
+  .illus-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 6px;
+    align-items: stretch;
+  }
+  .illus-col {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .illus-head {
+    background: var(--green);
+    padding: 14px 16px;
+  }
+  .illus-head h3 { margin: 0; color: #fff; font-size: 14.5px; }
+  .illus-row {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .illus-row:last-child { border-bottom: none; }
+  .illus-row span { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  .illus-row b { font-size: 13.5px; font-weight: 700; color: var(--text); line-height: 1.45; }
+  .illus-row b small { display: block; font-size: 11.5px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+  .illus-row.highlight { background: var(--lightgreen); }
+  .illus-row.highlight b { color: var(--green); }
+  .illus-row.warn { background: #FBEAF0; }
+  .illus-row.warn b { color: #72243E; }
+
+  .detail-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 7px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 4px 0 16px;
+  }
+  .detail-toggle:hover { background: var(--gold); color: #fff; }
+  .detail-toggle .chev { transition: transform 0.2s; display: inline-block; }
+  .detail-toggle.open .chev { transform: rotate(180deg); }
+
+  .detail-block { display: none; margin-bottom: 20px; }
+  .detail-block.open { display: block; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { border: 1px solid var(--border); padding: 9px 11px; vertical-align: top; text-align: left; }
+  th { background: var(--green); color: #fff; font-weight: 700; text-align: center; }
+  td.label { background: var(--lightgreen); font-weight: 700; width: 20%; }
+  .table-wrap { overflow-x: auto; border-radius: 8px; }
+
+  ul.advice { margin: 6px 0 6px 18px; padding: 0; font-size: 13px; line-height: 1.6; }
+  ul.advice li { margin-bottom: 6px; }
+
+  @media (max-width: 900px) {
+    .card-grid, .metric-row, .illus-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 760px) {
+    #sidebar {
+      position: fixed;
+      left: 0; top: 0;
+      transform: translateX(-100%);
+      width: 240px;
+    }
+    #sidebar.mobile-open { transform: translateX(0); }
+    #sidebar.collapsed { width: 240px; }
+    #backdrop.show { display: block; }
+    #mobile-open-btn {
+      display: flex;
+      position: fixed;
+      top: 14px; left: 14px;
+      z-index: 25;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      width: 40px; height: 40px;
+      align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #main { padding: 70px 18px 60px; }
+    table { font-size: 11.5px; }
+    th, td { padding: 6px 7px; }
+  }
+</style>
+</head>
+<body>
+
+<button id="mobile-open-btn" aria-label="Mở menu điều khiển">&#9776;</button>
+<div id="backdrop"></div>
+
+<div id="sidebar">
+  <div class="sb-top">
+    <div class="sb-brand">
+      <div class="mark">M</div>
+      <div class="txt">So sánh Xanh<small>Manulife ILP</small></div>
+    </div>
+    <button class="sb-toggle" id="collapseBtn" aria-label="Thu gọn menu">&#10094;</button>
+  </div>
+
+  <div class="sb-section-label">Nội dung</div>
+  <nav class="sb-nav">
+    <button class="sb-btn active" data-tab="tongquan"><span class="ic">1</span><span class="label">Định vị tổng quan</span></button>
+    <button class="sb-btn" data-tab="dieukhoan"><span class="ic">2</span><span class="label">Điều khoản &amp; cơ chế</span></button>
+    <button class="sb-btn" data-tab="minhhoa"><span class="ic">3</span><span class="label">Minh họa tài chính</span></button>
+    <button class="sb-btn" data-tab="tuvan"><span class="ic">4</span><span class="label">Gợi ý tư vấn</span></button>
+  </nav>
+
+  <div class="sb-bottom">
+    <div class="sb-view-toggle">
+      <button id="viewSummaryBtn">Tóm tắt</button>
+      <button id="viewDetailBtn" class="active">Chi tiết</button>
+    </div>
+    <div class="sb-hint">Nam 31 tuổi · Phí 100tr × 5 năm · Nguồn: manulife.com.vn, QT&amp;ĐK, TLMHBH 08/2026</div>
+  </div>
+</div>
+
+<div id="main">
+
+  <div class="page-head">
+    <h1>Bảng so sánh sản phẩm bảo hiểm liên kết đơn vị Manulife</h1>
+    <div class="sub">Xanh Phú Quý — Xanh Phú Quý Flex — Xanh Tương Lai</div>
+    <div class="source-note">Nguồn: Trang sản phẩm chính thức manulife.com.vn, Quy Tắc Điều Kiện Điều Khoản (QT&amp;ĐK), Tài liệu giới thiệu sản phẩm/Leaflet, Tài Liệu Minh Họa Bán Hàng (Minh họa số 0003459025/23/29, in 10/08/2026), Sổ tay thẩm định nội bộ.</div>
+  </div>
+
+  <section class="tab-panel active" id="tab-tongquan">
+    <h2 class="section-title">Định vị tổng quan</h2>
+    <div class="card-grid">
+      <div class="prod-card">
+        <h3>Xanh Phú Quý <span style="color:var(--muted); font-weight:400;">(ILP26)</span></h3>
+        <div class="tagline">Tối ưu đầu tư · Kiến tạo gia sản</div>
+        <p>Nghiêng về tối ưu đầu tư — tích lũy dài hạn, chuyển giao tài sản qua các thế hệ.</p>
+        <p>Phù hợp KH có nhu cầu đầu tư dài hạn kết hợp bảo hiểm rủi ro, thu nhập ổn định hoặc có tài sản tích lũy sẵn.</p>
+      </div>
+      <div class="prod-card">
+        <h3>Xanh Phú Quý Flex <span style="color:var(--muted); font-weight:400;">(ILP26 Flex)</span></h3>
+        <div class="tagline">Cân bằng bảo vệ &amp; đầu tư</div>
+        <p>Quyền lợi bảo vệ xuyên suốt ngay từ đầu, không phụ thuộc biến động GTTK.</p>
+        <p>Phù hợp KH là trụ cột tài chính gia đình, muốn bảo vệ chắc chắn song song tích lũy.</p>
+      </div>
+      <div class="prod-card">
+        <h3>Xanh Tương Lai <span style="color:var(--muted); font-weight:400;">(ILP25)</span></h3>
+        <div class="tagline">3 Cộng+: Bảo vệ · Đầu tư · Linh hoạt</div>
+        <p>Nghiêng về bảo vệ chủ động — tự động tăng STBH theo thời gian và theo cột mốc gia đình.</p>
+        <p>Phù hợp KH năng động, đang xây dựng sự nghiệp/gia đình, có kế hoạch thay đổi theo cột mốc cuộc sống.</p>
+      </div>
+    </div>
+
+    <button class="detail-toggle open" data-target="detail-tongquan"><span class="chev">&#9660;</span> Bảng định vị chi tiết đầy đủ</button>
+    <div class="detail-block open" id="detail-tongquan">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tiêu chí</th><th>Xanh Phú Quý</th><th>Xanh Phú Quý Flex</th><th>Xanh Tương Lai</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="label">Định vị / Slogan</td>
+              <td>Chiến lược bảo hiểm đầu tư thế hệ mới — tối ưu đầu tư kết hợp bảo vệ, kiến tạo gia sản nhiều thế hệ</td>
+              <td>Chiến lược bảo hiểm đầu tư thế hệ mới — linh hoạt giữa nhu cầu bảo vệ và hiệu quả đầu tư</td>
+              <td>Giải pháp tài chính đa mục tiêu "3 Cộng+": Bảo vệ + Đầu tư + Linh hoạt</td>
+            </tr>
+            <tr>
+              <td class="label">Trục giá trị cốt lõi</td>
+              <td>Nghiêng về TỐI ƯU ĐẦU TƯ — tích lũy dài hạn, chuyển giao tài sản qua các thế hệ</td>
+              <td>Cân bằng BẢO VỆ và ĐẦU TƯ — quyền lợi bảo vệ xuyên suốt ngay từ đầu, không phụ thuộc biến động GTTK</td>
+              <td>Nghiêng về BẢO VỆ chủ động — tự động tăng STBH theo thời gian và theo cột mốc gia đình</td>
+            </tr>
+            <tr>
+              <td class="label">Đối tượng khách hàng mục tiêu</td>
+              <td>KH có nhu cầu đầu tư dài hạn kết hợp bảo hiểm rủi ro; thu nhập ổn định (phí = ~10%/năm thu nhập) hoặc có tài sản tích lũy (tổng phí dự kiến = ~30% giá trị tài sản)</td>
+              <td>KH muốn bảo vệ tài chính gia đình ngay từ đầu (rủi ro tử vong/TTTBVV) song song với tích lũy — phù hợp trụ cột gia đình, người mới độc lập tài chính</td>
+              <td>KH năng động, đang xây dựng sự nghiệp/gia đình, có kế hoạch thay đổi theo cột mốc cuộc sống (kết hôn, sinh con) và cần bảo vệ tự động tăng theo trách nhiệm gia đình</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="tab-dieukhoan">
+    <h2 class="section-title">Điều khoản &amp; cơ chế vận hành — điểm khác biệt chính</h2>
+    <div class="card-grid">
+      <div class="prod-card">
+        <h3>Xanh Phú Quý</h3>
+        <div class="kv"><span>Tuổi NĐBH / Bên mua</span><b>30 ngày–69 / 18–75</b></div>
+        <div class="kv"><span>Gia tăng STBH tự động</span><b>Không có</b></div>
+        <div class="kv"><span>Cơ chế thưởng</span><b>Thưởng Tri Ân, năm 20</b></div>
+        <div class="kv"><span>Phí BH Cơ Bản tối thiểu</span><b>50tr/năm × 10 năm</b></div>
+      </div>
+      <div class="prod-card">
+        <h3>Xanh Phú Quý Flex</h3>
+        <div class="kv"><span>Tuổi NĐBH / Bên mua</span><b>18–69 / 18–69</b></div>
+        <div class="kv"><span>Gia tăng STBH tự động</span><b>Không có</b></div>
+        <div class="kv"><span>Cơ chế thưởng</span><b>Thưởng Tri Ân (giống XPQ)</b></div>
+        <div class="kv"><span>Phí BH Cơ Bản tối thiểu</span><b>25tr/năm × 10 năm</b></div>
+      </div>
+      <div class="prod-card">
+        <h3>Xanh Tương Lai</h3>
+        <div class="kv"><span>Tuổi NĐBH / Bên mua</span><b>30 ngày–69 / 18–69</b></div>
+        <div class="kv"><span>Gia tăng STBH tự động</span><b>Có, đến +75%</b></div>
+        <div class="kv"><span>Cơ chế thưởng</span><b>Duy trì HĐ, năm 10/15/20</b></div>
+        <div class="kv"><span>Phí BH Cơ Bản tối thiểu</span><b>9,5–10tr/năm</b></div>
+      </div>
+    </div>
+
+    <button class="detail-toggle open" data-target="detail-dieukhoan"><span class="chev">&#9660;</span> Bảng so sánh chi tiết đầy đủ (14 tiêu chí)</button>
+    <div class="detail-block open" id="detail-dieukhoan">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tiêu chí</th><th>Xanh Phú Quý</th><th>Xanh Phú Quý Flex</th><th>Xanh Tương Lai</th></tr></thead>
+          <tbody>
+            <tr><td class="label">Tuổi tham gia — NĐBH</td><td>30 ngày tuổi – 69 tuổi</td><td>18 tuổi – 69 tuổi</td><td>30 ngày tuổi – 69 tuổi</td></tr>
+            <tr><td class="label">Tuổi tham gia — Bên mua BH</td><td>18 tuổi – 75 tuổi</td><td>18 tuổi – 69 tuổi</td><td>18 tuổi – 69 tuổi</td></tr>
+            <tr><td class="label">Thời hạn hợp đồng</td><td>Đến khi NĐBH đạt 99 tuổi</td><td>Đến khi NĐBH đạt 99 tuổi</td><td>Đến khi NĐBH đạt 99 tuổi</td></tr>
+            <tr><td class="label">Thời Hạn Đóng Phí bắt buộc</td><td>3 Năm Hợp Đồng đầu tiên</td><td>3 Năm Hợp Đồng đầu tiên</td><td>3 Năm Hợp Đồng đầu tiên</td></tr>
+            <tr><td class="label">Thời Hạn Đóng Phí linh hoạt</td><td>Từ Năm HĐ thứ 4, tối đa = Thời Hạn Hợp Đồng</td><td>Từ Năm HĐ thứ 4, tối đa = Thời Hạn Hợp Đồng</td><td>Từ Năm HĐ thứ 4, tối đa = Thời Hạn Hợp Đồng</td></tr>
+            <tr><td class="label">Điều kiện tối thiểu để hưởng Thưởng</td><td>Đóng phí đầy đủ, đúng hạn, liên tục ≥ 5 Năm HĐ đầu</td><td>Đóng phí đầy đủ, đúng hạn, liên tục ≥ 5 Năm HĐ đầu</td><td>Không rút GTTK Cơ bản (trừ dùng để đóng phí 3 năm đầu); phí đóng đủ trong 60 ngày kể từ hạn</td></tr>
+            <tr><td class="label">Cơ chế Quyền lợi bảo vệ (tử vong/TTTBVV)</td><td>Theo Hệ Số Nhân Bảo Hiểm khách hàng chọn (từ mức tối thiểu đến 10x); STBH điều chỉnh theo tương quan với GTTK Cơ bản khi rút tiền</td><td>"Quyền lợi bảo vệ xuyên suốt" — duy trì trong suốt hiệu lực HĐ, không bị cuốn theo biến động GTTK; có thể chủ động tăng bảo vệ qua sản phẩm đính kèm</td><td>STBH cố định theo Kế Hoạch Bảo Hiểm (Cơ bản/Nâng cao); quyền lợi = giá trị LỚN HƠN giữa STBH và GTTK Cơ bản</td></tr>
+            <tr><td class="label">Quyền lợi gia tăng STBH tự động</td><td>KHÔNG CÓ — mức bảo vệ cố định theo Hệ Số Nhân đã chọn tại Ngày Hiệu Lực</td><td>KHÔNG CÓ — trọng tâm là duy trì bảo vệ ổn định xuyên suốt</td><td>CÓ — tự động +10%/năm từ Năm HĐ 2–6 (tối đa +50% STBH); +5%/thành viên mới khi kết hôn/sinh con/nhận con nuôi (tối đa +25%), không thẩm định sức khỏe, không tăng phí</td></tr>
+            <tr><td class="label">Danh mục Quỹ Liên Kết Đơn Vị</td><td>6 Quỹ theo khẩu vị rủi ro (Bảo Toàn/Tích Lũy/Ổn Định/Cân Bằng/Phát Triển/Tăng Trưởng) + 3 Quỹ Hưng Thịnh 2035/2040/2045 tự động tái cân bằng theo tuổi nghỉ hưu</td><td>Giống hệt Xanh Phú Quý</td><td>Giống hệt Xanh Phú Quý</td></tr>
+            <tr><td class="label">Cơ chế thưởng dài hạn</td><td>Thưởng Tri Ân = Phí Ban Đầu tích lũy lãi suất 2,5%/năm → 5,0%/năm; chi trả 100% tại Ngày Kỷ Niệm Năm HĐ 20 (chi trả một phần nếu chấm dứt HĐ năm 11–20)</td><td>Thưởng Tri Ân — cùng cơ chế như Xanh Phú Quý</td><td>Quyền lợi thưởng DUY TRÌ HỢP ĐỒNG tại 3 mốc: Năm HĐ 10 / 15 / 20 = % theo tuổi NĐBH tại mốc đó × Phí BH Cơ Bản Quy Năm của năm đầu tiên</td></tr>
+            <tr><td class="label">Rút tiền từ GTTK không ảnh hưởng Thưởng</td><td>Từ Năm HĐ 11: tối đa 10%/năm tổng Phí BH Cơ Bản đã đóng trong 10 năm đầu</td><td>Từ Năm HĐ 11: tối đa 10%/năm tổng Phí BH Cơ Bản đã đóng trong 10 năm đầu</td><td>Không áp dụng cơ chế tương tự — bất kỳ giao dịch rút GTTK Cơ Bản nào (ngoại trừ dùng đóng phí 3 năm đầu) đều làm MẤT quyền lợi thưởng duy trì hợp đồng</td></tr>
+            <tr><td class="label">Phí Ban Đầu</td><td>30% (Năm 1) / 20% (Năm 2) / 10% (Năm 3–5) / 0% (Năm 6+) trên Phí BH Cơ Bản; phí đóng thêm 1,5% (Năm 2)</td><td>Giống hệt Xanh Phú Quý</td><td>50% / 30% / 20% / 2% / 0% cho Năm 1/2/3–5/6–10/11+; phí đóng thêm 1,5% (năm 1–10)</td></tr>
+            <tr><td class="label">Phí Chấm Dứt HĐ Trước Hạn</td><td>75% / 75% / 50% / 20% / 10% / 0% cho Năm HĐ 1/2/3/4/5/6+</td><td>Giống hệt Xanh Phú Quý</td><td>90% / 90% / 50% / 30% / 20% / 10% / 0% cho Năm 1–7+</td></tr>
+            <tr><td class="label">Phí Bảo Hiểm Cơ Bản tối thiểu</td><td>50 triệu đồng/năm × tối thiểu 10 năm</td><td>25 triệu đồng/năm × tối thiểu 10 năm</td><td>9,5 triệu đồng/năm; nếu đính kèm thẻ sức khỏe hạng Titan trở lên: tối thiểu 10 triệu đồng/năm</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="tab-minhhoa">
+    <h2 class="section-title">Minh họa 3 phương án đóng phí 100 triệu đồng × 5 năm</h2>
+    <div class="source-note" style="margin-bottom:16px;">Khách hàng: Nam 31 tuổi, độc thân, BMBH = NĐBH, nghề Hành chính – Kế toán, mức thẩm định Chuẩn. Nguồn: Tài Liệu Minh Họa Bán Hàng chính thức (Minh họa số 0003459025/23/29, in 10/08/2026), giả định tỷ suất đầu tư CAO 9%/năm — không đảm bảo.</div>
+
+    <div class="illus-grid">
+      <div class="illus-col">
+        <div class="illus-head">
+          <h3>Xanh Phú Quý</h3>
+        </div>
+        <div class="illus-row"><span>Phí đóng</span><b>100tr/năm × 5 năm<br>= 500 triệu đồng</b></div>
+        <div class="illus-row"><span>Số Tiền Bảo Hiểm</span><b>1 tỷ đồng<br><small>cố định suốt Thời Hạn HĐ</small></b></div>
+        <div class="illus-row highlight"><span>Năm hòa vốn</span><b>Năm 5 <small>(tuổi 36)</small><br><small>GTHL 521,14tr ≥ 500tr đã đóng</small></b></div>
+        <div class="illus-row"><span>GTHL Năm 15</span><b>~1.236,86 triệu<br><small>~1,24 tỷ — gấp 2,47 lần phí</small></b></div>
+        <div class="illus-row"><span>GTHL Năm 20</span><b>~2.024,58 triệu<br><small>~2,02 tỷ — gấp 4,05 lần phí</small></b></div>
+      </div>
+
+      <div class="illus-col">
+        <div class="illus-head">
+          <h3>Xanh Phú Quý Flex</h3>
+        </div>
+        <div class="illus-row"><span>Phí đóng</span><b>100tr/năm × 5 năm<br>= 500 triệu đồng</b></div>
+        <div class="illus-row"><span>Số Tiền Bảo Hiểm</span><b>8 tỷ đồng<br><small>cố định suốt Thời Hạn HĐ</small></b></div>
+        <div class="illus-row highlight"><span>Năm hòa vốn</span><b>Năm 7 <small>(tuổi 38)</small><br><small>GTHL 515,96tr ≥ 500tr đã đóng</small></b></div>
+        <div class="illus-row"><span>GTHL Năm 15</span><b>~781,07 triệu<br><small>gấp 1,56 lần phí</small></b></div>
+        <div class="illus-row"><span>GTHL Năm 20</span><b>~1.111,10 triệu<br><small>~1,11 tỷ — gấp 2,22 lần phí</small></b></div>
+      </div>
+
+      <div class="illus-col">
+        <div class="illus-head">
+          <h3>Xanh Tương Lai</h3>
+        </div>
+        <div class="illus-row"><span>Phí đóng</span><b>100tr/năm × 5 năm<br>= 500 triệu đồng</b></div>
+        <div class="illus-row"><span>Số Tiền Bảo Hiểm</span><b>8 tỷ đồng ban đầu → 12 tỷ tại Năm HĐ 6<br><small>(+150%; tối đa +25% nữa nếu có 5 sự kiện gia đình)</small></b></div>
+        <div class="illus-row highlight warn"><span>Năm hòa vốn</span><b>KHÔNG đạt<br><small>trong 20 năm minh họa — GTHL đỉnh ~404,88tr tại Năm 11 rồi giảm dần</small></b></div>
+        <div class="illus-row"><span>GTHL Năm 15</span><b>~381,86 triệu<br><small>bằng 0,76 lần phí</small></b></div>
+        <div class="illus-row warn"><span>GTHL Năm 20</span><b>~234,41 triệu<br><small>THẤP HƠN năm 15 — chi phí bảo hiểm rủi ro cho STBH 12 tỷ tăng theo tuổi</small></b></div>
+      </div>
+    </div>
+
+    <button class="detail-toggle open" data-target="detail-minhhoa"><span class="chev">&#9660;</span> Bảng minh họa dạng đầy đủ (xem theo hàng)</button>
+    <div class="detail-block open" id="detail-minhhoa">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Giả định / Hạng mục</th><th>Xanh Phú Quý</th><th>Xanh Phú Quý Flex</th><th>Xanh Tương Lai</th></tr></thead>
+          <tbody>
+            <tr><td class="label">Chân dung khách hàng</td><td>Nam 31 tuổi, độc thân, BMBH đồng thời là NĐBH, nghề Hành chính – Kế toán, mức thẩm định Chuẩn</td><td>(giống)</td><td>(giống)</td></tr>
+            <tr><td class="label">Phí đóng minh họa</td><td>100 triệu đồng/năm × 5 năm = 500 triệu đồng (Thời Hạn HĐ 68 năm — đến tuổi 99)</td><td>100 triệu đồng/năm × 5 năm = 500 triệu đồng</td><td>100 triệu đồng/năm × 5 năm = 500 triệu đồng</td></tr>
+            <tr><td class="label">Số Tiền Bảo Hiểm</td><td>1 tỷ đồng — cố định trong suốt Thời Hạn Hợp Đồng</td><td>8 tỷ đồng — cố định trong suốt Thời Hạn Hợp Đồng</td><td>8 tỷ đồng ban đầu → tự động tăng lên 12 tỷ đồng tại Năm HĐ 6 (150% STBH ban đầu); có thể lên đến 12 tỷ nếu cộng thêm quyền lợi gia tăng khi có thành viên mới trong gia đình (tối đa 5 sự kiện: kết hôn/sinh con/nhận con nuôi)</td></tr>
+            <tr><td class="label">Năm hòa vốn (GTHL ≥ tổng phí đã đóng, 9%/năm)</td><td>Năm HĐ 5 (tuổi 36) — GTHL 521,14tr ≥ 500tr</td><td>Năm HĐ 7 (tuổi 38) — GTHL 515,96tr ≥ 500tr</td><td>KHÔNG đạt hòa vốn trong 20 năm minh họa — GTHL đỉnh ~404,88tr tại Năm 11 rồi giảm dần</td></tr>
+            <tr><td class="label">Giá trị tích lũy (GTHL) Năm HĐ 15</td><td>~1.236,86 triệu (~1,24 tỷ — x2,47 phí)</td><td>~781,07 triệu (x1,56 phí)</td><td>~381,86 triệu (x0,76 phí)</td></tr>
+            <tr><td class="label">Giá trị tích lũy (GTHL) Năm HĐ 20</td><td>~2.024,58 triệu (~2,02 tỷ — x4,05 phí)</td><td>~1.111,10 triệu (~1,11 tỷ — x2,22 phí)</td><td>~234,41 triệu — THẤP HƠN năm 15, do chi phí bảo hiểm rủi ro cho STBH 12 tỷ tiếp tục tăng theo tuổi NĐBH</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab-panel" id="tab-tuvan">
+    <h2 class="section-title">Gợi ý sử dụng khi tư vấn</h2>
+    <div class="card-grid">
+      <div class="prod-card">
+        <h3>Xanh Phú Quý</h3>
+        <div class="tagline">Ưu tiên đầu tư / kiến tạo gia sản</div>
+        <ul class="advice">
+          <li>Khách hàng đã có nền bảo vệ cơ bản (qua sản phẩm khác) và tìm kênh tích lũy — chuyển giao tài sản đa thế hệ.</li>
+          <li>Phù hợp nhóm 36–55 tuổi trong mô hình phân khúc khách hàng của Manulife (giai đoạn Tích lũy).</li>
+        </ul>
+      </div>
+      <div class="prod-card">
+        <h3>Xanh Phú Quý Flex</h3>
+        <div class="tagline">Cân bằng bảo vệ và đầu tư ngay từ đầu</div>
+        <ul class="advice">
+          <li>Khách hàng là trụ cột tài chính gia đình, cần quyền lợi bảo vệ chắc chắn không phụ thuộc biến động thị trường/GTTK.</li>
+          <li>Phù hợp khách hàng 18–35 tuổi mới độc lập tài chính, vừa muốn bảo vệ vừa muốn tích lũy song song.</li>
+        </ul>
+      </div>
+      <div class="prod-card">
+        <h3>Xanh Tương Lai</h3>
+        <div class="tagline">Bảo vệ tăng dần theo cột mốc cuộc sống</div>
+        <ul class="advice">
+          <li>Khách hàng trẻ, độc thân hoặc mới lập gia đình — quyền lợi tự động tăng khi kết hôn/sinh con phù hợp giai đoạn 28–35 tuổi "Xây dựng gia đình".</li>
+          <li>Phù hợp khách hàng thích tùy biến Quỹ đầu tư đa dạng và không đặt nặng khoản Thưởng Tri Ân cố định.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  var sidebar = document.getElementById('sidebar');
+  var collapseBtn = document.getElementById('collapseBtn');
+  var mobileBtn = document.getElementById('mobile-open-btn');
+  var backdrop = document.getElementById('backdrop');
+  var isMobile = function () { return window.innerWidth <= 760; };
+
+  collapseBtn.addEventListener('click', function () {
+    if (isMobile()) {
+      sidebar.classList.remove('mobile-open');
+      backdrop.classList.remove('show');
+    } else {
+      sidebar.classList.toggle('collapsed');
+      collapseBtn.innerHTML = sidebar.classList.contains('collapsed') ? '&#10095;' : '&#10094;';
+    }
+  });
+  mobileBtn.addEventListener('click', function () {
+    sidebar.classList.add('mobile-open');
+    backdrop.classList.add('show');
+  });
+  backdrop.addEventListener('click', function () {
+    sidebar.classList.remove('mobile-open');
+    backdrop.classList.remove('show');
+  });
+
+  var navBtns = document.querySelectorAll('.sb-btn');
+  var panels = document.querySelectorAll('.tab-panel');
+  navBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      navBtns.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var target = btn.getAttribute('data-tab');
+      panels.forEach(function (p) {
+        p.classList.toggle('active', p.id === 'tab-' + target);
+      });
+      if (isMobile()) {
+        sidebar.classList.remove('mobile-open');
+        backdrop.classList.remove('show');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  var viewSummaryBtn = document.getElementById('viewSummaryBtn');
+  var viewDetailBtn = document.getElementById('viewDetailBtn');
+  var detailToggles = document.querySelectorAll('.detail-toggle');
+
+  function setAllDetails(open) {
+    document.querySelectorAll('.detail-block').forEach(function (d) { d.classList.toggle('open', open); });
+    detailToggles.forEach(function (t) { t.classList.toggle('open', open); });
+  }
+  viewSummaryBtn.addEventListener('click', function () {
+    viewSummaryBtn.classList.add('active');
+    viewDetailBtn.classList.remove('active');
+    setAllDetails(false);
+  });
+  viewDetailBtn.addEventListener('click', function () {
+    viewDetailBtn.classList.add('active');
+    viewSummaryBtn.classList.remove('active');
+    setAllDetails(true);
+  });
+
+  detailToggles.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = document.getElementById(btn.getAttribute('data-target'));
+      var willOpen = !target.classList.contains('open');
+      target.classList.toggle('open', willOpen);
+      btn.classList.toggle('open', willOpen);
+    });
+  });
+</script>
+
+</body>
+</html>
