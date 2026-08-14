@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Business Plan — Sân Pickleball</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --ink:#10231C; --surface:#132922; --surface2:#17332B; --surface3:#1D3D33;
+    --line:#2A4A40; --text:#ECEDE7; --text2:#F2E9D8; --muted:#9FB3AB; --muted2:#8FA39B; --dim:#6F8F86;
+    --gold:#D9A94A; --platinum:#B9D6D9; --silver:#9AA6AC; --green:#4FB477; --amber:#D9834A; --red:#C1544C;
+    --gap-fill:#FFC7CE; --gap-font:#9C0006;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;background:var(--ink);color:var(--text);font-family:'Inter',sans-serif;}
+  .display{font-family:'Oswald',sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  #app{width:100%;height:100vh;display:flex;overflow:hidden;}
+
+  /* Backdrop */
+  #backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;display:none;}
+  #backdrop.show{display:block;}
+
+  /* Sidebar */
+  #sidebar{height:100%;display:flex;flex-direction:column;flex-shrink:0;background:var(--surface);
+    border-right:1px solid var(--line);z-index:40;transition:width .2s;width:52px;position:relative;}
+  #sidebar.expanded{width:78%;max-width:260px;position:fixed;top:0;left:0;bottom:0;box-shadow:4px 0 24px rgba(0,0,0,.35);}
+  #sidebar-header{display:flex;align-items:center;justify-content:space-between;padding:12px 10px;border-bottom:1px solid var(--line);}
+  #sidebar-title{display:none;}
+  #sidebar.expanded #sidebar-title{display:block;}
+  #sidebar-title .t1{font-size:13px;font-weight:700;color:var(--text2);letter-spacing:.3px;}
+  #sidebar-title .t2{font-size:9.5px;color:var(--dim);}
+  #collapse-btn{background:var(--surface3);color:var(--muted2);border:none;border-radius:6px;padding:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  #nav-list{display:flex;flex-direction:column;gap:2px;padding:8px 6px;overflow-y:auto;}
+  .nav-label{display:none;font-size:9px;color:var(--dim);letter-spacing:.5px;padding:3px 8px;}
+  #sidebar.expanded .nav-label{display:block;}
+  .nav-btn{width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:6px;background:transparent;
+    border:none;border-left:3px solid transparent;color:var(--muted2);cursor:pointer;text-align:left;}
+  .nav-btn.active{background:var(--surface3);border-left:3px solid var(--gold);color:var(--text2);}
+  .nav-btn .icon{width:16px;height:16px;flex-shrink:0;}
+  .nav-btn .lbl{display:none;font-size:12.5px;font-weight:500;}
+  #sidebar.expanded .nav-btn .lbl{display:inline;}
+  #scenario-block{display:flex;flex-direction:column;gap:4px;padding:8px 6px;margin-top:auto;border-top:1px solid var(--line);}
+  .scenario-pill{width:100%;display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:6px;
+    background:transparent;cursor:pointer;font-family:'Oswald',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.3px;}
+  .scenario-dot{width:12px;height:12px;border-radius:999px;flex-shrink:0;}
+  #scenario-dots{display:none;flex-direction:column;gap:6px;align-items:center;padding-bottom:8px;}
+  #sidebar:not(.expanded) #scenario-dots{display:flex;}
+  #sidebar.expanded #scenario-list{display:flex;}
+  #scenario-list{display:none;flex-direction:column;gap:4px;padding:0 4px;}
+  .dot-btn{width:12px;height:12px;border-radius:999px;background:transparent;cursor:pointer;padding:0;}
+
+  /* Main */
+  #main{flex:1;height:100%;overflow-y:auto;min-width:0;}
+  #topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
+    padding:10px 12px;background:var(--ink);border-bottom:1px solid var(--line);}
+  #topbar .left{display:flex;align-items:center;gap:6px;min-width:0;}
+  #topbar .title{font-family:'Oswald',sans-serif;font-size:14.5px;font-weight:600;color:var(--text2);letter-spacing:.2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #scenario-badge{padding:4px 8px;border-radius:999px;display:flex;align-items:center;gap:6px;flex-shrink:0;}
+  #scenario-badge .dot{width:5px;height:5px;border-radius:999px;}
+  #scenario-badge span.lbl{font-size:10.5px;font-weight:600;white-space:nowrap;}
+  #content{padding:12px;display:flex;flex-direction:column;gap:14px;}
+
+  /* Cards / grid */
+  .grid{display:grid;gap:8px;}
+  .grid-1{grid-template-columns:1fr;}
+  .grid-2{grid-template-columns:1fr 1fr;}
+  .grid-3{grid-template-columns:1fr 1fr 1fr;}
+  .grid-4{grid-template-columns:1fr 1fr;}
+  .card{border-radius:8px;padding:12px;background:var(--surface2);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px;}
+  .card .lbl{font-size:10px;color:var(--muted2);letter-spacing:.2px;}
+  .card .val{font-family:'Oswald',sans-serif;font-size:19px;font-weight:600;color:var(--text);line-height:1.15;}
+  .card .sub{font-size:10px;color:var(--dim);}
+
+  /* Detail section (accordion) */
+  .section{border-radius:8px;overflow:hidden;border:1px solid var(--line);}
+  .section-head{width:100%;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;
+    background:var(--surface2);border:none;cursor:pointer;color:var(--text2);}
+  .section-head .t{font-family:'Oswald',sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.2px;text-align:left;}
+  .section-head .chev{transition:transform .2s;color:var(--muted2);flex-shrink:0;}
+  .section-head.open .chev{transform:rotate(180deg);}
+  .section-body{display:none;padding:12px;background:var(--surface);border-top:1px solid var(--line);}
+  .section-body.open{display:block;}
+
+  .row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px dashed #24413838;}
+  .row .rl{font-size:12px;color:var(--muted);line-height:1.4;}
+  .row .rl.bold{color:var(--text);font-weight:600;}
+  .row .note{color:var(--dim);font-size:10.5px;}
+  .row .rv{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#D8E3DE;flex-shrink:0;text-align:right;}
+  .row .rv.bold{color:var(--text2);font-weight:600;}
+
+  .tile{border-radius:6px;padding:10px;background:var(--surface2);margin-bottom:8px;}
+  .tile .t{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:2px;}
+  .tile .d{font-size:11.5px;color:var(--muted);line-height:1.5;}
+
+  .price-tile{border-radius:8px;padding:8px;background:var(--surface2);}
+  .price-tile .lbl{font-family:'Oswald',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.3px;}
+  .price-tile .sub{font-size:9px;color:var(--muted2);margin-bottom:4px;line-height:1.3;}
+  .price-tile .val{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--text);font-weight:600;}
+  .price-tile .val .u{font-size:9.5px;color:var(--muted2);}
+
+  .occ-box{flex:1;border-radius:4px;padding:6px 8px;text-align:center;background:var(--surface);border:1px solid var(--line);}
+  .occ-box .v{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;}
+  .occ-box .l{font-size:9.5px;color:var(--dim);}
+
+  .level-tag{padding:2px 8px;border-radius:4px;font-size:10.5px;font-weight:600;color:#12211C;white-space:nowrap;}
+  .risk-card{border-radius:6px;padding:10px;background:var(--surface2);border:1px solid var(--line);margin-bottom:8px;}
+  .risk-card .head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;}
+  .risk-card .head .t{font-size:13px;font-weight:600;color:var(--text2);line-height:1.4;}
+  .risk-card .d{font-size:12px;color:var(--muted);line-height:1.55;}
+
+  .opp-card{border-radius:6px;padding:10px;background:var(--surface2);border:1px solid #4FB47755;margin-bottom:8px;}
+  .opp-card .head{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+  .opp-card .head .t{font-size:13px;font-weight:600;color:var(--text2);}
+  .opp-card .d{font-size:12px;color:var(--muted);line-height:1.55;}
+
+  .strat-card{border-radius:6px;padding:10px;background:var(--surface2);border:1px solid #D9A94A55;margin-bottom:8px;}
+  .strat-card .head{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+  .strat-card .head .t{font-size:13px;font-weight:600;color:var(--text2);}
+  .strat-card .d{font-size:12px;color:var(--muted);line-height:1.55;}
+
+  .pos-card{border-radius:6px;padding:10px;background:var(--surface2);margin-bottom:8px;}
+  .pos-card .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+  .pos-card .name{font-size:12.5px;font-weight:600;}
+  .pos-card .price{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);}
+  .pos-card .fit{font-size:11.5px;color:var(--muted);line-height:1.5;}
+
+  .callout{border-radius:6px;padding:10px;margin-top:8px;background:#1D3D3355;border:1px solid #4FB47755;}
+  .callout .lead{color:var(--green);font-weight:600;}
+  .callout-text{font-size:11.5px;color:var(--muted);line-height:1.5;}
+
+  .italic-note{font-size:10.5px;color:var(--dim);font-style:italic;margin-top:4px;}
+  .section-title-block{margin-bottom:6px;}
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="backdrop"></div>
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <div id="sidebar-title">
+        <div class="t1">SÂN PICKLEBALL</div>
+        <div class="t2">Business Plan Control</div>
+      </div>
+      <button id="collapse-btn" title="Ẩn/hiện bảng điều khiển">
+        <svg id="collapse-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+    <div id="nav-list"></div>
+    <div id="scenario-block">
+      <div class="nav-label">KỊCH BẢN</div>
+      <div id="scenario-list"></div>
+      <div id="scenario-dots"></div>
+    </div>
+  </div>
+
+  <div id="main">
+    <div id="topbar">
+      <div class="left">
+        <svg id="topbar-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D9A94A" stroke-width="2"></svg>
+        <span class="title" id="topbar-title"></span>
+      </div>
+      <div id="scenario-badge" style="display:none;">
+        <span class="dot"></span><span class="lbl"></span>
+      </div>
+    </div>
+    <div id="content"></div>
+  </div>
+</div>
+
+<script>
+/* ============================= DATA ============================= */
+const fmtTr = (n) => {
+  if (n === null || n === undefined) return "—";
+  const tr = n / 1000000;
+  return (Number.isInteger(tr) ? tr.toFixed(0) : tr.toFixed(1)).replace(".", ",") + " tr";
+};
+const fmtPct = (n) => (n * 100).toFixed(1).replace(".", ",") + "%";
+const fmtVnd = (n) => new Intl.NumberFormat("vi-VN").format(Math.round(n)) + " đ";
+const esc = (s) => (s === undefined || s === null) ? "" : String(s);
+
+const SCENARIOS = [
+  { key: "best", label: "Tốt", color: "#4FB477" },
+  { key: "avg", label: "Trung bình", color: "#D9A94A" },
+  { key: "worst", label: "Xấu", color: "#C1544C" },
+];
+
+const ICONS = {
+  tongquan: '<rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>',
+  giadinh: '<line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line>',
+  doanhthu: '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline>',
+  chiphi: '<rect x="1" y="7" width="22" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v16"></path>',
+  pl: '<path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z"></path><circle cx="8.5" cy="10.5" r=".5"></circle>',
+  ruiro: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>',
+};
+
+const TABS = [
+  { key: "tongquan", label: "Tổng quan" },
+  { key: "giadinh", label: "Giả định" },
+  { key: "doanhthu", label: "Doanh thu" },
+  { key: "chiphi", label: "Chi phí" },
+  { key: "pl", label: "P&L & Hoàn vốn" },
+  { key: "ruiro", label: "Rủi ro & Cơ hội" },
+];
+
+const TEAM = [
+  { role: "Anh Chiều", desc: "Chủ DN xây dựng — network kết nối vị trí, quan hệ mặt bằng" },
+  { role: "Huy", desc: "Kinh nghiệm setup 22 sân Pickleball + 2 chuỗi Phở Định — cố vấn vận hành & tuyển dụng" },
+  { role: "Người vận hành chính (thuê ngoài)", desc: "Thầy giáo dạy Pickleball do Huy tuyển — vận hành hàng ngày, lương gộp trong 'Nhân công'" },
+  { role: "Hương", desc: "Sale & Marketing + xây dựng quy trình vận hành" },
+];
+
+const LAND = {
+  area: 4000, unit: 100000, monthly: 400000000,
+  type: "Hợp đồng hợp tác kinh doanh (BCC) với Bộ Quốc phòng",
+  term: "5 năm, không tăng giá", payment: "3 tháng/lần",
+  totalCommitment: 24000000000,
+  negotiable: "Huy cho biết có thể đàm phán được mức thấp hơn 100k/m²/tháng — CHƯA XÁC NHẬN, cần theo dõi/đàm phán thêm. Nếu đàm phán thành công, EBITDA cả 3 kịch bản đều cải thiện tương ứng.",
+};
+
+const CAPEX_ITEMS = [
+  { name: "Làm sân", note: "đã có sẵn — KHÔNG tính vào CAPEX cần thu hồi", value: 3000000000, excluded: true },
+  { name: "Mái che", value: 1600000000 },
+  { name: "Sơn", value: 400000000 },
+  { name: "Xây dựng phụ trợ", value: 600000000 },
+  { name: "Bóng đèn", value: 120000000 },
+  { name: "Khác / chưa phân bổ chi tiết", value: 280000000 },
+];
+const CAPEX_RECOVER_TOTAL = 3000000000;
+
+const TECH_ITEMS = [
+  { name: "Alobo — tổng đài trung gian nhận đặt sân", value: 1000000, status: "estimate" },
+  { name: "Phần mềm ghi nhận doanh thu bán hàng (POS)", value: 220000, status: "estimate", note: "Theo Huy: Alobo + hotline đã đủ cho đặt sân, không cần làm thêm app riêng" },
+  { name: "Bãi đỗ xe: barrier + vé quẹt + camera", value: null, status: "gap", note: "Cần báo giá" },
+  { name: "Tính pháp lý mở bãi xe (PCCC + ANTT + ĐKKD)", value: null, status: "gap", note: "Cần tư vấn pháp lý" },
+];
+
+const POS_OPTIONS = [
+  { name: "PosApp", price: "220.000–299.000 đ/tháng", fit: "Có gói riêng cho sân cầu lông/Pickleball: tính tiền theo khung giờ vàng/thường tự động, gộp hóa đơn tiền sân + bán nước/phụ kiện, trừ kho tự động, phân quyền nhân viên + lưu vết thao tác (chống thất thoát), báo cáo bóc tách doanh thu sân vs. hàng bán, hỗ trợ hóa đơn điện tử đa thuế suất.", pick: true },
+  { name: "Mewin", price: "Miễn phí năm đầu", fit: "Nền tảng chuyên biệt cho sân Pickleball/cầu lông/tennis, có báo cáo doanh thu, ghi nhận giao dịch bán nước/thuê đồ tự động. Chi phí thấp nhất để dùng thử trước khi cam kết dài hạn.", pick: false },
+  { name: "KiotViet", price: "Liên hệ báo giá", fit: "Thương hiệu POS phổ biến, đã có gói riêng cho sân Pickleball/tennis/cầu lông; mạng lưới hỗ trợ rộng khắp nếu sau này mở rộng thêm điểm bán/chi nhánh.", pick: false },
+];
+
+const ADDITIONAL_CAPEX_GAPS = [
+  { name: "Làm đường từ ngoài vào tới sân (dài nhất khu vực, hiện chưa phẳng)", note: "Chưa có báo giá — chưa nằm trong CAPEX 3 tỷ hiện tại" },
+  { name: "Cổng phía Nguyễn Lân — chưa chắc được mở, và nếu mở thì khá bé", note: "Cần xác nhận với bên quản lý trước khi tính vào lợi thế '2 mặt tiền'" },
+];
+
+const PRICE_TIER = [
+  { key: "vang", label: "Giờ vàng", sub: "17h–22h/23h (~5,5h/ngày)", price: 320000, color: "#D9A94A" },
+  { key: "thap", label: "Giờ thấp điểm", sub: "6h–8h sáng & 15h–17h (4h/ngày)", price: 200000, color: "#9AA6AC" },
+];
+
+const OCC = {
+  vang: { best: 0.85, avg: 0.60, worst: 0.35 },
+  thap: { best: 0.30, avg: 0.25, worst: 0.20 },
+};
+
+const FNB = {
+  water: { name: "Nước khoáng (Aquafina 500ml)", cost: 5000, price: 15000, margin: 0.667 },
+  soda: { name: "Nước ngọt (Revive 500ml)", cost: 7000, price: 15000, margin: 0.533 },
+  mix: 0.5, blendedMargin: 0.60, ratioToCourtRev: 0.20,
+};
+
+const PARKING = {
+  priceMotor: 5000, priceCar: 30000,
+  volumes: { best: { motor: 300, car: 20 }, avg: { motor: 180, car: 10 }, worst: { motor: 80, car: 4 } },
+};
+
+const BALL = {
+  priceSmall: 50000, priceLarge: 80000, pricePick: 20000,
+  volumes: {
+    best: { small: 8, large: 4, pickHours: 6 },
+    avg: { small: 4, large: 2, pickHours: 3 },
+    worst: { small: 1, large: 1, pickHours: 1 },
+  },
+};
+
+const COACHING = { status: "gap", note: "Chưa có đơn giá/lịch dạy — cần Huy tư vấn thêm trước khi đưa vào doanh thu" };
+
+const REVENUE = {
+  best: { vang: 852720000, thap: 136800000, court: 989520000, fnb: 197904000, parking: 63000000, ballcart: 21600000, ballpick: 3600000, total: 1275624000 },
+  avg: { vang: 601920000, thap: 114000000, court: 715920000, fnb: 143184000, parking: 36000000, ballcart: 10800000, ballpick: 1800000, total: 907704000 },
+  worst: { vang: 351120000, thap: 91200000, court: 442320000, fnb: 88464000, parking: 15600000, ballcart: 3900000, ballpick: 600000, total: 550884000 },
+};
+
+const COSTS = {
+  best: { land: 400000000, util: 55000000, labor: 160000000, mkt: 35000000, admin: 15000000, tech: 1220000, subtotal: 666220000, cogs: 79161600, total: 745381600 },
+  avg: { land: 400000000, util: 45000000, labor: 150000000, mkt: 25000000, admin: 15000000, tech: 1220000, subtotal: 636220000, cogs: 57273600, total: 693493600 },
+  worst: { land: 400000000, util: 35000000, labor: 130000000, mkt: 15000000, admin: 15000000, tech: 1220000, subtotal: 596220000, cogs: 35385600, total: 631605600 },
+};
+
+const PL = {
+  best: { ebitda: 530242400, margin: 0.4157, payback_m: 5.66 },
+  avg: { ebitda: 214210400, margin: 0.2360, payback_m: 14.01 },
+  worst: { ebitda: -80721600, margin: -0.1465, payback_m: null },
+};
+
+const BREAKEVEN = { occupancy: 0.360, courtRevNeeded: 524660000 };
+
+const BENCHMARK = {
+  courts: 11, courtRev: 500000000, priceGold: 220000, priceOff: 180000,
+  fnbRev: 100000000, util: 20000000, labor: 70000000, rent: 140000000,
+  payback: "12–18 tháng",
+};
+
+const RISKS = [
+  { title: "★ Rủi ro pháp lý hình thức thuê đất — trực tiếp với Bộ Quốc phòng hay qua trung gian?", level: "Rất cao",
+    detail: "Theo đánh giá của Hương, đây là rủi ro lớn nhất dự án: chưa rõ hợp đồng BCC là ký trực tiếp với Bộ Quốc phòng hay thông qua một bên trung gian. Nếu qua trung gian, tính pháp lý và khả năng thực thi hợp đồng yếu hơn nhiều — rủi ro trung gian không đủ thẩm quyền đại diện, hợp đồng có thể bị vô hiệu, hoặc quyền lợi của team không được bảo vệ nếu có tranh chấp. VIỆC CẦN LÀM NGAY: xác minh rõ pháp nhân ký hợp đồng BCC là ai, kiểm tra tư cách/thẩm quyền đại diện của bên đó, và nên có luật sư rà soát trước khi ký bất kỳ cam kết tài chính nào." },
+  { title: "★ Rủi ro lấp đầy (occupancy) — đặc biệt khi 3 cụm sân cùng hoạt động", level: "Rất cao",
+    detail: "Đánh giá của Hương: đây có thể là rủi ro lớn nhất về mặt vận hành. Lưu ý: bối cảnh '3 cụm sân, sân mình bị kẹp giữa' hiện chỉ dựa trên lời kể của Huy, CHƯA khảo sát thực địa độc lập — cần xác minh trước khi coi là chắc chắn. Điểm hòa vốn tính lại theo khung giờ Huy tư vấn đã tăng lên ~36% lấp đầy bình quân (từ ~22% trước đây, dựa trên giả định khung giờ cũ) — dư địa an toàn mỏng hơn model trước, dù bản thân giả định khung giờ này cũng cần Hương và Huy xác nhận lại một lần nữa. Xem mục Chiến lược cạnh tranh bên dưới." },
+  { title: "Tính pháp lý mở bãi đỗ xe (PCCC + ANTT + ĐKKD)", level: "Trung bình",
+    detail: "Hạ mức từ 'Rất cao' xuống sau khi được hỏi lại về căn cứ: đánh giá trước dựa trên ngưỡng chung của Nghị định 96/2016 và 136/2020 (áp dụng cho bãi giữ xe từ 20 ô tô trở lên) suy ra từ mô tả 'bãi đỗ xe rất rộng' — CHƯA có xác nhận cụ thể quy mô/số chỗ đỗ ô tô thực tế. Nếu quy mô thực tế nhỏ hơn ngưỡng 20 ô tô, yêu cầu PCCC sẽ nhẹ hơn nhiều. Cần đo đạc/thiết kế cụ thể bãi xe trước khi đánh giá lại mức độ rủi ro chính xác hơn." },
+  { title: "Đường vào cụm sân — mô tả là dài nhất khu vực và hiện chưa phẳng (chưa đo đạc/xác minh)", level: "Cao",
+    detail: "Theo lời kể của Huy, đường tiếp cận vào cụm sân của mình dài hơn 2 cụm cạnh tranh và hiện chưa được trải phẳng/hoàn thiện — CHƯA có khảo sát/đo đạc độc lập để xác nhận. Nếu đúng, đây là chi phí CAPEX phát sinh CHƯA có trong ngân sách hiện tại — cần khảo sát thực địa và báo giá cải tạo trước khi vận hành." },
+  { title: "Cổng phía Nguyễn Lân — theo Huy là chưa chắc được mở, và khá bé (chưa xác nhận chính thức)", level: "Cao",
+    detail: "Thông tin này hiện chỉ dựa trên lời kể của Huy, chưa có xác nhận chính thức từ bên quản lý. Nếu đúng, lợi thế '2 mặt tiền' cần coi là chưa chắc chắn cho tới khi có xác nhận, không nên đưa vào tính toán tiếp thị/định vị cạnh tranh lúc này." },
+  { title: "Độc quyền mối quan hệ/mặt bằng do một mình anh Chiều nắm giữ", level: "Rất cao",
+    detail: "Toàn bộ lợi thế vị trí (2,5ha, kết nối Bộ Quốc phòng) phụ thuộc network cá nhân của một người — chưa có pháp nhân/hợp đồng góp vốn nào tách bạch giữa 3 bên. Nếu anh Chiều rút lui hoặc có vấn đề, dự án mất luôn nền tảng quan hệ. Cần chính thức hóa bằng văn bản góp vốn/thỏa thuận hợp tác 3 bên càng sớm càng tốt, không phụ thuộc thiện chí cá nhân." },
+  { title: "Cơ chế thu-chi dòng tiền qua Bộ Quốc phòng", level: "Cao",
+    detail: "Dự án được coi như của Bộ Quốc phòng: doanh thu và chi phí đều qua tài khoản chung, team nộp vốn đầu tư vào chứ không tự quản lý dòng tiền. Cần thống nhất sớm: tần suất quyết toán, quy trình giải ngân, cách theo dõi báo cáo, cách xử lý chênh lệch số liệu, và kế hoạch vốn lưu động cho giai đoạn chờ quyết toán." },
+  { title: "Hệ thống bãi đỗ xe (barrier + vé quẹt + camera) chưa có báo giá", level: "Cao",
+    detail: "Hạng mục CAPEX thiết bị cần thiết vì bãi đỗ xe rất rộng — cần xin báo giá 2–3 đơn vị trước khi chốt ngân sách." },
+  { title: "Vận hành phụ thuộc chất lượng người được Huy tuyển làm HLV/quản lý sân", level: "Cao",
+    detail: "Vị trí thay thế cho việc Huy trực tiếp vận hành — cần tiêu chí tuyển dụng rõ ràng và phương án dự phòng nếu nhân sự này nghỉ." },
+  { title: "Cam kết BCC 5 năm cố định, chưa rõ điều khoản linh hoạt", level: "Cao",
+    detail: "400tr/tháng cố định bất kể kết quả kinh doanh — cần xác nhận điều khoản chấm dứt sớm/break clause." },
+  { title: "Khung giờ vàng/thấp điểm & giá — theo tư vấn của Huy, chưa kiểm chứng thị trường độc lập", level: "Cao",
+    detail: "Huy tư vấn khung giờ vàng 17h-22h/23h (5,5h/ngày, 320k/h) và thấp điểm 6-8h sáng & 15-17h (4h/ngày, 200k/h, lấp đầy 20-30%) — đây là kinh nghiệm cá nhân của Huy từ các sân đã setup trước, CHƯA đối chiếu với khảo sát thị trường độc lập cho vị trí cụ thể này. Doanh thu sân trong model đã giảm đáng kể so với bản trước dựa theo tư vấn này — cả 3 bên nên thống nhất và nếu có thể, đối chiếu thêm với 1-2 nguồn khác trước khi dùng số liệu này để ra quyết định." },
+  { title: "Dịch vụ dạy tập (mới bổ sung) chưa có đơn giá/lịch dạy", level: "Trung bình",
+    detail: "Chưa đưa vào doanh thu vì thiếu số liệu — cần Huy tư vấn thêm về mô hình thu phí (theo buổi/gói/tháng) trước khi đưa vào model." },
+  { title: "Rủi ro thu hồi đất — đổi mục đích sử dụng hoặc đổi người quản lý", level: "Thấp",
+    detail: "Có thể xảy ra nếu Bộ Quốc phòng chuyển mục đích (chiến tranh, sân bay quân sự...) hoặc thay đổi lãnh đạo đơn vị chủ quản. Xác suất rất nhỏ theo đánh giá của Hương, nhưng nên có điều khoản xử lý phần vốn đã đầu tư nếu xảy ra." },
+  { title: "Alobo — cần báo giá chính thức (đã xác nhận không cần làm thêm app riêng)", level: "Thấp",
+    detail: "Huy xác nhận Alobo + hotline là đủ để nhận đặt sân, không cần xây thêm app/link riêng — giảm được 1 khoản chi phí & 1 rủi ro so với trước. Vẫn cần báo giá Alobo chính thức để chốt ngân sách chính xác." },
+  { title: "Xe bóng & nhặt bóng — cần xác nhận lại với Huy", level: "Trung bình",
+    detail: "Đơn giá theo số liệu Hương cung cấp; số lượt/giờ mỗi ngày vẫn là giả định minh họa, cần điều chỉnh khi có dữ liệu vận hành thực tế." },
+  { title: "Lượt xe máy/ô tô mỗi ngày — giả định minh họa", level: "Trung bình",
+    detail: "Cần đối chiếu mật độ khách thực tế khi có dữ liệu vận hành ban đầu." },
+  { title: "Cơ cấu doanh thu nước khoáng/nước ngọt 50/50 — giả định", level: "Trung bình",
+    detail: "Chưa có dữ liệu bán hàng thực tế — ảnh hưởng trực tiếp biên lợi nhuận F&B." },
+  { title: "Tỷ lệ doanh thu nước = 20% doanh thu sân — 1 điểm dữ liệu benchmark", level: "Trung bình",
+    detail: "Nên đối chiếu thêm 1–2 sân Pickleball khác trước khi dùng làm chuẩn chính thức." },
+  { title: "Thanh toán đất theo quý (3 tháng/lần)", level: "Trung bình",
+    detail: "Cần vốn lưu động đệm ~1,2 tỷ/lần thanh toán, tách riêng khỏi CAPEX ban đầu." },
+  { title: "Điện nước & nhân công ước lượng tuyến tính từ benchmark 11 sân", level: "Trung bình",
+    detail: "19 sân quy mô lớn hơn nhiều — nên lấy báo giá thực tế thay vì suy ra tuyến tính." },
+];
+
+const OPPORTUNITIES = [
+  { title: "Đàm phán giá thuê đất thấp hơn 100k/m²/tháng", detail: "Theo thông tin Huy cung cấp, có thể đàm phán được mức giá thấp hơn hiện tại — CHƯA XÁC NHẬN nhưng đáng theo đuổi vì tiền thuê đất là chi phí cố định lớn nhất (400tr/tháng), giảm được sẽ cải thiện EBITDA ở cả 3 kịch bản." },
+  { title: "Khai thác thêm quỹ đất 2,5ha", detail: "Thương mại, F&B, bãi xe, trạm sạc... theo sơ đồ khai thác mở rộng — chưa đưa vào model này, cần business case riêng." },
+  { title: "Mở rộng mô hình Phở Định vào khu phức hợp", detail: "Tận dụng kinh nghiệm 2 chuỗi của Huy, tạo thêm nguồn thu vào khung giờ sân vắng khách (sáng sớm, trưa)." },
+  { title: "Nhân rộng quy mô sân Pickleball sang địa điểm khác", detail: "Nếu mô hình hiệu quả, tận dụng kinh nghiệm setup 22 sân của Huy + năng lực kết nối mặt bằng của anh Chiều." },
+  { title: "Chuẩn hóa mô hình để hợp tác / nhượng quyền", detail: "Kết hợp sân Pickleball + Phở Định + dịch vụ phụ trợ thành gói mô hình hoàn chỉnh, thuận lợi khi mở rộng dài hạn." },
+];
+
+const COMPETITIVE_STRATEGY = [
+  { title: "Đào tạo bài bản thay vì chỉ cho thuê giờ", detail: "Tận dụng kinh nghiệm corporate trainer của Hương + trình độ thi đấu của Huy để xây lộ trình học (mới → nâng cao), tạo học viên gắn bó dài hạn — 2 cụm kia nhiều khả năng chỉ cho thuê sân thuần, không có sản phẩm 'giữ chân' này." },
+  { title: "Tối ưu đúng khung giờ thấp điểm có nhu cầu thật", detail: "Dùng đúng 2 khung Huy xác nhận có nhu cầu (6–8h sáng, 15–17h chiều) để mở lớp riêng — sáng cho người đi làm/lớn tuổi, chiều cho học sinh — thay vì để trống như đối thủ có thể chưa tối ưu tới mức này." },
+  { title: "Khai thác 2 sân VIP để tạo hiệu ứng cộng đồng", detail: "Tổ chức giải đấu/sự kiện định kỳ tại 2 sân VIP có khán đài — biến sân thành điểm đến, tạo nội dung truyền thông đều đặn (Hương có kinh nghiệm content creator) để xây nhận diện trước khi khách chọn cụm nào." },
+  { title: "Tích hợp Phở Định làm trải nghiệm trọn gói", detail: "Chơi xong có chỗ ăn ngay tại chỗ — lợi thế mà cụm sân thuần khó có ngay, đặc biệt hấp dẫn nhóm bạn/gia đình muốn 'trọn buổi' thay vì chỉ ghé chơi." },
+  { title: "Gói hội viên / thẻ trả trước để tạo chi phí chuyển đổi", detail: "Khách đã mua gói sẽ ít có động lực so giá từng buổi giữa 3 cụm — cần thiết kế gói hấp dẫn hơn giá lẻ để khuyến khích cam kết sớm, đặc biệt giai đoạn đầu khi chưa có thương hiệu." },
+  { title: "Định giá nhập cuộc linh hoạt hơn đối thủ đã ổn định", detail: "Cụm số 1 đã vận hành nên có thể đã có tệp khách quen — giai đoạn đầu có thể cần ưu đãi mạnh hơn (đặc biệt giờ thấp điểm) để kéo khách dùng thử, bù lại bằng tỷ lệ đặt sân đều và dữ liệu để tối ưu dần." },
+];
+
+const LEVEL_COLOR = { "Rất cao": "#C1544C", "Cao": "#D9834A", "Trung bình": "#D9A94A", "Thấp": "#6F8F86" };
+
+/* ============================= STATE ============================= */
+let state = { tab: "tongquan", scenario: "avg", expanded: false };
+
+/* ============================= HELPERS ============================= */
+function row(label, value, opts) {
+  opts = opts || {};
+  const boldL = opts.bold ? " bold" : "";
+  const noteHtml = opts.note ? `<span class="note"> — ${esc(opts.note)}</span>` : "";
+  const style = opts.accent ? ` style="color:${opts.accent}"` : "";
+  return `<div class="row"><span class="rl${boldL}">${esc(label)}${noteHtml}</span><span class="rv${boldL}"${style}>${esc(value)}</span></div>`;
+}
+function card(label, value, sub, accent) {
+  const style = accent ? ` style="color:${accent}"` : "";
+  return `<div class="card"><span class="lbl">${esc(label)}</span><span class="val"${style}>${esc(value)}</span>${sub ? `<span class="sub">${esc(sub)}</span>` : ""}</div>`;
+}
+let sectionCounter = 0;
+function section(title, bodyHtml, defaultOpen) {
+  sectionCounter++;
+  const id = "sec-" + sectionCounter;
+  const openCls = defaultOpen ? " open" : "";
+  return `<div class="section">
+    <button class="section-head${openCls}" data-target="${id}"><span class="t">${esc(title)}</span>
+      <svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="section-body${openCls}" id="${id}">${bodyHtml}</div>
+  </div>`;
+}
+
+/* ============================= TAB RENDERERS ============================= */
+function renderTongQuan() {
+  let html = "";
+  html += `<div class="tile" style="background:#3A2A1A;border:1.5px solid #D9834A;">
+    <div style="font-size:12px;font-weight:700;color:#F0B87A;margin-bottom:3px;">⚠ CHƯA KIỂM CHỨNG ĐỘC LẬP</div>
+    <div style="font-size:11.5px;color:#D9C4AE;line-height:1.55;">Phần lớn thông tin trong file này (bối cảnh cạnh tranh, tình trạng 2 cụm sân khác, khả năng đàm phán giá đất, khung giờ/giá do Huy tư vấn...) đến từ trao đổi trực tiếp giữa Hương và Huy — CHƯA qua khảo sát thực địa độc lập, chưa có văn bản/hợp đồng xác nhận. Dùng để định hướng thảo luận và xác định việc cần xác minh tiếp, KHÔNG dùng làm căn cứ duy nhất để quyết định đầu tư.</div>
+  </div>`;
+  html += `<div class="grid grid-3">
+    ${card("QUY MÔ SÂN", "19 sân", "17 tiêu chuẩn + 2 VIP có khán đài")}
+    ${card("VỊ TRÍ", "2 mặt tiền*", "*cửa Nguyễn Lân chưa rõ ngày mở — xem Rủi ro", "#D9834A")}
+    ${card("CAPEX CẦN THU HỒI", fmtTr(CAPEX_RECOVER_TOTAL), "Không gồm 3 tỷ làm sân đã có sẵn", "#D9A94A")}
+  </div>`;
+
+  let teamBody = TEAM.map(t => `<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">
+      <span style="color:#D9A94A;margin-top:2px;">●</span>
+      <div><div style="font-size:13px;font-weight:600;color:var(--text2);">${esc(t.role)}</div>
+      <div style="font-size:12.5px;color:var(--muted2);line-height:1.5;">${esc(t.desc)}</div></div>
+    </div>`).join("");
+  html += section("Đội sáng lập & vận hành", teamBody, true);
+
+  let landBody = row("Loại hợp đồng", LAND.type) + row("Diện tích", LAND.area.toLocaleString("vi-VN") + " m²") +
+    row("Chi phí/tháng", fmtTr(LAND.monthly)) + row("Kỳ hạn", LAND.term) + row("Thanh toán", LAND.payment) +
+    row("Tổng cam kết 5 năm", fmtTr(LAND.totalCommitment), { bold: true }) +
+    `<div class="callout"><span class="lead">Cân nhắc thêm: </span><span class="callout-text">${esc(LAND.negotiable)}</span></div>`;
+  html += section("Đất & hợp đồng", landBody);
+
+  let compBody = `
+    <div class="tile" style="border:1px solid #C1544C55;"><div class="t">Cụm sân của mình là cụm số 2 — có thể bị kẹp giữa 2 cụm sân khác</div>
+      <div class="d">Theo lời Huy kể lại (chưa xác minh độc lập): cụm số 1 đang hoạt động (trạm sạc, 9 sân, bãi xe), theo Huy đánh giá là vị trí đẹp nhất khu vực; cụm số 3 của chị Thùy đang tranh chấp và đang xây dựng, theo mô tả của Huy. Nếu đúng, sân mình nằm giữa hai cụm này. Cần khảo sát thực địa để xác nhận.</div></div>
+    <div class="tile" style="border:1px solid #D9834A55;"><div class="t">Đường vào — theo Huy là dài nhất khu vực, hiện chưa phẳng (chưa đo đạc/xác minh)</div>
+      <div class="d">Nếu đúng, đây là chi phí cải tạo CHƯA có trong CAPEX hiện tại — cần khảo sát thực địa & báo giá trước khi vận hành.</div></div>
+    <div class="tile" style="border:1px solid #D9834A55;"><div class="t">Cổng phía Nguyễn Lân — theo Huy là chưa chắc được mở, và khá bé (chưa xác nhận chính thức)</div>
+      <div class="d">Nếu đúng, ảnh hưởng trực tiếp lợi thế "2 mặt tiền" — cần xác nhận với bên quản lý trước khi đưa vào tính toán.</div></div>
+    <div class="italic-note">Xem chi tiết & việc cần làm ở tab Rủi ro & Cơ hội</div>`;
+  html += section("Bối cảnh cạnh tranh & tiếp cận", compBody, true);
+
+  let techBody = TECH_ITEMS.map(t => row(t.name, t.status === "gap" ? t.note : fmtTr(t.value),
+    { accent: t.status === "gap" ? "#C1544C" : undefined, note: t.status !== "gap" ? t.note : undefined })).join("");
+  html += section("Công nghệ vận hành", techBody);
+
+  let posBody = POS_OPTIONS.map(p => `<div class="pos-card" style="border:1px solid ${p.pick ? "#D9A94A" : "#2A4A40"};">
+      <div class="head"><span class="name" style="color:${p.pick ? "#D9A94A" : "#F2E9D8"};">${esc(p.name)}${p.pick ? " — gợi ý ưu tiên" : ""}</span>
+      <span class="price">${esc(p.price)}</span></div>
+      <div class="fit">${esc(p.fit)}</div></div>`).join("") +
+    `<div class="italic-note">Cả 3 đều có tính năng gộp hóa đơn tiền sân + bán nước/phụ kiện, chống thất thoát (phân quyền, lưu vết thao tác), báo cáo bóc tách doanh thu — nên khảo sát demo trước khi chọn.</div>`;
+  html += section("Gợi ý phần mềm ghi nhận doanh thu (POS)", posBody, true);
+
+  let gapBody = ADDITIONAL_CAPEX_GAPS.map(g => row(g.name, g.note, { accent: "#C1544C" })).join("");
+  html += section("Chi phí & rủi ro hạ tầng bổ sung (mới)", gapBody);
+
+  let coachBody = row("Dạy tập Pickleball", COACHING.note, { accent: "#C1544C" });
+  html += section("Dịch vụ dạy tập (mới bổ sung)", coachBody);
+
+  let oppBody = OPPORTUNITIES.map(o => `<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;">
+      <span style="color:#4FB477;margin-top:2px;">✦</span>
+      <div><div style="font-size:13px;font-weight:600;color:var(--text2);">${esc(o.title)}</div>
+      <div style="font-size:12.5px;color:var(--muted2);line-height:1.5;">${esc(o.detail)}</div></div></div>`).join("");
+  html += section("Cơ hội mở rộng", oppBody);
+
+  return html;
+}
+
+function renderGiaDinh() {
+  let html = "";
+  html += `<div class="grid grid-2">${PRICE_TIER.map(t => `
+    <div class="price-tile" style="border:1px solid ${t.color}55;">
+      <div class="lbl" style="color:${t.color};">${t.label.toUpperCase()}</div>
+      <div class="sub">${esc(t.sub)}</div>
+      <div class="val">${fmtVnd(t.price)}<span class="u">/h</span></div>
+    </div>`).join("")}</div>`;
+
+  let hoursBody = row("Tổng số sân", "19 sân (17 tiêu chuẩn + 2 VIP)") +
+    row("Giờ vàng", "17h–22h/23h (~5,5h/ngày)", { note: "giá 320k/h — theo tư vấn Huy" }) +
+    row("Giờ thấp điểm", "6h–8h sáng & 15h–17h (4h/ngày)", { note: "giá 200k/h, lấp đầy 20–30% tuỳ mùa" }) +
+    row("Khung giờ còn lại (~14,5h/ngày)", "Không tính vào doanh thu", { note: "theo Huy — nhu cầu thực tế không đáng kể", accent: "#6F8F86" }) +
+    row("Tổng court-giờ khai thác/tháng", "5.415 giờ", { note: "giảm nhiều so với giả định mở cửa cả ngày trước đây" });
+  html += section("Sân bãi & khung giờ", hoursBody, true);
+
+  let occBody = "";
+  Object.keys(OCC).forEach(tier => {
+    const tInfo = PRICE_TIER.find(p => p.key === tier);
+    occBody += `<div style="margin-bottom:8px;"><div style="font-size:12px;font-weight:600;margin-bottom:3px;color:${tInfo.color};">${esc(tInfo.label)}</div>
+      <div style="display:flex;gap:8px;">${SCENARIOS.map(s => `
+        <div class="occ-box"><div class="v" style="color:${s.color};">${fmtPct(OCC[tier][s.key])}</div><div class="l">${esc(s.label)}</div></div>`).join("")}
+      </div></div>`;
+  });
+  html += section("Tỷ lệ lấp đầy theo kịch bản (occupancy)", occBody);
+
+  let capexBody = CAPEX_ITEMS.map(c => row(c.name, fmtTr(c.value), { note: c.note, accent: c.excluded ? "#6F8F86" : undefined })).join("") +
+    row("TỔNG CAPEX CẦN THU HỒI", fmtTr(CAPEX_RECOVER_TOTAL), { bold: true, accent: "#D9A94A" });
+  html += section("CAPEX — vốn đầu tư ban đầu", capexBody);
+
+  let fnbBody = row(FNB.water.name, fmtVnd(FNB.water.cost) + " → " + fmtVnd(FNB.water.price), { note: "biên " + fmtPct(FNB.water.margin) }) +
+    row(FNB.soda.name, fmtVnd(FNB.soda.cost) + " → " + fmtVnd(FNB.soda.price), { note: "biên " + fmtPct(FNB.soda.margin) }) +
+    row("Tỷ trọng doanh thu nước khoáng (giả định)", fmtPct(FNB.mix)) +
+    row("Biên lợi nhuận bình quân", fmtPct(FNB.blendedMargin), { bold: true }) +
+    row("Tỷ lệ doanh thu nước / doanh thu thuê sân", fmtPct(FNB.ratioToCourtRev), { note: "theo benchmark Huy" });
+  html += section("F&B — nước: đơn giá & biên lợi nhuận", fnbBody);
+
+  let parkBody = row("Giá gửi xe máy", fmtVnd(PARKING.priceMotor)) + row("Giá gửi ô tô (3 tiếng)", fmtVnd(PARKING.priceCar)) +
+    SCENARIOS.map(s => row(`Lượt/ngày — ${s.label}`, `${PARKING.volumes[s.key].motor} xe máy · ${PARKING.volumes[s.key].car} ô tô`, { accent: s.color })).join("");
+  html += section("Giữ xe — đơn giá & lượt xe", parkBody);
+
+  let ballBody = row("Giá thuê xe bóng nhỏ", fmtVnd(BALL.priceSmall)) + row("Giá thuê xe bóng to", fmtVnd(BALL.priceLarge)) +
+    row("Giá dịch vụ nhặt bóng", fmtVnd(BALL.pricePick) + "/giờ") +
+    SCENARIOS.map(s => row(`Lượt/giờ mỗi ngày — ${s.label}`, `${BALL.volumes[s.key].small} xe nhỏ · ${BALL.volumes[s.key].large} xe to · ${BALL.volumes[s.key].pickHours}h nhặt bóng`, { accent: s.color })).join("");
+  html += section("Xe bóng & nhặt bóng — xác nhận lại với Huy", ballBody);
+
+  let benchBody = row("Số sân", BENCHMARK.courts + " sân") + row("Doanh thu thuê sân/tháng", fmtTr(BENCHMARK.courtRev)) +
+    row("Giá giờ vàng / thấp điểm", fmtVnd(BENCHMARK.priceGold) + " / " + fmtVnd(BENCHMARK.priceOff)) +
+    row("Doanh thu nước/tháng", fmtTr(BENCHMARK.fnbRev)) + row("Chi phí điện nước/tháng", fmtTr(BENCHMARK.util)) +
+    row("Chi phí nhân công/tháng", fmtTr(BENCHMARK.labor)) + row("Thuê mặt bằng (2.300m²)/tháng", fmtTr(BENCHMARK.rent)) +
+    row("Cam kết hoàn vốn", BENCHMARK.payback, { bold: true });
+  html += section("Đối chiếu benchmark — 11 sân Hoàng Quốc Việt (theo Huy)", benchBody);
+
+  return html;
+}
+
+function renderDoanhThu(scenario) {
+  const r = REVENUE[scenario];
+  const s = SCENARIOS.find(x => x.key === scenario);
+  let html = `<div class="grid grid-4">
+    ${card("TỔNG DOANH THU/THÁNG", fmtTr(r.total), null, s.color)}
+    ${card("DOANH THU SÂN", fmtTr(r.court), fmtPct(r.court / r.total) + " tổng DT")}
+    ${card("DOANH THU NƯỚC", fmtTr(r.fnb), fmtPct(r.fnb / r.total) + " tổng DT")}
+    ${card("DOANH THU PHỤ KHÁC", fmtTr(r.parking + r.ballcart + r.ballpick), "giữ xe + xe bóng + nhặt bóng")}
+  </div>`;
+
+  let tierBody = PRICE_TIER.map(t => row(t.label, fmtTr(r[t.key]), { accent: t.color })).join("") +
+    row("Tổng doanh thu thuê sân", fmtTr(r.court), { bold: true });
+  html += section("Doanh thu thuê sân theo khung giờ", tierBody, true);
+
+  let ancBody = row("Doanh thu nước (= 20% doanh thu sân)", fmtTr(r.fnb)) + row("Doanh thu giữ xe", fmtTr(r.parking)) +
+    row("Doanh thu xe bóng (nhỏ + to)", fmtTr(r.ballcart)) + row("Doanh thu nhặt bóng", fmtTr(r.ballpick));
+  html += section("Doanh thu phụ trợ", ancBody);
+
+  html += section("Tổng hợp", row("TỔNG DOANH THU/THÁNG", fmtTr(r.total), { bold: true, accent: s.color }));
+  return html;
+}
+
+function renderChiPhi(scenario) {
+  const c = COSTS[scenario];
+  const s = SCENARIOS.find(x => x.key === scenario);
+  let html = `<div class="grid grid-3">
+    ${card("TỔNG CHI PHÍ/THÁNG", fmtTr(c.total), null, s.color)}
+    ${card("CHI PHÍ CỐ ĐỊNH", fmtTr(c.subtotal), "không gồm giá vốn nước")}
+    ${card("GIÁ VỐN NƯỚC (COGS)", fmtTr(c.cogs))}
+  </div>`;
+
+  let fixedBody = row("Thuê đất (BCC, cố định)", fmtTr(c.land)) + row("Điện nước", fmtTr(c.util)) +
+    row("Nhân công (gồm HLV do Huy tuyển)", fmtTr(c.labor)) + row("Marketing & bán hàng", fmtTr(c.mkt)) +
+    row("Quản lý & vận hành chung", fmtTr(c.admin)) + row("Công nghệ (Alobo + phần mềm POS)", fmtTr(c.tech)) +
+    row("Tổng chi phí cố định", fmtTr(c.subtotal), { bold: true });
+  html += section("Chi phí cố định", fixedBody, true);
+
+  html += section("Giá vốn hàng bán", row("Giá vốn nước (COGS)", fmtTr(c.cogs), { note: "biên bình quân " + fmtPct(FNB.blendedMargin) }));
+
+  let sumBody = row("TỔNG CHI PHÍ VẬN HÀNH/THÁNG", fmtTr(c.total), { bold: true, accent: s.color }) +
+    `<div class="italic-note">Chưa gồm khấu hao CAPEX, thuế TNDN, lãi vay, và chi phí hệ thống bãi đỗ xe (chưa có báo giá).</div>`;
+  html += section("Tổng hợp", sumBody);
+  return html;
+}
+
+function renderPL(scenario) {
+  const r = REVENUE[scenario];
+  const c = COSTS[scenario];
+  const p = PL[scenario];
+  const s = SCENARIOS.find(x => x.key === scenario);
+  let html = `<div class="grid grid-3">
+    ${card("EBITDA / THÁNG", fmtTr(p.ebitda), null, s.color)}
+    ${card("BIÊN LỢI NHUẬN", fmtPct(p.margin))}
+    ${card("THỜI GIAN HOÀN VỐN", p.ebitda > 0 ? p.payback_m.toFixed(1).replace(".", ",") + " tháng" : "Không hoàn vốn",
+      p.ebitda > 0 ? "≈ " + (p.payback_m / 12).toFixed(1).replace(".", ",") + " năm" : "Dòng tiền âm", p.ebitda <= 0 ? "#C1544C" : undefined)}
+  </div>`;
+
+  let plBody = row("Tổng doanh thu/tháng", fmtTr(r.total)) + row("Tổng chi phí vận hành/tháng", fmtTr(c.total)) +
+    row("LỢI NHUẬN VẬN HÀNH (EBITDA)", fmtTr(p.ebitda), { bold: true, accent: s.color }) +
+    row("Biên lợi nhuận vận hành", fmtPct(p.margin));
+  html += section("P&L tổng hợp", plBody, true);
+
+  let paybackBody = row("CAPEX cần thu hồi", fmtTr(CAPEX_RECOVER_TOTAL), { note: "không gồm làm sân đã có sẵn" }) +
+    row("Thời gian hoàn vốn", p.ebitda > 0 ? p.payback_m.toFixed(2) + " tháng" : "Lỗ dòng tiền", { bold: true }) +
+    `<div class="italic-note">Đối chiếu: Huy cam kết hoàn vốn 12–18 tháng. Lưu ý: đây là dòng tiền dự án tạo ra về mặt lý thuyết — vì Bộ Quốc phòng đứng ra thu-chi, thời điểm 3 bên thực nhận nên được thống nhất rõ trong quy chế phối hợp.</div>`;
+  html += section("Hoàn vốn", paybackBody);
+
+  let beBody = row("Doanh thu sân cần thiết để hòa vốn", fmtTr(BREAKEVEN.courtRevNeeded)) +
+    row("Tỷ lệ lấp đầy bình quân tối thiểu", fmtPct(BREAKEVEN.occupancy), { bold: true, accent: "#D9A94A" }) +
+    `<div class="italic-note">Đây là điểm hòa vốn dòng tiền hàng tháng, chưa tính thời gian thu hồi CAPEX.</div>`;
+  html += section("Điểm hòa vốn (breakeven) — dựa trên kịch bản Trung bình", beBody);
+
+  return html;
+}
+
+function renderRuiRo() {
+  const rc = { "Rất cao": 0, "Cao": 0, "Trung bình": 0, "Thấp": 0 };
+  RISKS.forEach(r => rc[r.level]++);
+  let html = `<div class="grid grid-4">
+    ${card("RẤT CAO", rc["Rất cao"], null, LEVEL_COLOR["Rất cao"])}
+    ${card("CAO", rc["Cao"], null, LEVEL_COLOR["Cao"])}
+    ${card("TRUNG BÌNH", rc["Trung bình"], null, LEVEL_COLOR["Trung bình"])}
+    ${card("CƠ HỘI MỞ RỘNG", OPPORTUNITIES.length, null, "#4FB477")}
+  </div>`;
+
+  let riskBody = RISKS.map(r => `<div class="risk-card"><div class="head"><span class="t">${esc(r.title)}</span>
+      <span class="level-tag" style="background:${LEVEL_COLOR[r.level] || "#6F8F86"};">${r.level.toUpperCase()}</span></div>
+      <div class="d">${esc(r.detail)}</div></div>`).join("");
+  html += section("Danh sách rủi ro & việc cần làm", riskBody, true);
+
+  let stratBody = COMPETITIVE_STRATEGY.map(c => `<div class="strat-card"><div class="head">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D9A94A" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+      <span class="t">${esc(c.title)}</span></div><div class="d">${esc(c.detail)}</div></div>`).join("");
+  html += section("Chiến lược cạnh tranh (gợi ý)", stratBody, true);
+
+  let oppBody = OPPORTUNITIES.map(o => `<div class="opp-card"><div class="head">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4FB477" stroke-width="2"><path d="M12 3l1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3z"></path></svg>
+      <span class="t">${esc(o.title)}</span></div><div class="d">${esc(o.detail)}</div></div>`).join("");
+  html += section("Cơ hội mở rộng", oppBody);
+
+  return html;
+}
+
+/* ============================= RENDER MAIN ============================= */
+function renderNav() {
+  const nav = document.getElementById("nav-list");
+  nav.innerHTML = `<div class="nav-label">CỤM NỘI DUNG</div>` + TABS.map(t => `
+    <button class="nav-btn ${state.tab === t.key ? "active" : ""}" data-tab="${t.key}">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">${ICONS[t.key]}</svg>
+      <span class="lbl">${esc(t.label)}</span>
+    </button>`).join("");
+}
+
+function renderScenarioControls() {
+  const list = document.getElementById("scenario-list");
+  list.innerHTML = SCENARIOS.map(s => `
+    <button class="scenario-pill" data-scenario="${s.key}" style="background:${state.scenario === s.key ? s.color : "transparent"};
+      border:1px solid ${state.scenario === s.key ? s.color : "#2A4A40"};color:${state.scenario === s.key ? "#0E211A" : "#B9C7C1"};">
+      ${s.label.toUpperCase()}<span class="scenario-dot" style="background:${state.scenario === s.key ? "#0E211A" : s.color};"></span>
+    </button>`).join("");
+  const dots = document.getElementById("scenario-dots");
+  dots.innerHTML = SCENARIOS.map(s => `
+    <button class="dot-btn" data-scenario="${s.key}" title="${s.label}"
+      style="background:${state.scenario === s.key ? s.color : "transparent"};border:2px solid ${s.color};"></button>`).join("");
+}
+
+function renderTopbar() {
+  const tabInfo = TABS.find(t => t.key === state.tab);
+  document.getElementById("topbar-title").textContent = tabInfo.label;
+  document.getElementById("topbar-icon").innerHTML = ICONS[state.tab];
+  const needsScenario = ["doanhthu", "chiphi", "pl"].includes(state.tab);
+  const badge = document.getElementById("scenario-badge");
+  if (needsScenario) {
+    const s = SCENARIOS.find(x => x.key === state.scenario);
+    badge.style.display = "flex";
+    badge.style.background = s.color + "22";
+    badge.style.border = "1px solid " + s.color;
+    badge.querySelector(".dot").style.background = s.color;
+    badge.querySelector(".lbl").style.color = s.color;
+    badge.querySelector(".lbl").textContent = s.label;
+  } else {
+    badge.style.display = "none";
+  }
+}
+
+function renderContent() {
+  const el = document.getElementById("content");
+  sectionCounter = 0;
+  if (state.tab === "tongquan") el.innerHTML = renderTongQuan();
+  else if (state.tab === "giadinh") el.innerHTML = renderGiaDinh();
+  else if (state.tab === "doanhthu") el.innerHTML = renderDoanhThu(state.scenario);
+  else if (state.tab === "chiphi") el.innerHTML = renderChiPhi(state.scenario);
+  else if (state.tab === "pl") el.innerHTML = renderPL(state.scenario);
+  else if (state.tab === "ruiro") el.innerHTML = renderRuiRo();
+}
+
+function renderSidebar() {
+  const sb = document.getElementById("sidebar");
+  const bd = document.getElementById("backdrop");
+  if (state.expanded) { sb.classList.add("expanded"); bd.classList.add("show"); }
+  else { sb.classList.remove("expanded"); bd.classList.remove("show"); }
+}
+
+function renderAll() {
+  renderNav();
+  renderScenarioControls();
+  renderTopbar();
+  renderContent();
+  renderSidebar();
+}
+
+/* ============================= EVENTS ============================= */
+document.getElementById("collapse-btn").addEventListener("click", () => {
+  state.expanded = !state.expanded;
+  renderSidebar();
+});
+document.getElementById("backdrop").addEventListener("click", () => {
+  state.expanded = false;
+  renderSidebar();
+});
+document.getElementById("nav-list").addEventListener("click", (e) => {
+  const btn = e.target.closest(".nav-btn");
+  if (!btn) return;
+  state.tab = btn.dataset.tab;
+  state.expanded = false;
+  renderAll();
+});
+document.getElementById("scenario-block").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-scenario]");
+  if (!btn) return;
+  state.scenario = btn.dataset.scenario;
+  state.expanded = false;
+  renderAll();
+});
+document.getElementById("content").addEventListener("click", (e) => {
+  const head = e.target.closest(".section-head");
+  if (!head) return;
+  const body = document.getElementById(head.dataset.target);
+  head.classList.toggle("open");
+  body.classList.toggle("open");
+});
+
+/* ============================= INIT ============================= */
+renderAll();
+</script>
+</body>
+</html>
