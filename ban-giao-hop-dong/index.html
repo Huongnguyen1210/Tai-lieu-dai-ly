@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buổi bàn giao hợp đồng — Hương Nguyễn</title>
+<style>
+:root{
+  --bg:#faf9f7; --card:#fff; --ink:#1a1a19; --ink2:#57564f; --ink3:#8b8a85;
+  --line:#e5e3dd; --line2:#cfcdc6;
+  --green:#1F6B45; --greenbg:#eef5f0; --amber:#8A5A0B; --amberbg:#fcf4e4;
+  --panel:280px;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#141413; --card:#1e1e1c; --ink:#f0efec; --ink2:#b3b1a9; --ink3:#8b8a85;
+    --line:#2f2f2c; --line2:#45453f;
+    --green:#5FBF8F; --greenbg:#1a2a22; --amber:#D9A857; --amberbg:#2a2419; }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-size:16px;line-height:1.65;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  -webkit-text-size-adjust:100%}
+
+/* ---------- LAYOUT ---------- */
+.shell{display:flex;min-height:100vh}
+.panel{width:var(--panel);flex:none;background:var(--card);border-right:1px solid var(--line);
+  padding:20px 16px;position:sticky;top:0;height:100vh;overflow-y:auto;transition:margin-left .22s ease}
+.panel.hidden{margin-left:calc(-1 * var(--panel))}
+.main{flex:1;min-width:0;padding:26px 30px 70px}
+.inner{max-width:760px;margin:0 auto}
+
+/* ---------- PANEL ---------- */
+.brand{font-size:15px;font-weight:700;letter-spacing:.02em;color:var(--green)}
+.cred{font-size:11.5px;color:var(--ink3);line-height:1.5;margin:5px 0 18px;
+  padding-bottom:14px;border-bottom:1px solid var(--line)}
+.plabel{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);
+  margin:16px 0 7px}
+.navbtn{display:flex;align-items:center;gap:9px;width:100%;padding:9px 11px;margin-bottom:3px;
+  font:inherit;font-size:13.5px;text-align:left;line-height:1.35;cursor:pointer;
+  border:1px solid transparent;border-radius:8px;background:transparent;color:var(--ink)}
+.navbtn:hover{background:var(--bg)}
+.navbtn.on{background:var(--greenbg);border-color:var(--green);font-weight:600}
+.navbtn .ic{width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;
+  font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.ctrl{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.ctrl button{font:inherit;font-size:12.5px;padding:8px 11px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--line2);background:transparent;color:var(--ink2);text-align:left}
+.ctrl button:hover{background:var(--bg);color:var(--ink)}
+.tel{margin-top:16px;padding:11px 12px;background:var(--greenbg);border:1px solid var(--green);
+  border-radius:9px;font-size:12.5px}
+.tel a{color:var(--green);font-weight:700;font-size:15px;text-decoration:none;display:block;margin-top:3px}
+
+/* ---------- TOGGLE ---------- */
+.toggle{position:fixed;left:12px;top:12px;z-index:60;width:38px;height:38px;border-radius:9px;
+  border:1px solid var(--line2);background:var(--card);color:var(--ink);cursor:pointer;
+  font-size:17px;line-height:1;display:none;align-items:center;justify-content:center}
+.toggle.show{display:flex}
+
+/* ---------- HEADER ---------- */
+.hd{border-bottom:2px solid var(--green);padding-bottom:16px;margin-bottom:22px}
+h1{font-size:23px;font-weight:700;margin:0 0 5px;line-height:1.3}
+.hd .sub{font-size:14px;color:var(--ink2);font-style:italic;margin:0}
+
+/* ---------- CONTENT ---------- */
+.sum{background:var(--greenbg);border:1px solid var(--green);border-radius:11px;
+  padding:15px 17px;margin-bottom:20px;font-size:14.5px}
+.sum b{font-weight:700}
+h2{font-size:18px;font-weight:700;color:var(--green);margin:26px 0 12px;
+  display:flex;align-items:center;gap:10px}
+h2 .n{width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-size:13px;
+  display:inline-flex;align-items:center;justify-content:center;flex:none}
+.lead{font-size:14px;color:var(--ink2);margin:0 0 12px}
+ul{margin:0 0 14px;padding-left:20px}
+li{margin-bottom:8px}
+.hint{font-size:13.5px;color:var(--ink3);font-style:italic;margin:-4px 0 12px 20px}
+.warn{background:var(--amberbg);border:1px solid var(--amber);border-radius:10px;
+  padding:13px 15px;margin:14px 0;font-size:14px}
+.note{background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:13px 15px;margin:14px 0;font-size:14px}
+.q{font-weight:600}
+
+/* checklist */
+.chk{list-style:none;padding:0;margin:0 0 14px}
+.chk li{display:flex;gap:10px;align-items:flex-start;margin-bottom:2px;padding:7px 9px;
+  border-radius:7px;cursor:pointer}
+.chk li:hover{background:var(--card)}
+.chk li.done{opacity:.5}
+.chk li.done .tx{text-decoration:line-through}
+.bx{width:17px;height:17px;border:1.5px solid var(--line2);border-radius:4px;flex:none;margin-top:3px;
+  display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:#fff}
+.chk li.done .bx{background:var(--green);border-color:var(--green)}
+.prog{font-size:12.5px;color:var(--ink3);margin-bottom:10px}
+
+/* form fields */
+.fld{display:grid;grid-template-columns:150px 1fr;gap:10px 14px;align-items:center;
+  margin:14px 0;font-size:14px}
+.fld input{font:inherit;font-size:14px;padding:7px 10px;border:1px solid var(--line2);
+  border-radius:7px;background:var(--card);color:var(--ink);width:100%}
+.fld input:focus{outline:2px solid var(--green);outline-offset:-1px}
+
+footer{margin-top:34px;padding-top:15px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--ink3)}
+
+/* ---------- MOBILE ---------- */
+@media (max-width:820px){
+  :root{--panel:255px}
+  .panel{position:fixed;left:0;top:0;z-index:50;box-shadow:0 0 26px rgba(0,0,0,.16)}
+  .panel.hidden{margin-left:calc(-1 * var(--panel) - 30px)}
+  .main{padding:64px 18px 60px}
+  .toggle{display:flex}
+  .fld{grid-template-columns:1fr;gap:5px}
+  .fld > span{font-size:13px;color:var(--ink3)}
+  h1{font-size:20px}
+}
+@media print{
+  .panel,.toggle{display:none}
+  .main{padding:0}
+  body{background:#fff;font-size:11.5pt}
+  .sec{display:block !important}
+}
+</style>
+</head>
+<body>
+
+<button class="toggle" id="tg" aria-label="Mở menu">☰</button>
+
+<div class="shell">
+
+  <aside class="panel" id="panel">
+    <div class="brand">HƯƠNG NGUYỄN</div>
+    <div class="cred">MDRT 7 năm<br>Top 3 chất lượng kinh doanh<br>đại lý xuất sắc toàn quốc 2025</div>
+
+    <div class="plabel">Nội dung</div>
+    <nav id="nav"></nav>
+
+    <div class="plabel">Điều khiển</div>
+    <div class="ctrl">
+      <button onclick="showAll()">Xem toàn bộ nội dung</button>
+      <button onclick="resetChk()">Xóa hết dấu tick</button>
+      <button onclick="window.print()">In / Lưu PDF</button>
+    </div>
+
+    <div class="tel">
+      Gọi Hương khi cần hỗ trợ
+      <a href="tel:0904062624">0904 062 624</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="inner">
+      <div class="hd">
+        <h1>Buổi bàn giao hợp đồng</h1>
+        <p class="sub">Những điều Anh/Chị cần biết và nên kiểm tra</p>
+      </div>
+      <div id="body"></div>
+      <footer>
+        Hỗ trợ chuyên biệt dành cho khách hàng của Hương Nguyễn.<br>
+        Nội dung tham chiếu quy định hiện hành của Manulife Việt Nam.
+      </footer>
+    </div>
+  </main>
+
+</div>
+
+<script>
+var SEC = [
+{id:"s1", n:"1", t:"Buổi bàn giao gồm những gì", short:"Danh sách kiểm tra",
+ sum:"Buổi bàn giao thường kéo dài <b>60 – 70 phút</b>. Anh/Chị dùng danh sách dưới đây để tự đối chiếu trong buổi gặp — tick vào từng mục đã được đi qua.",
+ chk:[
+  "Cài ứng dụng Manulife, tạo tài khoản và tải hợp đồng điện tử — gửi cho Hương một bản",
+  "XÁC NHẬN BÀN GIAO HỢP ĐỒNG ONLINE",
+  "Chụp lại Thẻ bảo lãnh viện phí — nếu có quyền lợi Sống Khỏe Mỗi Ngày hoặc Trợ cấp y tế",
+  "Kiểm tra đúng tên Bên mua bảo hiểm và Người được bảo hiểm",
+  "Ngày hiệu lực hợp đồng — mốc tính mọi quyền lợi",
+  "Thời hạn hợp đồng và thời hạn đóng phí",
+  "Đi qua từng quyền lợi — cả sản phẩm chính và các sản phẩm bổ trợ",
+  "Các loại phí trong hợp đồng",
+  "Điều khoản loại trừ — những trường hợp hợp đồng KHÔNG chi trả",
+  "Thời gian chờ của từng quyền lợi",
+  "Rà lại phần kê khai sức khỏe đã cung cấp",
+  "Cách yêu cầu chi trả quyền lợi khi cần dùng đến",
+  "21 ngày cân nhắc — xem mục 3"
+ ],
+ html:'<div class="note"><b>Hai mục đầu tiên là quan trọng nhất.</b> Xác nhận bàn giao online là hành động ghi nhận Anh/Chị đã nhận đủ hợp đồng — và cũng là thời điểm bắt đầu tính 21 ngày cân nhắc của Anh/Chị.</div>'
++'<p class="hint">Hai mốc thời hạn hợp đồng và thời hạn đóng phí khác nhau. Anh/Chị nên hỏi rõ: bắt buộc đóng trong bao nhiêu năm, và tối đa có thể đóng đến khi nào.</p>'},
+
+{id:"s2", n:"2", t:"Những điều Anh/Chị nên hỏi kỹ", short:"Câu nên hỏi",
+ sum:"Bốn câu hỏi giúp Anh/Chị hiểu đúng hợp đồng ngay từ đầu, tránh thất vọng về sau.",
+ html:'<ul>'
+ +'<li><span class="q">“Trường hợp nào hợp đồng này KHÔNG chi trả?”</span></li></ul>'
+ +'<p class="hint">Đây là mục ít người đọc nhất nhưng lại hay gây tranh chấp nhất.</p>'
+ +'<ul><li><span class="q">“Quyền lợi này phải chờ bao lâu mới dùng được?”</span></li>'
+ +'<li><span class="q">“Nếu sau này thu nhập khó khăn, ngừng đóng phí thì sao?”</span></li>'
+ +'<li><span class="q">“Con số minh họa này là chắc chắn hay chỉ là giả định?”</span></li></ul>'
+ +'<p class="hint">Với sản phẩm có yếu tố đầu tư, lãi suất minh họa là GIẢ ĐỊNH — không phải cam kết. Kết quả thực tế có thể cao hơn hoặc thấp hơn.</p>'
+ +'<div class="warn"><b>Về phần kê khai sức khỏe:</b> nếu Anh/Chị nhớ ra điều gì chưa khai hoặc khai chưa đủ — hãy nói ngay trong buổi này. Khai đầy đủ ngay từ đầu là cách bảo vệ chính quyền lợi của Anh/Chị, vì đây là nguyên nhân từ chối chi trả phổ biến nhất, và thường chỉ phát hiện ra vào lúc gia đình cần tiền nhất.</div>'},
+
+{id:"s3", n:"3", t:"Quyền 21 ngày cân nhắc", short:"Quyền 21 ngày",
+ sum:"Sau khi nhận hợp đồng, Anh/Chị có <b>21 ngày</b> để đọc lại. Nếu thấy chưa phù hợp, Anh/Chị có quyền yêu cầu điều chỉnh hoặc dừng lại.",
+ html:'<p>Hãy hỏi Hương ngày cụ thể mà thời hạn này kết thúc và ghi lại:</p>'
+ +'<div class="fld"><span>Hạn 21 ngày</span><input type="text" placeholder="ngày / tháng / năm"></div>'},
+
+{id:"s4", n:"4", t:"Khi có sự kiện cần dùng đến bảo hiểm", short:"Khi cần dùng",
+ sum:"Gọi Hương <b>càng sớm càng tốt</b> — trước hoặc ngay sau khi sự việc xảy ra.",
+ html:'<ul>'
+ +'<li>Gọi cho Hương — <a href="tel:0904062624" style="color:var(--green);font-weight:600">0904 062 624</a> — TRƯỚC hoặc NGAY SAU khi sự việc xảy ra.</li>'
+ +'<li>Hotline Manulife: 1900 1776 nhánh 01 · khachhang@manulife.com.vn</li>'
+ +'<li>Giữ lại toàn bộ giấy tờ y tế: hồ sơ khám, hóa đơn, kết quả xét nghiệm.</li></ul>'
+ +'<div class="note">Anh/Chị nên cho một người thân trong nhà biết về hợp đồng này và số điện thoại của Hương. Khi sự việc xảy ra, người trong cuộc thường không ở trạng thái lo được thủ tục — có người thân nắm thông tin sẽ giúp hồ sơ được xử lý sớm hơn nhiều.</div>'
+ +'<p style="font-weight:600;margin-top:16px">Người thân Anh/Chị muốn Hương liên hệ khi cần:</p>'
+ +'<div class="fld"><span>Họ tên</span><input type="text"><span>Quan hệ</span><input type="text"><span>Điện thoại</span><input type="tel"></div>'},
+
+{id:"s5", n:"5", t:"Sau buổi bàn giao", short:"Chăm sóc về sau",
+ sum:"Hương liên hệ chăm sóc <b>tối thiểu 2 lần mỗi năm</b>, và mỗi năm xem lại kế hoạch một lần.",
+ html:'<ul>'
+ +'<li>Hương sẽ liên hệ chăm sóc Anh/Chị tối thiểu 2 lần mỗi năm.</li>'
+ +'<li>Định kỳ mỗi năm Hương sẽ lên lịch cùng Anh/Chị xem lại kế hoạch có gì cần điều chỉnh hay bổ sung — vì thu nhập, dòng tiền và mục tiêu tài chính đều có thể thay đổi theo thời gian.</li>'
+ +'<li>Khi có thay đổi về địa chỉ, số điện thoại hay người thụ hưởng, Anh/Chị báo lại để cập nhật hợp đồng.</li></ul>'},
+
+{id:"s6", n:"6", t:"Đặc quyền dành riêng cho khách hàng của Hương", short:"Đặc quyền",
+ sum:"Hương lưu lại <b>hồ sơ sức khỏe</b> của từng khách hàng theo thời gian, để khi Anh/Chị cần là có sẵn dữ liệu hỗ trợ nhanh và đúng.",
+ html:'<ul>'
+ +'<li>Khi có biến động về sức khỏe, Anh/Chị vui lòng thông báo để Hương cập nhật hồ sơ.</li>'
+ +'<li>Trước khi đi khám hoặc nhập viện, hãy báo trước — Hương sẽ hỗ trợ thêm về chuyên môn, các lưu ý khi khám và khi nằm viện.</li></ul>'
+ +'<p class="hint">Đây là phần hỗ trợ ngoài hợp đồng bảo hiểm, không thay thế chỉ định của bác sĩ.</p>'
+ +'<p style="font-weight:600;margin-top:16px">Thông tin hợp đồng của Anh/Chị:</p>'
+ +'<div class="fld"><span>Số hợp đồng</span><input type="text"><span>Ngày bàn giao</span><input type="text"></div>'}
+];
+
+var cur = "s1", ALL = false;
+var nav = document.getElementById('nav'), bodyEl = document.getElementById('body');
+var panel = document.getElementById('panel'), tg = document.getElementById('tg');
+
+function isMobile(){ return window.innerWidth <= 820; }
+
+function secHTML(s){
+  var h = '<section class="sec" id="'+s.id+'">';
+  h += '<h2><span class="n">'+s.n+'</span>'+s.t+'</h2>';
+  if(s.sum) h += '<div class="sum">'+s.sum+'</div>';
+  if(s.chk){
+    h += '<div class="prog" id="pg-'+s.id+'"></div><ul class="chk" data-sec="'+s.id+'">';
+    s.chk.forEach(function(c,i){
+      h += '<li data-i="'+i+'"><span class="bx">✓</span><span class="tx">'+c+'</span></li>';
+    });
+    h += '</ul>';
+  }
+  if(s.html) h += s.html;
+  h += '</section>';
+  return h;
+}
+
+function render(){
+  nav.innerHTML = '';
+  SEC.forEach(function(s){
+    var b = document.createElement('button');
+    b.className = 'navbtn' + ((!ALL && s.id===cur) ? ' on' : '');
+    b.innerHTML = '<span class="ic">'+s.n+'</span><span>'+s.short+'</span>';
+    b.onclick = function(){
+      ALL = false; cur = s.id; render();
+      if(isMobile()) hidePanel();
+      window.scrollTo({top:0,behavior:'smooth'});
+    };
+    nav.appendChild(b);
+  });
+  bodyEl.innerHTML = ALL ? SEC.map(secHTML).join('') : secHTML(SEC.filter(function(x){return x.id===cur;})[0]);
+  bindChk();
+}
+
+function bindChk(){
+  document.querySelectorAll('.chk').forEach(function(ul){
+    var sid = ul.getAttribute('data-sec');
+    var st = load(sid);
+    ul.querySelectorAll('li').forEach(function(li){
+      var i = li.getAttribute('data-i');
+      if(st[i]) li.classList.add('done');
+      li.onclick = function(){
+        li.classList.toggle('done');
+        var s2 = load(sid); s2[i] = li.classList.contains('done'); save(sid,s2); prog(sid);
+      };
+    });
+    prog(sid);
+  });
+}
+function prog(sid){
+  var ul = document.querySelector('.chk[data-sec="'+sid+'"]'); if(!ul) return;
+  var tot = ul.querySelectorAll('li').length, d = ul.querySelectorAll('li.done').length;
+  var el = document.getElementById('pg-'+sid);
+  if(el) el.textContent = 'Đã kiểm tra ' + d + ' / ' + tot + ' mục';
+}
+var MEM = {};
+function load(k){ return MEM[k] || {}; }
+function save(k,v){ MEM[k] = v; }
+
+function showAll(){ ALL = true; render(); if(isMobile()) hidePanel(); window.scrollTo({top:0,behavior:'smooth'}); }
+function resetChk(){ MEM = {}; render(); }
+
+function hidePanel(){ panel.classList.add('hidden'); tg.classList.add('show'); }
+function showPanel(){ panel.classList.remove('hidden'); if(!isMobile()) tg.classList.remove('show'); }
+tg.onclick = function(){ panel.classList.contains('hidden') ? showPanel() : hidePanel(); };
+
+function fit(){ if(isMobile()){ hidePanel(); } else { showPanel(); tg.classList.add('show'); } }
+window.addEventListener('resize', function(){ if(isMobile()) hidePanel(); });
+
+render(); fit();
+</script>
+</body>
+</html>
