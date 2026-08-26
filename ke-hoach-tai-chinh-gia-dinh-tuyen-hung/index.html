@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Kế Hoạch Quản Trị Tài Chính & An Sinh Gia Đình — Anh Hưng & Chị Tuyền</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF7EF;
+    --paper:#FFFFFF;
+    --ink:#171F1A;
+    --ink-soft:#5B6660;
+    --line:#E4DDC9;
+    --panel:#0D1913;
+    --panel-soft:#152920;
+    --primary:#0B6E4F;
+    --primary-deep:#083F2E;
+    --primary-tint:#E7F3EC;
+    --gold:#B08A2E;
+    --gold-tint:#FBF3DF;
+    --danger:#A5401F;
+    --danger-tint:#FBEAE3;
+    --warn:#96701F;
+    --warn-tint:#FBF1DD;
+    --ok:#1B7A4D;
+    --ok-tint:#E6F5EC;
+    --radius:14px;
+    --sidebar-w:20vw;
+    --sidebar-min:250px;
+    --sidebar-max:340px;
+    --sidebar-collapsed:76px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0; overflow-x:hidden; max-width:100%;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  h1,h2,h3,h4{font-family:'Fraunces',serif; margin:0; letter-spacing:-0.01em;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  ::selection{background:var(--gold-tint);}
+
+  /* ---------------- LAYOUT SHELL ---------------- */
+  .shell{
+    display:grid;
+    grid-template-columns: clamp(var(--sidebar-min), var(--sidebar-w), var(--sidebar-max)) 1fr;
+    min-height:100vh;
+    transition:grid-template-columns .28s ease;
+  }
+  .shell.collapsed{
+    grid-template-columns: var(--sidebar-collapsed) 1fr;
+  }
+
+  /* ---------------- SIDEBAR (20% control panel) ---------------- */
+  .sidebar{
+    background:var(--panel);
+    color:#EFE9D8;
+    position:sticky; top:0; height:100vh;
+    display:flex; flex-direction:column;
+    overflow:hidden;
+    border-right:1px solid #06110c;
+  }
+  .sb-top{
+    padding:22px 20px 16px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    display:flex; align-items:flex-start; justify-content:space-between; gap:8px;
+  }
+  .brand{display:flex; align-items:center; gap:10px; min-width:0;}
+  .brand-mark{
+    width:34px; height:34px; flex:none; border-radius:9px;
+    background:linear-gradient(155deg, var(--gold), var(--primary) 65%);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:700; color:#0D1913; font-size:15px;
+  }
+  .brand-text{min-width:0; overflow:hidden;}
+  .brand-text .eyebrow{font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:#9FB3A6; white-space:nowrap;}
+  .brand-text .name{font-family:'Fraunces',serif; font-size:15px; font-weight:600; color:#F6F2E4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .collapse-btn{
+    flex:none; width:30px; height:30px; border-radius:8px; border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.04); color:#DCE6DE; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:background .15s, transform .2s;
+  }
+  .collapse-btn:hover{background:rgba(255,255,255,.1);}
+  .shell.collapsed .collapse-btn svg{transform:rotate(180deg);}
+
+  .sb-client{
+    padding:14px 20px; border-bottom:1px solid rgba(255,255,255,.08);
+    font-size:12.5px; color:#B9C7BC; line-height:1.55;
+  }
+  .sb-client b{color:#F1EEDF; font-weight:600;}
+
+  .sb-nav{flex:1; overflow-y:auto; padding:12px 10px;}
+  .nav-item{
+    display:flex; align-items:center; gap:12px;
+    padding:10px 10px; border-radius:10px; cursor:pointer;
+    color:#C9D3CB; margin-bottom:2px; white-space:nowrap; overflow:hidden;
+    border:1px solid transparent;
+    transition:background .15s, color .15s;
+    position:relative;
+  }
+  .nav-item .num{
+    flex:none; width:26px; height:26px; border-radius:7px; background:rgba(255,255,255,.06);
+    display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#9FB3A6;
+  }
+  .nav-item .lbl{font-size:13.5px; font-weight:500; overflow:hidden; text-overflow:ellipsis;}
+  .nav-item .sub{display:block; font-size:10.5px; color:#7E9088; font-weight:400; margin-top:1px;}
+  .nav-item:hover{background:rgba(255,255,255,.05); color:#F1EEDF;}
+  .nav-item.active{background:linear-gradient(90deg, rgba(176,138,46,.22), rgba(176,138,46,.05)); color:#F6EFDC; border-color:rgba(176,138,46,.35);}
+  .nav-item.active .num{background:var(--gold); color:#241A05;}
+
+  .sb-gauge{
+    padding:16px 20px 20px; border-top:1px solid rgba(255,255,255,.08);
+  }
+  .gauge-row{display:flex; align-items:center; gap:12px;}
+  .gauge-label{font-size:11px; color:#9FB3A6; letter-spacing:.04em; text-transform:uppercase;}
+  .gauge-value{font-family:'Fraunces',serif; font-size:22px; color:#F6EFDC; font-weight:600;}
+  .ring{flex:none;}
+
+  /* collapsed state: hide text, keep icons centered */
+  .shell.collapsed .brand-text,
+  .shell.collapsed .sb-client,
+  .shell.collapsed .nav-item .lbl,
+  .shell.collapsed .nav-item .sub,
+  .shell.collapsed .gauge-label,
+  .shell.collapsed .gauge-value{display:none;}
+  .shell.collapsed .sb-top{justify-content:center;}
+  .shell.collapsed .brand{justify-content:center;}
+  .shell.collapsed .nav-item{justify-content:center;}
+  .shell.collapsed .gauge-row{justify-content:center;}
+  .shell.collapsed .collapse-btn{position:absolute; top:14px; right:10px;}
+
+  /* ---------------- MAIN ---------------- */
+  .main{min-width:0; display:flex; flex-direction:column;}
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:rgba(250,247,239,.92); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+    padding:16px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .topbar-left{display:flex; align-items:center; gap:12px; min-width:0;}
+  .hamburger{display:none; width:38px; height:38px; border-radius:9px; border:1px solid var(--line); background:var(--paper); align-items:center; justify-content:center; cursor:pointer; flex:none;}
+  .topbar h2{font-size:20px; color:var(--primary-deep);}
+  .topbar .crumb{font-size:11.5px; color:var(--ink-soft); letter-spacing:.06em; text-transform:uppercase; margin-bottom:2px;}
+
+  .view-switch{
+    display:flex; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:3px; flex:none;
+  }
+  .view-switch button{
+    border:none; background:transparent; padding:7px 16px; border-radius:999px; font-size:13px; font-weight:600;
+    color:var(--ink-soft); cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .view-switch button.active{background:var(--primary); color:#fff;}
+
+  .content{padding:26px 28px 80px; max-width:1180px; width:100%;}
+  .section{display:none;}
+  .section.active{display:block; animation:fadein .25s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  .section-head{margin-bottom:20px;}
+  .section-head .eyebrow{font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); font-weight:700;}
+  .section-head h1{font-size:28px; color:var(--primary-deep); margin-top:4px;}
+  .section-head p{color:var(--ink-soft); font-size:14.5px; margin-top:8px; max-width:70ch; line-height:1.6;}
+
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* cards */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin-bottom:22px;}
+  .metric-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px;
+    box-shadow:0 1px 2px rgba(20,30,20,.03);
+  }
+  .metric-card .k{font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); margin-bottom:6px;}
+  .metric-card .v{font-family:'Fraunces',serif; font-size:26px; color:var(--primary-deep); font-weight:600;}
+  .metric-card .n{font-size:12px; color:var(--ink-soft); margin-top:4px; line-height:1.5;}
+  .metric-card.gold .v{color:var(--gold);}
+  .metric-card.danger .v{color:var(--danger);}
+
+  .callout{
+    border-radius:var(--radius); padding:16px 18px; font-size:13.5px; line-height:1.65; margin-bottom:18px; border:1px solid transparent;
+  }
+  .callout.ok{background:var(--ok-tint); border-color:#bfe3cd; color:#134228;}
+  .callout.warn{background:var(--warn-tint); border-color:#eddba3; color:#5a4210;}
+  .callout.info{background:var(--primary-tint); border-color:#c7e3d3; color:#0d3d29;}
+  .callout.flag{background:var(--danger-tint); border-color:#f0c4b3; color:#6b2b16;}
+  .callout b{font-weight:700;}
+
+  .pill{display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.03em;}
+  .pill.duy-tri{background:var(--ok-tint); color:var(--ok);}
+  .pill.can-mua, .pill.mua-ngay{background:var(--danger-tint); color:var(--danger);}
+  .pill.can-nhac, .pill.tam-hoan{background:var(--warn-tint); color:var(--warn);}
+  .pill.khong-can{background:#EEECE3; color:#6b6b5f;}
+  .pill.bat-buoc{background:#F6E7D0; color:#7a4b0c;}
+
+  /* tables */
+  table{width:100%; border-collapse:collapse; font-size:13.5px; margin-bottom:22px; background:var(--paper);}
+  table caption{text-align:left; font-family:'Fraunces',serif; font-size:15px; margin-bottom:8px; color:var(--primary-deep); font-weight:600;}
+  th,td{border:1px solid var(--line); padding:10px 12px; text-align:left; vertical-align:top;}
+  th{background:var(--primary-tint); color:var(--primary-deep); font-size:12px; text-transform:uppercase; letter-spacing:.03em;}
+  tbody tr:nth-child(even){background:#FCFBF6;}
+  .tbl-wrap{overflow-x:auto; border-radius:10px;}
+  .tbl-wrap table{min-width:640px;}
+  td .note{display:block; font-size:11.5px; color:var(--ink-soft); font-style:italic; margin-top:3px;}
+  td b{color:var(--primary-deep);}
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media (max-width:760px){.two-col{grid-template-columns:1fr;}}
+  .compare-box{border:1px solid var(--line); border-radius:var(--radius); padding:18px; background:var(--paper);}
+  .compare-box h4{font-size:15px; color:var(--primary-deep); margin-bottom:10px;}
+  .compare-box ul{margin:0 0 10px; padding-left:18px; font-size:13px; line-height:1.6;}
+  .compare-box .tag{font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; font-weight:700; color:var(--ink-soft);}
+
+  .timeline{display:flex; flex-direction:column; gap:0; margin-bottom:20px;}
+  .tl-item{display:grid; grid-template-columns:120px 1fr; gap:16px; padding:16px 0; border-bottom:1px dashed var(--line); position:relative;}
+  .tl-item:last-child{border-bottom:none;}
+  .tl-phase{font-family:'Fraunces',serif; color:var(--gold); font-weight:700; font-size:15px;}
+  .tl-when{font-size:11.5px; color:var(--ink-soft); margin-top:2px;}
+  .tl-body h5{font-size:14.5px; margin-bottom:4px; color:var(--primary-deep); font-family:'Inter',sans-serif; font-weight:700;}
+  .tl-body p{font-size:13.5px; line-height:1.6; margin:0; color:var(--ink);}
+
+  .fund-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; margin-bottom:20px;}
+  .fund-card{border-radius:var(--radius); padding:16px; color:#fff; background:var(--panel-soft); border:1px solid rgba(255,255,255,.08);}
+  .fund-card .amt{font-family:'Fraunces',serif; font-size:22px; font-weight:600; color:var(--gold-tint);}
+  .fund-card .lbl{font-size:12px; margin-top:4px; opacity:.85; line-height:1.5;}
+
+  .tower{display:flex; flex-direction:column-reverse; gap:8px; margin-bottom:18px;}
+  .tier{border-radius:12px; padding:16px 18px;}
+  .tier h5{font-family:'Fraunces',serif; font-size:15px; margin-bottom:6px;}
+  .tier ul{margin:0; padding-left:18px; font-size:13px; line-height:1.7;}
+  .tier1{background:var(--panel); color:#EFE9D8;}
+  .tier1 h5{color:var(--gold-tint);}
+  .tier2{background:var(--primary-tint); color:var(--primary-deep);}
+  .tier3{background:#F1EEDF; color:#4b4426;}
+
+  .footer-note{margin-top:40px; padding-top:18px; border-top:1px solid var(--line); font-size:11.5px; color:var(--ink-soft); line-height:1.7;}
+
+  /* ---------------- MOBILE ---------------- */
+  .overlay{display:none;}
+  @media (max-width:900px){
+    .shell{grid-template-columns:1fr;}
+    .shell.collapsed{grid-template-columns:1fr;}
+    .sidebar{
+      position:fixed; z-index:50; left:0; top:0; width:82vw; max-width:320px; height:100vh;
+      transform:translateX(-100%); transition:transform .28s ease; box-shadow:20px 0 40px rgba(0,0,0,.25);
+    }
+    .sidebar.open{transform:translateX(0);}
+    .shell.collapsed .sidebar{width:82vw; max-width:320px;}
+    .shell.collapsed .brand-text, .shell.collapsed .sb-client,
+    .shell.collapsed .nav-item .lbl, .shell.collapsed .nav-item .sub,
+    .shell.collapsed .gauge-label, .shell.collapsed .gauge-value{display:revert;}
+    .shell.collapsed .nav-item{justify-content:flex-start;}
+    .shell.collapsed .sb-top{justify-content:space-between;}
+    .shell.collapsed .brand{justify-content:flex-start;}
+    .collapse-btn{display:none;}
+    .hamburger{display:flex;}
+    .overlay{
+      display:none; position:fixed; inset:0; background:rgba(10,16,12,.45); z-index:40;
+    }
+    .overlay.show{display:block;}
+    .content{padding:18px 16px 70px;}
+    .topbar{padding:12px 16px;}
+    .topbar h2{font-size:17px;}
+    .topbar-left{flex-basis:100%;}
+    .view-switch{flex-basis:100%; justify-content:flex-end; margin-top:2px;}
+    .view-switch button{padding:6px 12px; font-size:12px;}
+    .card-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px;}
+    .tl-item{grid-template-columns:1fr;}
+    table{font-size:12.5px;}
+    .content, .shell, .main{max-width:100vw;}
+  }
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="shell" id="shell">
+
+  <!-- SIDEBAR / CONTROL PANEL -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-top">
+      <div class="brand">
+        <div class="brand-mark">PT</div>
+        <div class="brand-text">
+          <div class="eyebrow">Private Wealth Advisory</div>
+          <div class="name">Gia đình Hưng &amp; Tuyền</div>
+        </div>
+      </div>
+      <button class="collapse-btn" id="collapseBtn" title="Thu gọn / Mở rộng">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <div class="sb-client">
+      <div><b>Anh Phạm Lê Hưng</b> · 40t · Chủ DN</div>
+      <div><b>Chị Vũ Ngọc Minh Tuyền</b> · 37t · Gap year</div>
+      <div style="margin-top:6px;">Ngày lập: 26/08/2026 · Khung 14 năm</div>
+    </div>
+
+    <nav class="sb-nav" id="sbNav">
+      <!-- injected by JS -->
+    </nav>
+
+    <div class="sb-gauge">
+      <div class="gauge-row">
+        <svg class="ring" width="46" height="46" viewBox="0 0 46 46">
+          <circle cx="23" cy="23" r="19" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="5"/>
+          <circle cx="23" cy="23" r="19" fill="none" stroke="#B08A2E" stroke-width="5" stroke-linecap="round"
+            stroke-dasharray="119.4" stroke-dashoffset="119.4" transform="rotate(-90 23 23)" id="readinessArc"/>
+        </svg>
+        <div>
+          <div class="gauge-label">Tầng 1 · Lớp bảo vệ</div>
+          <div class="gauge-value">0% <span style="font-size:11px; color:#9FB3A6; font-weight:500;">→ mục tiêu 100%</span></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="hamburgerBtn" aria-label="Mở menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+        <div>
+          <div class="crumb" id="crumb">Phần I</div>
+          <h2 id="topTitle">Hồ Sơ Gia Đình</h2>
+        </div>
+      </div>
+      <div class="view-switch">
+        <button data-view="summary" class="active">Tóm tắt</button>
+        <button data-view="detail">Chi tiết</button>
+      </div>
+    </div>
+
+    <div class="content" id="content">
+      <!-- SECTIONS injected by JS from DATA below, but written statically for reliability -->
+
+      <!-- ============ SECTION 1: HO SO GIA DINH ============ -->
+      <section class="section active" data-section="s1">
+        <div class="section-head">
+          <div class="eyebrow">Phần I</div>
+          <h1>Hồ Sơ Gia Đình &amp; Bối Cảnh</h1>
+          <p>Khảo sát chân dung 4 thành viên, nguồn thu nhập, tình trạng sức khỏe và chẩn đoán cấu trúc tài sản tổng thể.</p>
+        </div>
+
+        <div class="view active" data-view="summary">
+          <div class="card-grid">
+            <div class="metric-card"><div class="k">Tổng thu nhập hiện tại</div><div class="v">1.2 tỷ<span style="font-size:13px;">/năm</span></div><div class="n">100% từ Anh Hưng (2 nguồn: DN + công ty)</div></div>
+            <div class="metric-card gold"><div class="k">Tổng tài sản ròng</div><div class="v">~25.0 tỷ</div><div class="n">Không nợ vay tín dụng</div></div>
+            <div class="metric-card"><div class="k">Tiền mặt thanh khoản</div><div class="v">4.0 tỷ</div><div class="n">Nhiều sổ tiết kiệm đa kỳ hạn</div></div>
+            <div class="metric-card danger"><div class="k">Lớp bảo hiểm hiện hữu</div><div class="v">0 đồng</div><div class="n">Chưa có hợp đồng BHNT nào</div></div>
+          </div>
+          <div class="callout warn">
+            <b>Chẩn đoán nhanh:</b> Gia đình có nền tảng tài sản lớn, thanh khoản tốt (4 tỷ tiền mặt đạt chuẩn quỹ khẩn cấp). Vấn đề không phải "không có gì phòng thân" — mà là <b>lớp bảo hiểm bằng 0</b>: nếu có biến cố, gia đình vẫn trả được nhưng phải dùng tiền túi thay vì được bảo hiểm gánh thay, làm giảm hiệu quả sử dụng vốn.
+          </div>
+        </div>
+
+        <div class="view" data-view="detail">
+          <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Thành viên</th><th>Ngày sinh / Tuổi</th><th>Nghề nghiệp &amp; vai trò</th><th>Thu nhập / năm</th><th>Tình trạng sức khỏe</th></tr></thead>
+            <tbody>
+              <tr><td><b>Anh Phạm Lê Hưng</b><br>Trụ cột chính (Chồng)</td><td>28/08/1985 (40 tuổi)</td><td>Chủ DN thiết bị công nghiệp + Làm công ty (2 nguồn thu nhập)</td><td><b>1.200.000.000 đ</b><span class="note">Gánh 100% chi tiêu hiện tại</span></td><td>Tiền sử Gout cấp (axit uric tăng), hay tiếp khách bia rượu</td></tr>
+              <tr><td><b>Chị Vũ Ngọc Minh Tuyền</b><br>Vợ (người mẹ chăm con)</td><td>20/02/1989 (37 tuổi)</td><td>Cựu Senior Brand Marketing Manager (đang Gap Year 6 tháng)</td><td><b>0 đ</b><span class="note">Tiềm năng 120tr/tháng = 1.44 tỷ/năm</span></td><td>Hồng cầu nhạt, nhược sắc nhẹ (khám định kỳ)</td></tr>
+              <tr><td><b>Bé Phạm Vũ Hà Vi</b><br>Con gái lớn (Con 1)</td><td>24/01/2017 (9 tuổi)</td><td>Học sinh Lớp 4 (trường công lập – hệ song ngữ)</td><td>0 đ<span class="note">Định hướng THCS Đinh Thiện Lý (phi lợi nhuận)</span></td><td>Viêm da cơ địa nhẹ (da khô, dày sừng)</td></tr>
+              <tr><td><b>Bé Phạm Vũ Anh Minh</b><br>Con trai út (Con 2)</td><td>07/07/2022 (4 tuổi)</td><td>Học sinh mầm non tư thục</td><td>0 đ<span class="note">Cần quỹ y tế ổn định để mẹ đồng hành</span></td><td><b>Đang điều trị Ung thư cơ đùi (Sarcoma)</b></td></tr>
+            </tbody>
+          </table>
+          </div>
+
+          <div class="callout ok">
+            <b>✓ Đã xác nhận với khách hàng:</b> Đất Bảo Lộc + Đồng Nai = <b>5.0 tỷ</b>, chung cư đang ở = <b>6.0 tỷ</b>. Theo đó, tổng tài sản ròng chốt lại là <b>~25.0 tỷ VNĐ</b> (Cổ phần DN 10.0 tỷ + BĐS 11.0 tỷ + Tiền mặt 4.0 tỷ), thay cho con số ước tính ~25.7 tỷ dùng ở bản nháp trước.
+          </div>
+
+          <table>
+            <caption>Chẩn đoán cấu trúc tài sản tổng thể</caption>
+            <tbody>
+              <tr><td style="width:30%"><b>Tổng tài sản ròng</b></td><td>~25.0 tỷ VNĐ (0 đồng nợ vay tín dụng)</td></tr>
+              <tr><td><b>Tỷ trọng kém thanh khoản</b></td><td>84% tài sản ở dạng BĐS &amp; cổ phần doanh nghiệp</td></tr>
+              <tr><td><b>Rủi ro lớn nhất hiện tại</b></td><td>Lớp bảo hiểm Tầng 1 bằng 0 đồng — không phải thiếu thanh khoản, mà thiếu cơ chế chuyển giao rủi ro</td></tr>
+              <tr><td><b>Ưu tiên tối thượng</b></td><td>Thiết lập ngay ngân sách bảo vệ Tầng 1</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ SECTION 2: THAP TAI SAN ============ -->
+      <section class="section" data-section="s2">
+        <div class="section-head">
+          <div class="eyebrow">Phần II</div>
+          <h1>Tháp Tài Sản Theo Mục Tiêu</h1>
+          <p>Nguyên tắc cốt lõi: ưu tiên hoàn thiện thứ tự vững chắc từ Tầng 1 (chân móng) lên Tầng 3 (đỉnh tháp).</p>
+        </div>
+
+        <div class="view active" data-view="summary">
+          <div class="tower">
+            <div class="tier tier1">
+              <h5>Tầng 1 — Bảo vệ (chân móng bắt buộc)</h5>
+              <ul>
+                <li>Quỹ dự phòng khẩn cấp: 6–12 tháng chi tiêu cơ bản</li>
+                <li>BHYT nhà nước, BHSK tư nhân, BHNT (bảo vệ thu nhập)</li>
+                <li>Quỹ hưu trí nền tảng</li>
+              </ul>
+            </div>
+            <div class="tier tier2">
+              <h5>Tầng 2 — Ưu tiên</h5>
+              <ul>
+                <li>Nhà ở an cư &amp; nâng cấp tiện nghi</li>
+                <li>Xe &amp; phương tiện gia đình</li>
+                <li>Quỹ giáo dục (song ngữ / Đinh Thiện Lý)</li>
+              </ul>
+            </div>
+            <div class="tier tier3">
+              <h5>Tầng 3 — Nâng cao</h5>
+              <ul>
+                <li>Du lịch nghỉ dưỡng, trải nghiệm sống</li>
+                <li>Thừa kế &amp; chuyển giao di sản gia tộc</li>
+                <li>Hoạt động từ thiện &amp; cống hiến xã hội</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout info">
+            <b>Hiện trạng:</b> Gia đình đã có khối tài sản Tầng 2 &amp; 3 rất lớn, nhưng nền móng Tầng 1 chưa được "bọc" bởi bảo hiểm — thứ tự ưu tiên đang bị đảo ngược so với nguyên tắc chuẩn.
+          </div>
+        </div>
+
+        <div class="view" data-view="detail">
+          <table>
+            <caption>Diễn giải logic hoạch định dành riêng cho gia đình</caption>
+            <tbody>
+              <tr><td style="width:38%"><b>1. Tại sao phải xây từ Tầng 1?</b></td><td>Tầng 1 là màng lọc rủi ro. Nếu chân móng chưa có bảo hiểm và quỹ khẩn cấp (6–12 tháng chi tiêu cơ bản), khi có biến cố sức khỏe/thu nhập, gia đình sẽ buộc phải bán tháo tài sản Tầng 2 &amp; 3 (BĐS, cổ phần doanh nghiệp) để trang trải.</td></tr>
+              <tr><td><b>2. Hiện trạng gia đình Anh Hưng &amp; Chị Tuyền</b></td><td>Đang có khối tài sản Tầng 2 &amp; 3 rất lớn (~25.0 tỷ VNĐ). Về Tầng 1: quỹ khẩn cấp tiền mặt (4 tỷ) đã đạt chuẩn thanh khoản, nhưng lớp bảo hiểm (BHYT tư nhân, BHSK, BHNT) đang bằng 0 đồng — nghĩa là gia đình vẫn có khả năng chi trả khi có biến cố, nhưng sẽ phải dùng tiền túi thay vì được bảo hiểm gánh thay, làm giảm hiệu quả sử dụng vốn và có thể phải rút vào các quỹ đã có mục đích khác (giáo dục, hưu trí).</td></tr>
+              <tr><td><b>3. Mục tiêu kế hoạch này</b></td><td>Sử dụng <b>220 triệu/năm</b> (~18% thu nhập hiện tại) để đóng nắp rủi ro Tầng 1, đồng thời cơ cấu 4.0 tỷ tiền mặt sẵn có để bảo vệ Quỹ Y tế cho bé Anh Minh và chuẩn bị Quỹ Giáo dục Tầng 2.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ SECTION 3: CAU TRUC TAI SAN ============ -->
+      <section class="section" data-section="s3">
+        <div class="section-head">
+          <div class="eyebrow">Phần III</div>
+          <h1>Bức Tranh Dòng Tiền &amp; Tài Sản</h1>
+          <p>Định vị cấu trúc tài sản hiện tại và sức bật dòng tiền khi Chị Tuyền đi làm trở lại.</p>
+        </div>
+
+        <div class="view active" data-view="summary">
+          <div class="card-grid">
+            <div class="metric-card"><div class="k">Thặng dư hiện tại</div><div class="v" style="color:var(--danger)">−24tr<span style="font-size:12px;">/năm</span></div><div class="n">Thâm hụt nhẹ, tạm thời</div></div>
+            <div class="metric-card gold"><div class="k">Thặng dư khi Tuyền đi làm lại</div><div class="v">+1.416 tỷ<span style="font-size:12px;">/năm</span></div><div class="n">Savings rate 54%</div></div>
+            <div class="metric-card"><div class="k">Thu nhập tiềm năng</div><div class="v">2.64 tỷ<span style="font-size:12px;">/năm</span></div><div class="n">+120% so với hiện tại</div></div>
+          </div>
+          <div class="callout ok">
+            Gia đình có nền tảng tài sản vững mạnh (<b>~25.0 tỷ VNĐ</b>, không nợ). Trụ cột Anh Phạm Lê Hưng đang gánh 100% rủi ro thu nhập &amp; y tế của cả nhà cho đến khi Chị Tuyền đi làm trở lại.
+          </div>
+        </div>
+
+        <div class="view" data-view="detail">
+          <div class="tbl-wrap">
+          <table>
+            <caption>Dòng tiền hiện tại &amp; khi Chị Tuyền đi làm lại</caption>
+            <thead><tr><th>Chỉ tiêu</th><th>Hiện tại</th><th>Khi Chị Tuyền đi làm lại</th><th>Nhận định</th></tr></thead>
+            <tbody>
+              <tr><td><b>Thu nhập</b></td><td>1.200.000.000 đ</td><td><b>2.640.000.000 đ</b></td><td>Tăng +120% khi Chị Tuyền quay lại công việc</td></tr>
+              <tr><td>Chi thiết yếu (60tr/th)</td><td>720.000.000 đ</td><td>720.000.000 đ</td><td>Học phí con + sinh hoạt phí gia đình</td></tr>
+              <tr><td>Chi không thiết yếu (42tr/th)</td><td>504.000.000 đ</td><td>504.000.000 đ</td><td>Báo hiếu bố mẹ (500tr/năm) + du lịch</td></tr>
+              <tr><td><b>Thặng dư tích lũy</b></td><td><b>−24.000.000 đ</b></td><td><b>+1.416.000.000 đ</b></td><td>Thâm hụt nhẹ hiện tại chỉ là tạm thời</td></tr>
+            </tbody>
+          </table>
+          </div>
+
+          <table>
+            <caption>Danh mục tài sản hiện có (~25.0 tỷ VNĐ)</caption>
+            <tbody>
+              <tr><td style="width:30%"><b>Tiền mặt &amp; tiết kiệm</b></td><td>4.000.000.000 đ (nhiều sổ tiết kiệm đa kỳ hạn)</td></tr>
+              <tr><td><b>BĐS nhà ở (chung cư)</b></td><td>6.000.000.000 đ</td></tr>
+              <tr><td><b>BĐS đầu tư (đất Bảo Lộc &amp; Đồng Nai)</b></td><td>5.000.000.000 đ</td></tr>
+              <tr><td><b>Cổ phần doanh nghiệp</b></td><td>10.000.000.000 đ (vốn điều lệ trên giấy tờ)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ SECTION 4: CHECKLIST BAO HIEM (TANG 1) ============ -->
+      <section class="section" data-section="s4">
+        <div class="section-head">
+          <div class="eyebrow">Phần IV</div>
+          <h1>Bảng Checklist Rà Soát Bảo Hiểm — Tầng 1</h1>
+          <p>Định vị trạng thái Duy trì / Cần mua / Cân nhắc / Tạm hoãn / Không cần trên từng thành viên gia đình.</p>
+        </div>
+
+        <div class="view active" data-view="summary">
+          <div class="card-grid">
+            <div class="metric-card gold"><div class="k">Anh Phạm Lê Hưng</div><div class="v">120tr<span style="font-size:12px;">/năm</span></div><div class="n">= 10% thu nhập hiện tại · Trụ cột 100% thu nhập</div></div>
+            <div class="metric-card"><div class="k">Chị Tuyền &amp; Bé Hà Vi</div><div class="v">100tr<span style="font-size:12px;">/năm</span></div><div class="n">&lt; 10% thu nhập trung bình/năm</div></div>
+            <div class="metric-card danger"><div class="k">Bé Phạm Vũ Anh Minh</div><div class="v">Tối thiểu 1.0 tỷ</div><div class="n">Số tiền bảo vệ 1 lần — KHÔNG phải phí BH/năm</div></div>
+            <div class="metric-card"><div class="k">Tổng ngân sách Tầng 1</div><div class="v">220tr<span style="font-size:12px;">/năm</span></div><div class="n">Phí bảo hiểm định kỳ, chưa gồm Quỹ Y tế 1.0 tỷ (trích 1 lần)</div></div>
+          </div>
+          <div class="callout warn">
+            <b>Lưu ý khi đọc bảng:</b> Cột Anh Hưng &amp; Chị Tuyền/Bé Vy thể hiện <b>phí bảo hiểm phải đóng mỗi năm</b>. Cột Bé Anh Minh thể hiện <b>số dư Quỹ Y tế cần có</b> (trích một lần từ 4 tỷ tiền mặt) — hai loại chỉ số khác bản chất, không cộng dồn chung một ý nghĩa.
+          </div>
+        </div>
+
+        <div class="view" data-view="detail">
+          <div class="tbl-wrap">
+          <table>
+            <caption>Ngân sách bảo vệ Tầng 1 theo từng thành viên</caption>
+            <thead><tr><th></th><th>Anh Phạm Lê Hưng (Bố)</th><th>Chị Vũ Ngọc Minh Tuyền &amp; Bé Hà Vi</th><th>Bé Phạm Vũ Anh Minh</th></tr></thead>
+            <tbody>
+              <tr><td><b>Loại ngân sách</b></td><td>Phí bảo hiểm đóng/năm</td><td>Phí bảo hiểm đóng/năm</td><td>Số tiền bảo vệ (1 lần) — KHÔNG phải phí BH/năm</td></tr>
+              <tr><td><b>Số tiền</b></td><td><b>120 triệu/năm</b></td><td><b>100 triệu/năm</b></td><td><b>Tối thiểu 1.0 tỷ VNĐ</b></td></tr>
+              <tr><td><b>Tỷ trọng / Ghi chú</b></td><td><span class="note">= 10% thu nhập hiện tại (1.2 tỷ)</span></td><td><span class="note">&lt; 10% thu nhập trung bình/năm của Chị Tuyền</span></td><td><span class="note">Đây là số dư Quỹ Y tế cần có, trích 1 lần từ 4 tỷ tiền mặt</span></td></tr>
+            </tbody>
+          </table>
+          </div>
+
+          <div class="tbl-wrap">
+          <table>
+            <caption>Bảng rà soát chi tiết từng loại bảo hiểm cho 4 thành viên</caption>
+            <thead><tr><th>Loại bảo hiểm / Quyền lợi</th><th>Anh Phạm Lê Hưng (Bố)<br><i>Trụ cột 100% thu nhập</i></th><th>Chị Vũ Ngọc Minh Tuyền (Mẹ)<br><i>Người chăm sóc con</i></th><th>Bé Phạm Vũ Hà Vi (9t)<br><i>Con gái lớn</i></th><th>Bé Phạm Vũ Anh Minh (4t)<br><i>Đang trị Sarcoma</i></th></tr></thead>
+            <tbody>
+              <tr>
+                <td><b>1. BHYT Nhà nước</b><br><span class="note">Lưới an sinh cơ bản</span></td>
+                <td><span class="pill duy-tri">DUY TRÌ</span><br>Theo công ty, duy trì đúng tuyến</td>
+                <td><span class="pill mua-ngay">MUA NGAY</span><br>BHYT hộ gia đình, mua tại phường xã</td>
+                <td><span class="pill duy-tri">DUY TRÌ</span><br>BHYT học sinh theo trường học</td>
+                <td><span class="pill duy-tri">DUY TRÌ</span><br>BHYT trẻ em &lt;6t, trực tiếp phác đồ</td>
+              </tr>
+              <tr>
+                <td><b>2. BHSK tư nhân</b><br><span class="note">Nội trú &amp; ngoại trú</span></td>
+                <td><span class="pill can-mua">CẦN MUA</span><br>Quyền lợi <b>1.0 tỷ/năm</b>, nội &amp; ngoại trú</td>
+                <td><span class="pill can-mua">CẦN MUA</span><br>Quyền lợi <b>1.0 tỷ/năm</b>, nội &amp; ngoại trú</td>
+                <td><span class="pill can-mua">CẦN MUA</span><br>Quyền lợi <b>500tr/năm</b>, nội &amp; ngoại trú</td>
+                <td><span class="pill tam-hoan">TẠM HOÃN</span><br>Hoãn thẩm định (phác đồ Sarcoma)</td>
+              </tr>
+              <tr>
+                <td><b>3. BHNT &amp; Bổ trợ</b><br><span class="note">Bảo vệ thu nhập &amp; rủi ro lớn</span></td>
+                <td><span class="pill bat-buoc">BẮT BUỘC</span><br>BHNT 15 năm: <b>6–9 tỷ</b><br>+ Tai nạn <b>2 tỷ</b> · BLNT <b>3 tỷ</b><span class="note">BLNT ước theo ~30% thu nhập năm cho chi phí điều trị/phục hồi + ~2 năm thu nhập bị gián đoạn</span></td>
+                <td><span class="pill can-mua">CẦN MUA</span><br>BHNT 15 năm: <b>4.5–6.75 tỷ</b><br>+ Tai nạn 1 tỷ · BLNT 2 tỷ</td>
+                <td><span class="pill can-nhac">CÂN NHẮC</span><br>Nếu chọn Quỹ GD qua LKĐT<br>+ Tai nạn 1 tỷ · BLNT 2 tỷ</td>
+                <td><span class="pill khong-can">KHÔNG CẦN</span><br>Chuẩn CFP (không thu nhập)<span class="note">Quỹ y tế 1 tỷ chi trả</span></td>
+              </tr>
+              <tr>
+                <td><b>4. Quỹ y tế tự chi</b><br><span class="note">Tự bảo hiểm tiền mặt</span></td>
+                <td><span class="pill khong-can">KHÔNG CẦN</span><br>Đã có BHYT + BHSK</td>
+                <td><span class="pill khong-can">KHÔNG CẦN</span><br>Đã có BHYT + BHSK</td>
+                <td><span class="pill khong-can">KHÔNG CẦN</span><br>Đã có BHYT + BHSK</td>
+                <td><span class="pill can-mua">QUỸ RIÊNG</span><br>Tối thiểu <b>1.0 tỷ</b> (trích từ 4 tỷ tiền mặt)</td>
+              </tr>
+              <tr>
+                <td><b>Tổng phân bổ ngân sách</b></td>
+                <td><b>120 triệu/năm</b><span class="note">= 10% thu nhập hiện tại</span></td>
+                <td colspan="1"><b>100 triệu/năm</b><span class="note">&lt; 10% thu nhập trung bình/năm</span></td>
+                <td><b>Tối thiểu 1.0 tỷ VNĐ</b><span class="note">Đây là SỐ DƯ QUỸ cần có, không phải phí bảo hiểm/năm</span></td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+
+          <div class="callout info">
+            <b>Tổng ngân sách bảo vệ định kỳ Tầng 1: 220 triệu/năm</b> (Anh Phạm Lê Hưng: 120tr, Chị Vũ Ngọc Minh Tuyền &amp; Bé Hà Vi: 100tr) — đã bao gồm trọn gói: BHYT + BHSK tư nhân (nội &amp; ngoại trú) + BH nhân thọ (15 năm) + gói bổ trợ đính kèm (Anh Hưng: Tai nạn 2.0 tỷ &amp; BLNT 3.0 tỷ; Chị Tuyền &amp; Bé Hà Vi: Tai nạn 1.0 tỷ &amp; BLNT 2.0 tỷ).
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SECTION 5: PHUONG AN TANG 2 ============ -->
+      <section class="section" data-section="s5">
+        <div class="section-head">
+          <div class="eyebrow">Phần V</div>
+          <h1>Phân Tích Phương Án Quỹ Giáo Dục &amp; Hưu Trí (Tầng 2)</h1>
+          <p>So sánh khách quan ưu điểm &amp; cân nhắc giữa 2 mô hình tích lũy tài chính để gia đình chủ động lựa chọn.</p>
+        </div>
+
+        <div class="view active" data-view="summary">
+          <div class="card-grid">
+            <div class="metric-card"><div class="k">Quỹ giáo dục 2 con</div><div class="v">~2.45 tỷ</div><div class="n">Trích 1.5 tỷ từ tiền mặt + bổ sung 80–100tr/năm</div></div>
+            <div class="metric-card gold"><div class="k">Quỹ hưu trí</div><div class="v">600–720tr<span style="font-size:12px;">/năm</span></div><div class="n">Khi có thặng dư 1.4 tỷ/năm (Tuyền đi làm lại)</div></div>
+          </div>
+        </div>
+
+        <div class="view" data-view="detail">
+          <div class="two-col">
+            <div class="compare-box">
+              <span class="tag">Phương án 1</span>
+              <h4>Tự tích sản kỷ luật (SIP / Quỹ mở)</h4>
+              <p style="font-size:13px; color:var(--ink-soft);">Mua Term Life thuần bảo vệ, dòng tiền dôi dư tự tích sản cổ phiếu / chứng chỉ quỹ mở.</p>
+              <b style="font-size:12px;">Ưu điểm</b>
+              <ul><li>Tối ưu chi phí — 100% dòng tiền tích lũy vào tài sản sinh lời</li><li>Linh hoạt nạp/rút vốn</li><li>Tiềm năng tăng trưởng 10–15%/năm</li></ul>
+              <b style="font-size:12px;">Cân nhắc</b>
+              <ul><li>Đòi hỏi kỷ luật cá nhân cao</li><li>Tự chịu trách nhiệm danh mục</li></ul>
+            </div>
+            <div class="compare-box">
+              <span class="tag">Phương án 2</span>
+              <h4>Bảo hiểm liên kết đầu tư (ILP)</h4>
+              <p style="font-size:13px; color:var(--ink-soft);">Đóng phí định kỳ hàng năm vào hợp đồng bảo hiểm liên kết đơn vị ủy thác.</p>
+              <b style="font-size:12px;">Ưu điểm</b>
+              <ul><li>Kỷ luật đóng phí bắt buộc</li><li>Tích hợp 2 trong 1 (bảo vệ + tích lũy)</li><li>Ủy thác chuyên nghiệp quản lý quỹ</li></ul>
+              <b style="font-size:12px;">Cân nhắc</b>
+              <ul><li>Phí quản lý 3–5 năm đầu cao</li><li>Kém linh hoạt dòng tiền khi rút sớm</li></ul>
+            </div>
+          </div>
+          <table>
+            <caption>Kế hoạch phân bổ mục tiêu</caption>
+            <tbody>
+              <tr><td style="width:30%"><b>Quỹ giáo dục 2 con (~2.45 tỷ)</b></td><td>Trích 1.5 tỷ VNĐ từ 4 tỷ tiền mặt sẵn có (750tr/bé) gửi tiết kiệm bậc thang + bổ sung ~80–100tr/năm từ dòng tiền mới.</td></tr>
+              <tr><td><b>Quỹ hưu trí</b></td><td>Đóng lại BHXH cho Chị Vũ Ngọc Minh Tuyền + trích 50–60tr/tháng (~600–720tr/năm) vào tài khoản tích lũy dài hạn khi có thặng dư 1.4 tỷ/năm.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ SECTION 6: LO TRINH ============ -->
+      <section class="section" data-section="s6">
+        <div class="section-head">
+          <div class="eyebrow">Phần VI</div>
+          <h1>Cơ Cấu 4 Tỷ Tiền Mặt &amp; Lộ Trình Hành Động</h1>
+          <p>Tách bạch 4 quỹ tài chính từ nguồn tiền mặt sẵn có và thiết lập lộ trình thực thi theo từng mốc thời gian.</p>
+        </div>
+
+        <div class="view active" data-view="summary">
+          <div class="fund-grid">
+            <div class="fund-card"><div class="amt">720tr</div><div class="lbl">1. Quỹ khẩn cấp<br>12 tháng chi thiết yếu (60tr/tháng)</div></div>
+            <div class="fund-card"><div class="amt">1.0 tỷ</div><div class="lbl">2. Quỹ y tế Bé Anh Minh<br>Dành riêng điều trị &amp; chăm sóc</div></div>
+            <div class="fund-card"><div class="amt">1.5 tỷ</div><div class="lbl">3. Quỹ giáo dục 2 con<br>750tr Bé Hà Vi + 750tr Bé Anh Minh</div></div>
+            <div class="fund-card"><div class="amt">780tr</div><div class="lbl">4. Thanh khoản linh hoạt<br>Dự phòng cơ hội &amp; tích sản Tầng 3</div></div>
+          </div>
+        </div>
+
+        <div class="view" data-view="detail">
+          <div class="timeline">
+            <div class="tl-item">
+              <div><div class="tl-phase">Giai đoạn 1</div><div class="tl-when">Tuần 1–2</div></div>
+              <div class="tl-body">
+                <h5>Xử lý khẩn cấp</h5>
+                <p>Chị Tuyền mua BHYT hộ gia đình; Anh Hưng khám sức khỏe tổng quát để chuẩn bị hồ sơ. <b>Anh Hưng &amp; Chị Tuyền giữ sinh hoạt lành mạnh để sức khỏe ở trạng thái tốt nhất khi bảo hiểm thẩm định.</b></p>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div><div class="tl-phase">Giai đoạn 2</div><div class="tl-when">Tháng 1–2</div></div>
+              <div class="tl-body">
+                <h5>Thiết lập bảo vệ &amp; quỹ</h5>
+                <p>Nộp hồ sơ BHSK &amp; BHNT cho cả nhà (ngân sách <b>220 triệu/năm</b>). Đồng thời <b>tách bạch 4 tài khoản riêng biệt từ 4 tỷ tiền mặt sẵn có.</b></p>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div><div class="tl-phase">Giai đoạn 3</div><div class="tl-when">Khi Chị Tuyền đi làm lại</div></div>
+              <div class="tl-body">
+                <h5>Kích hoạt tích lũy tự động</h5>
+                <p>Đóng lại BHXH bắt buộc cho Chị Vũ Ngọc Minh Tuyền; kích hoạt trích lập tự động cho Tầng 2 &amp; Tầng 3 (phí bảo hiểm + quỹ giáo dục + tích sản hưu trí dài hạn).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SECTION 7: PHU LUC ============ -->
+      <section class="section" data-section="s7">
+        <div class="section-head">
+          <div class="eyebrow">Phần VII</div>
+          <h1>Phụ Lục: Dữ Liệu Khảo Sát &amp; Khai Báo Đầu Vào</h1>
+          <p>Toàn bộ dữ liệu khảo sát gốc do gia đình cung cấp, làm cơ sở đối chiếu và hoạch định tài chính.</p>
+        </div>
+
+        <div class="view active" data-view="summary">
+          <div class="card-grid">
+            <div class="metric-card"><div class="k">Chi thiết yếu / tháng</div><div class="v">60tr</div><div class="n">Học phí con chiếm phần lớn</div></div>
+            <div class="metric-card"><div class="k">Chi không thiết yếu / tháng</div><div class="v">42tr</div><div class="n">Du lịch &amp; báo hiếu bố mẹ</div></div>
+            <div class="metric-card"><div class="k">Mức sống mong muốn</div><div class="v">125%</div><div class="n">Dự phòng học phí tăng, khung 14 năm</div></div>
+          </div>
+        </div>
+
+        <div class="view" data-view="detail">
+          <table>
+            <caption>Hiện trạng bảo hiểm lúc khảo sát</caption>
+            <tbody>
+              <tr><td style="width:22%"><b>BHXH</b></td><td>Anh Hưng đóng mức lương cơ bản công ty. Chị Tuyền tạm ngừng đóng.</td></tr>
+              <tr><td><b>BH thất nghiệp</b></td><td>Chị Tuyền đang hưởng mức trợ cấp BHTN trong 12 tháng.</td></tr>
+              <tr><td><b>BHYT nhà nước</b></td><td>Anh Hưng và 2 con có BHYT. Chị Tuyền đang thiếu BHYT.</td></tr>
+              <tr><td><b>BHSK tư nhân</b></td><td>Cả nhà đang không có (trước đó có theo gói công ty Chị Tuyền).</td></tr>
+              <tr><td><b>BH nhân thọ</b></td><td>Chưa có hợp đồng nào.</td></tr>
+            </tbody>
+          </table>
+
+          <table>
+            <caption>Mục tiêu &amp; giả định hoạch định (khung 14 năm)</caption>
+            <tbody>
+              <tr><td style="width:35%"><b>Chi tiêu tháng mục tiêu</b></td><td>75.000.000 đ/tháng (900tr/năm)</td></tr>
+              <tr><td><b>Số năm bảo vệ</b></td><td>14 năm (đến khi con út trưởng thành, tự lập)</td></tr>
+              <tr><td><b>Giả định lạm phát</b></td><td>5.0%/năm</td></tr>
+              <tr><td><b>Giả định lãi đầu tư</b></td><td>6.0%/năm</td></tr>
+            </tbody>
+          </table>
+
+          <table>
+            <caption>Ghi chú sức khỏe thành viên (bảo mật y khoa)</caption>
+            <thead><tr><th>Thành viên</th><th>Tình trạng</th><th>Ghi chú</th></tr></thead>
+            <tbody>
+              <tr><td>Anh Phạm Lê Hưng</td><td>Gout cấp, Axit uric cao</td><td>Phát hiện qua khám định kỳ. Thói quen tiếp khách bia rượu. Cần chuẩn bị hồ sơ bệnh án khi tham gia BH.</td></tr>
+              <tr><td>Chị Vũ Ngọc Minh Tuyền</td><td>Hồng cầu nhạt, nhược sắc nhẹ</td><td>Không phải điều trị y tế đặc biệt. Thẩm định bảo hiểm thuận lợi.</td></tr>
+              <tr><td>Bé Phạm Vũ Hà Vi</td><td>Viêm da cơ địa, dày sừng</td><td>Da khô nhẹ ngoài da, không ảnh hưởng thẩm định BHSK &amp; bổ trợ tai nạn/bệnh lý.</td></tr>
+              <tr><td>Bé Phạm Vũ Anh Minh</td><td>Sarcoma cơ đùi, đang theo phác đồ</td><td>Đang điều trị trực tiếp. Tạm hoãn thẩm định BH thương mại. Đảm bảo bằng Quỹ Y tế riêng 1.0 tỷ tiền mặt.</td></tr>
+            </tbody>
+          </table>
+
+          <div class="footer-note">
+            <b>Cam kết bảo mật:</b> Toàn bộ câu chuyện và số liệu tài chính mà Anh/Chị gửi gắm không chỉ là dữ liệu, mà là niềm tin. Chúng tôi cam kết bảo vệ thông tin này như chính sự an toàn tài chính của Anh/Chị.<br><br>
+            <b>Khước từ trách nhiệm:</b> Báo cáo này là bức tranh phác thảo dựa trên chia sẻ hiện tại của Anh/Chị. Các khuyến nghị tại đây đóng vai trò kim chỉ nam định hướng, không phải công thức cố định hay cam kết tài chính ngắn hạn.<br><br>
+            Tư vấn: Yến Lê × Hương Nguyễn — Private Financial Advisory.
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const NAV = [
+    {id:'s1', num:'I',   label:'Hồ sơ gia đình',      sub:'Thành viên & bối cảnh'},
+    {id:'s2', num:'II',  label:'Tháp tài sản',        sub:'Nguyên tắc 3 tầng'},
+    {id:'s3', num:'III', label:'Dòng tiền & tài sản', sub:'Cấu trúc hiện tại'},
+    {id:'s4', num:'IV',  label:'Checklist bảo hiểm',  sub:'Tầng 1 · 220tr/năm'},
+    {id:'s5', num:'V',   label:'Phương án Tầng 2',    sub:'Giáo dục & hưu trí'},
+    {id:'s6', num:'VI',  label:'Lộ trình hành động',  sub:'4 tỷ & 3 giai đoạn'},
+    {id:'s7', num:'VII', label:'Phụ lục dữ liệu',     sub:'Khảo sát gốc'},
+  ];
+
+  const sbNav = document.getElementById('sbNav');
+  NAV.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'nav-item' + (i===0 ? ' active' : '');
+    el.dataset.target = item.id;
+    el.innerHTML = `<div class="num">${item.num}</div><div><div class="lbl">${item.label}</div><span class="sub">${item.sub}</span></div>`;
+    sbNav.appendChild(el);
+  });
+
+  const shell = document.getElementById('shell');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
+  const collapseBtn = document.getElementById('collapseBtn');
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const crumb = document.getElementById('crumb');
+  const topTitle = document.getElementById('topTitle');
+  const isMobile = () => window.innerWidth <= 900;
+
+  function setActiveSection(id){
+    document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.dataset.section === id));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.target === id));
+    const item = NAV.find(n => n.id === id);
+    if(item){ crumb.textContent = 'Phần ' + item.num; topTitle.textContent = item.label.charAt(0).toUpperCase() + item.label.slice(1); }
+    document.getElementById('content').scrollTop = 0;
+    window.scrollTo({top:0, behavior:'instant'});
+    localStorage.setItem('report_section', id);
+  }
+
+  sbNav.addEventListener('click', (e) => {
+    const item = e.target.closest('.nav-item');
+    if(!item) return;
+    setActiveSection(item.dataset.target);
+    if(isMobile()) closeDrawer();
+  });
+
+  // collapse (desktop) / drawer (mobile)
+  function openDrawer(){ sidebar.classList.add('open'); overlay.classList.add('show'); }
+  function closeDrawer(){ sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+
+  collapseBtn.addEventListener('click', () => {
+    shell.classList.toggle('collapsed');
+    localStorage.setItem('report_collapsed', shell.classList.contains('collapsed') ? '1' : '0');
+  });
+  hamburgerBtn.addEventListener('click', () => {
+    if(sidebar.classList.contains('open')) closeDrawer(); else openDrawer();
+  });
+  overlay.addEventListener('click', closeDrawer);
+
+  // restore state
+  if(localStorage.getItem('report_collapsed') === '1' && !isMobile()) shell.classList.add('collapsed');
+  const savedSection = localStorage.getItem('report_section');
+  if(savedSection) setActiveSection(savedSection);
+
+  // summary/detail toggle
+  document.querySelectorAll('.view-switch button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.view-switch button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const mode = btn.dataset.view;
+      document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.dataset.view === mode));
+    });
+  });
+
+  // readiness ring animate (0% now -> shown statically, but animate draw-in)
+  const arc = document.getElementById('readinessArc');
+  const circumference = 2 * Math.PI * 19;
+  arc.setAttribute('stroke-dasharray', circumference.toFixed(1));
+  arc.setAttribute('stroke-dashoffset', circumference.toFixed(1));
+
+  window.addEventListener('resize', () => { if(!isMobile()) closeDrawer(); });
+})();
+</script>
+</body>
+</html>
