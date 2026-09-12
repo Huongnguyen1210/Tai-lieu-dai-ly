@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sổ tay 90 ngày cho Đại lý mới | Manulife</title>
+<style>
+:root{
+  --green-900:#0B4A29;
+  --green-700:#0F6B3A;
+  --green-600:#15803D;
+  --green-500:#1F9D5A;
+  --green-100:#E7F3EC;
+  --green-50:#F3FAF6;
+  --cream:#FAFAF8;
+  --ink:#1F2937;
+  --ink-soft:#5B6472;
+  --border:#E1E7E2;
+  --amber:#B45309;
+  --amber-bg:#FFF4E5;
+  --amber-border:#E3B37A;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+  color:var(--ink);
+  background:var(--cream);
+  line-height:1.55;
+}
+.layout{display:flex;min-height:100vh;}
+
+/* ===== SIDEBAR (≈20% of a typical desktop viewport) ===== */
+.sidebar{
+  background:linear-gradient(180deg,var(--green-900),var(--green-700) 60%);
+  color:#fff;
+  display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;
+  overflow:hidden;
+  z-index:40;
+  flex:0 0 280px;
+  width:280px;
+  transition:flex-basis .22s ease,width .22s ease;
+}
+.sidebar.autohide{overflow:visible;flex-basis:52px;width:52px;}
+.sidebar.autohide:hover{
+  position:fixed;left:0;top:0;bottom:0;
+  width:290px!important;
+  box-shadow:10px 0 30px rgba(0,0,0,.25);
+  overflow-y:auto;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+  padding:22px 18px 16px 18px;
+  border-bottom:1px solid rgba(255,255,255,.15);
+  white-space:nowrap;
+}
+.brand-mark{display:flex;gap:3px;flex-shrink:0;}
+.brand-mark i{display:block;width:5px;background:#8FE3B3;border-radius:2px;}
+.brand-mark i:nth-child(1){height:14px;}
+.brand-mark i:nth-child(2){height:20px;}
+.brand-mark i:nth-child(3){height:26px;}
+.brand-text{overflow:hidden;}
+.brand-text b{display:block;font-size:14.5px;letter-spacing:.3px;}
+.brand-text span{display:block;font-size:11.5px;color:#BFE3CE;margin-top:1px;}
+
+.nav{flex:1;overflow-y:auto;padding:14px 10px;}
+.nav button{
+  width:100%;text-align:left;background:none;border:none;color:#E7F3EC;
+  padding:11px 12px;margin-bottom:3px;border-radius:8px;cursor:pointer;
+  display:flex;align-items:center;gap:11px;white-space:nowrap;overflow:hidden;
+  font-size:13.6px;font-weight:500;
+}
+.nav button .num{
+  flex-shrink:0;width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;
+}
+.nav button:hover{background:rgba(255,255,255,.10);}
+.nav button.active{background:#fff;color:var(--green-800,#0B4A29);}
+.nav button.active .num{background:var(--green-600);color:#fff;}
+
+.sidebar-controls{
+  padding:14px 14px 18px 14px;border-top:1px solid rgba(255,255,255,.15);
+  font-size:12px;white-space:nowrap;overflow:hidden;
+}
+.toggle-row{display:flex;align-items:center;gap:9px;margin-bottom:11px;}
+.toggle-row:last-child{margin-bottom:0;}
+.switch{position:relative;width:34px;height:19px;flex-shrink:0;}
+.switch input{opacity:0;width:0;height:0;}
+.slider{position:absolute;inset:0;background:rgba(255,255,255,.25);border-radius:20px;cursor:pointer;transition:.2s;}
+.slider:before{content:"";position:absolute;width:14px;height:14px;left:2.5px;top:2.5px;background:#fff;border-radius:50%;transition:.2s;}
+.switch input:checked + .slider{background:#8FE3B3;}
+.switch input:checked + .slider:before{transform:translateX(15px);background:var(--green-800,#0B4A29);}
+.toggle-label{color:#E7F3EC;line-height:1.3;}
+.toggle-label small{display:block;color:#BFE3CE;font-size:10.5px;}
+
+/* ===== MAIN ===== */
+.main{padding:0;min-width:0;flex:1 1 auto;}
+.topbar{
+  position:sticky;top:0;z-index:20;background:rgba(250,250,248,.92);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--border);
+  padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.topbar h1{font-size:19px;margin:0;color:var(--green-900);letter-spacing:.2px;}
+.topbar .crumb{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+.topbar-actions{display:flex;gap:8px;flex-shrink:0;}
+.btn-mini{
+  border:1px solid var(--border);background:#fff;color:var(--ink);
+  font-size:12px;padding:7px 12px;border-radius:7px;cursor:pointer;white-space:nowrap;
+}
+.btn-mini:hover{border-color:var(--green-500);color:var(--green-700);}
+
+.content{padding:26px 32px 70px 32px;max-width:980px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.hero{
+  background:linear-gradient(135deg,var(--green-900),var(--green-700));
+  color:#fff;border-radius:16px;padding:26px 28px;margin-bottom:22px;
+}
+.hero h2{margin:0 0 8px 0;font-size:22px;}
+.hero p{margin:0;color:#DDF0E5;font-size:14.5px;max-width:640px;}
+.hero .tag{display:inline-block;background:rgba(255,255,255,.16);padding:3px 10px;border-radius:20px;font-size:11.5px;margin-bottom:10px;letter-spacing:.3px;}
+
+h3.group-title{
+  font-size:15px;color:var(--green-800,var(--green-900));text-transform:uppercase;letter-spacing:.5px;
+  margin:30px 0 12px 0;padding-bottom:6px;border-bottom:2px solid var(--green-100);
+}
+h4.sub{font-size:15.5px;color:var(--ink);margin:18px 0 8px 0;}
+p{font-size:14.3px;color:var(--ink);}
+.bigquote{text-align:center;font-style:italic;font-size:19px;color:var(--green-700);margin:14px 0 4px 0;line-height:1.4;}
+.bigquote-src{text-align:center;font-style:italic;font-size:12.5px;color:var(--ink-soft);margin:0 0 4px 0;}
+.bigquote-note{font-style:italic;font-size:12px;color:var(--ink-soft);margin:0 0 16px 0;}
+.muted{color:var(--ink-soft);font-size:13px;}
+
+/* details/summary cards */
+details{
+  background:#fff;border:1px solid var(--border);border-radius:10px;
+  margin-bottom:9px;overflow:hidden;
+}
+details[open]{border-color:var(--green-500);}
+summary{
+  list-style:none;cursor:pointer;padding:12px 16px;display:flex;align-items:center;gap:10px;
+  font-size:14px;font-weight:600;color:var(--ink);
+}
+summary::-webkit-details-marker{display:none;}
+summary .chev{
+  margin-left:auto;flex-shrink:0;width:18px;height:18px;color:var(--ink-soft);
+  transition:transform .18s ease;
+}
+details[open] summary .chev{transform:rotate(90deg);color:var(--green-600);}
+summary .badge{
+  font-weight:500;font-size:11.5px;color:var(--green-700);background:var(--green-100);
+  padding:2px 9px;border-radius:20px;flex-shrink:0;white-space:nowrap;
+}
+.detail-body{padding:2px 16px 16px 16px;font-size:13.6px;color:var(--ink);}
+.detail-body ul{margin:6px 0;padding-left:20px;}
+.detail-body li{margin-bottom:5px;}
+
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13px;}
+th{background:var(--green-700);color:#fff;text-align:left;padding:8px 10px;font-weight:600;}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top;}
+tr:nth-child(even) td{background:var(--green-50);}
+
+.callout{border-radius:10px;padding:14px 16px;margin:14px 0;font-size:13.4px;}
+.callout.note{background:var(--green-100);border:1px solid #BFE3CE;}
+.callout.note b.tag{color:var(--green-800,var(--green-900));display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;}
+.callout.warn{background:var(--amber-bg);border:1px solid var(--amber-border);}
+.callout.warn b.tag{color:var(--amber);display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;}
+.callout.todo{background:#FDF3E7;border:1px dashed #D8A94A;color:#7A5115;}
+
+.trainer-only{display:none;}
+body.show-trainer .trainer-only{display:block;}
+.trainer-tag{
+  display:inline-flex;align-items:center;gap:6px;background:#1E3A8A;color:#fff;font-size:10.5px;
+  padding:3px 9px;border-radius:20px;letter-spacing:.3px;margin-bottom:10px;
+}
+
+.checklist label{display:flex;gap:9px;align-items:flex-start;font-size:13.6px;margin-bottom:7px;padding:2px 0;}
+.checklist input{margin-top:3px;flex-shrink:0;}
+.checklist .tag-req{font-size:10.5px;background:#FCE4E4;color:#B42318;padding:1px 8px;border-radius:20px;margin-left:6px;white-space:nowrap;}
+.checklist .tag-opt{font-size:10.5px;background:#E6F0FF;color:#1D4ED8;padding:1px 8px;border-radius:20px;margin-left:6px;white-space:nowrap;}
+.checklist .tag-cond{font-size:10.5px;background:#F3E8FF;color:#7E22CE;padding:1px 8px;border-radius:20px;margin-left:6px;white-space:nowrap;}
+.checklist .tag-priority{font-size:10.5px;background:#FFF1CC;color:#92660A;padding:1px 8px;border-radius:20px;margin-left:6px;white-space:nowrap;font-weight:700;}
+
+/* funnel 10-5-3-1 */
+.funnel{display:flex;flex-direction:column;align-items:center;gap:4px;margin:22px 0;}
+.funnel .step{
+  color:#fff;border-radius:10px;padding:14px 20px;text-align:center;transition:.2s;
+}
+.funnel .step .n{font-size:28px;font-weight:800;line-height:1;}
+.funnel .step .l{font-size:12.5px;margin-top:3px;opacity:.95;}
+.funnel .arrow{color:var(--green-600);font-size:16px;}
+.funnel .s1{width:92%;background:#BFE3CE;color:var(--green-900);}
+.funnel .s2{width:70%;background:#7FCB9F;color:var(--green-900);}
+.funnel .s3{width:48%;background:#3FAE72;}
+.funnel .s4{width:26%;background:var(--green-900);}
+
+/* career ladder (2 hướng phát triển) */
+.ladder-wrap{display:flex;gap:22px;margin:20px 0;flex-wrap:wrap;}
+.ladder{flex:1;min-width:240px;display:flex;flex-direction:column;}
+.ladder-steps{display:flex;flex-direction:column-reverse;gap:5px;}
+.ladder-step{color:#fff;font-weight:700;font-size:12.5px;padding:9px 12px;border-radius:6px;text-align:center;background:linear-gradient(90deg,#1E88E5,var(--green-500));}
+.ladder-banner{margin-top:8px;text-align:center;font-weight:800;font-size:13px;color:#fff;padding:9px;border-radius:6px;}
+.ladder.agent .ladder-banner{background:var(--green-700);}
+.ladder.manager .ladder-banner{background:#12206B;}
+.ladder.agent .ladder-step:nth-child(1){width:55%;}
+.ladder.agent .ladder-step:nth-child(2){width:65%;}
+.ladder.agent .ladder-step:nth-child(3){width:75%;}
+.ladder.agent .ladder-step:nth-child(4){width:85%;}
+.ladder.agent .ladder-step:nth-child(5){width:93%;}
+.ladder.agent .ladder-step:nth-child(6){width:100%;}
+.ladder.manager .ladder-step:nth-child(1){width:60%;}
+.ladder.manager .ladder-step:nth-child(2){width:75%;}
+.ladder.manager .ladder-step:nth-child(3){width:88%;}
+.ladder.manager .ladder-step:nth-child(4){width:100%;}
+
+
+/* mapa */
+.mapa-formula{
+  text-align:center;font-size:16px;font-weight:700;color:var(--green-900);
+  background:var(--green-100);border-radius:12px;padding:16px;margin:14px 0;
+  letter-spacing:.2px;
+}
+.mapa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0;}
+.mapa-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.mapa-card h5{margin:0 0 6px 0;font-size:13.5px;color:var(--green-800,var(--green-900));}
+.mapa-card p{font-size:12.6px;margin:0 0 6px 0;color:var(--ink-soft);}
+.mapa-card .q{font-size:12px;font-style:italic;color:var(--green-700);}
+
+.kit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px;}
+.kit-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.kit-card h5{margin:0 0 4px 0;font-size:14px;color:var(--ink);}
+.kit-card .when{display:inline-block;font-size:11px;background:var(--green-100);color:var(--green-800,var(--green-900));padding:2px 9px;border-radius:20px;margin-bottom:7px;}
+.kit-card p{font-size:12.8px;margin:0;color:var(--ink-soft);}
+
+.footer-note{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-size:11.5px;color:var(--ink-soft);}
+
+/* mobile */
+.hamburger{display:none;}
+@media(max-width:860px){
+  .layout{display:block;}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:280px!important;flex-basis:auto;transform:translateX(-100%);transition:transform .22s ease;z-index:60;}
+  .sidebar.mobile-open{transform:translateX(0);}
+  .hamburger{
+    display:flex;align-items:center;justify-content:center;
+    width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer;flex-shrink:0;
+  }
+  .content{padding:20px 16px 60px 16px;}
+  .topbar{padding:12px 16px;}
+  .mapa-grid{grid-template-columns:1fr 1fr;}
+  .kit-grid{grid-template-columns:1fr;}
+  .sidebar-backdrop.show{display:block;}
+}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(10,20,15,.45);z-index:55;}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="brand-mark"><i></i><i></i><i></i></span>
+      <span class="brand-text"><b>MANULIFE</b><span>Sổ tay 90 ngày · Đại lý mới</span></span>
+    </div>
+    <nav class="nav" id="nav">
+      <button data-target="tab-overview" class="active"><span class="num">0</span><span>Tổng quan &amp; cách dùng</span></button>
+      <button data-target="tab-todo"><span class="num">1</span><span>Việc cần làm 90 ngày</span></button>
+      <button data-target="tab-comp"><span class="num">2</span><span>Chính sách thù lao</span></button>
+      <button data-target="tab-product"><span class="num">3</span><span>Sản phẩm</span></button>
+      <button data-target="tab-chain"><span class="num">4</span><span>Khách hàng — CHAIN</span></button>
+      <button data-target="tab-goal"><span class="num">5</span><span>Mục tiêu &amp; tăng tốc</span></button>
+      <button data-target="tab-kit"><span class="num">6</span><span>Sale kit cơ bản</span></button>
+    </nav>
+    <div class="sidebar-controls">
+      <div class="toggle-row">
+        <label class="switch"><input type="checkbox" id="autohideToggle"><span class="slider"></span></label>
+        <span class="toggle-label">Tự động ẩn thanh này<small>Thu gọn còn dải mỏng, di chuột vào để mở</small></span>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="hamburger" id="hamburger">☰</div>
+        <div>
+          <h1 id="topTitle">Tổng quan &amp; cách dùng</h1>
+          <div class="crumb" id="topCrumb">Đào tạo 90 ngày · Manulife Việt Nam</div>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-mini" id="expandAll">Mở tất cả</button>
+        <button class="btn-mini" id="collapseAll">Đóng tất cả</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ============ TAB 0: TỔNG QUAN ============ -->
+      <section class="tab-panel active" id="tab-overview">
+        <div class="hero">
+          <span class="tag">THÔNG ĐIỆP CHÍNH</span>
+          <h2>Gia tốc lớn ở thời gian đầu → kết quả vượt mặt bằng chung</h2>
+          <p>90 ngày đầu là giai đoạn động lực, thời gian và sự chú ý của thị trường dành cho bạn cao nhất. Đặt mục tiêu LỚN và dồn lực ngay từ đầu — thay vì khởi động an toàn rồi tăng dần — sẽ tạo ra hiệu suất lao động cao hơn hẳn so với cách làm rải đều. Xem chi tiết ở tab "Mục tiêu &amp; tăng tốc".</p>
+        </div>
+
+        <h3 class="group-title">Tài liệu này dùng để làm gì</h3>
+        <p>Gồm 6 nhóm nội dung một nhân sự kinh doanh mới cần nắm để "nhập cuộc" nhanh nhất: việc cần làm theo mốc thời gian, cách được trả thù lao, hiểu sản phẩm, biết tìm và đánh giá khách hàng, biến tất cả thành mục tiêu/kế hoạch hành động, và bộ công cụ (sale kit) cơ bản để dùng ngay.</p>
+
+        <h3 class="group-title">Ký hiệu dùng trong tài liệu</h3>
+        <div class="callout note"><b class="tag">Khung xanh</b>Thông tin chính, áp dụng được ngay.</div>
+        <div class="callout warn"><b class="tag">Khung cam</b>Cảnh báo/giới hạn quan trọng — đọc kỹ trước khi áp dụng, đặc biệt với nội dung thù lao.</div>
+        <div class="callout todo"><b>[CẦN BỔ SUNG]</b> — vị trí cần Hương hoặc phòng ban liên quan cập nhật thêm.</div>
+
+        <h3 class="group-title">Nguồn dữ liệu</h3>
+        <table>
+          <tr><th>Nội dung</th><th>Nguồn</th></tr>
+          <tr><td>Việc cần làm 90 ngày</td><td>4 sheet nội bộ: checklist theo Hương Nguyễn, lịch 12 buổi đào tạo, Cẩm nang 90 ngày, chương trình đào tạo đại lý hiện hữu</td></tr>
+          <tr><td>Chính sách thù lao — đại lý mới</td><td>"Vòng 1 – Chính sách thu nhập dành cho Đại lý" (Thông báo 0047M01/2026/ASBD, 0003M02/2026/ASBD)</td></tr>
+          <tr><td>Chính sách thù lao — UM+</td><td>"Vòng 2 – Biểu phí dịch vụ dành cho UM+" (cùng thông báo trên)</td></tr>
+          <tr><td>Manulife Pro &amp; lộ trình 5 năm</td><td>Tài liệu hội thảo tuyển dụng "Tìm kiếm Đại sứ Xanh Phú Quý" (08/08/2026) — tài liệu marketing/tuyển dụng, không phải chính sách chính thức</td></tr>
+          <tr><td>Sản phẩm ILP</td><td>QT&amp;ĐK chính thức 3 sản phẩm, trang sản phẩm Manulife VN, slide chuyên đề Xanh Phú Quý (04/2026)</td></tr>
+          <tr><td>Khách hàng — CHAIN</td><td>File mẫu "DS khách hàng tiềm năng (Họ tên đại lý_Mã số).xlsx"</td></tr>
+        </table>
+        <div class="callout warn"><b class="tag">Lưu ý quan trọng</b>Cả 2 tài liệu chính sách thù lao gốc đều ghi rõ: đây CHỈ là thông tin tham khảo, KHÔNG dùng làm căn cứ giải quyết thắc mắc/khiếu nại. Luôn đối chiếu Thông báo chính sách thù lao chính thức mới nhất trước khi tư vấn hoặc cam kết thu nhập với đại lý/ứng viên.</div>
+      </section>
+
+      <!-- ============ TAB 1: TO-DO 90 NGÀY ============ -->
+      <section class="tab-panel" id="tab-todo">
+        <div class="hero">
+          <span class="tag">PHẦN 1</span>
+          <h2>Việc cần làm 90 ngày</h2>
+          <p>Chia theo 4 giai đoạn: Trước MIT, Trong MIT, Ngày 1–30, Ngày 31–90 — cộng lịch 12 buổi đào tạo tập trung chạy song song.</p>
+        </div>
+
+        <h3 class="group-title">Giai đoạn Trước MIT</h3>
+        <div class="checklist">
+          <label><input type="checkbox"><span>Làm bản khảo sát nghề nghiệp (E-pamphlet) <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Phỏng vấn lần 1 — trao đổi thông tin và nhu cầu ứng viên <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Làm bản khảo sát mức độ phù hợp công việc (Popscreen) <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Phỏng vấn lần 2 — giới thiệu chính sách thù lao/đào tạo + lập DS 20 khách hàng tiềm năng <span class="tag-req">Bắt buộc</span></span></label>
+        </div>
+
+        <h3 class="group-title">Giai đoạn Trong MIT</h3>
+        <div class="checklist">
+          <label><input type="checkbox"><span>Học offline 3–5 ngày (Blended/Offline toàn bộ) — chuẩn bị bộ ôn tập MIT+ILP, sổ bút, CMND/CCCD, trang phục công sở <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Đọc Cẩm nang 90 ngày dành cho đại lý mới <span class="tag-opt">Khuyến khích</span></span></label>
+        </div>
+
+        <h3 class="group-title">Ngày 1–30 sau MIT</h3>
+        <div class="checklist">
+          <label><input type="checkbox"><span>Viết script "Câu chuyện của tôi" — lý do làm bảo hiểm <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Lên mục tiêu bằng form SOP, lập kế hoạch hành động, học chính sách thù lao <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Phân tích danh sách KHTN theo phân khúc <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Học khảo sát thị trường; đặt hẹn theo công thức 10-5-3-1; tận dụng mạng xã hội <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Hướng dẫn hệ thống: Daily/AWS, MPA, ManuAcademy <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Học đủ các sản phẩm trên ManuAcademy (xem danh sách chi tiết ngay bên dưới) <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Tổng quan BHNT &amp; kiến thức sản phẩm; tạo thiện cảm; giới thiệu Manulife <span class="tag-req">Bắt buộc</span></span></label>
+        </div>
+
+        <details open>
+          <summary><span>Danh sách sản phẩm cần học đủ trên ManuAcademy</span><span class="badge">Một trong các việc quan trọng nhất</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <h4 class="sub">A. Sản phẩm chính (4 sản phẩm)</h4>
+
+            <p class="muted" style="margin-bottom:4px;"><b>A.1 — Dòng Liên kết chung (UL)</b></p>
+            <table>
+              <tr><th>#</th><th>Sản phẩm</th><th>Điều kiện học/thi</th></tr>
+              <tr><td>1</td><td>Xanh Ước Mơ (UL2025)</td><td>Học ngay</td></tr>
+            </table>
+
+            <p class="muted" style="margin:14px 0 4px 0;"><b>A.2 — Dòng Liên kết đơn vị (ILP)</b></p>
+            <table>
+              <tr><th>#</th><th>Sản phẩm</th><th>Điều kiện học/thi</th></tr>
+              <tr><td>2</td><td>Xanh Tương Lai (ILP2025)</td><td>Chỉ học nếu đã học khóa ILP và thi đạt code ILP của Bộ Tài chính</td></tr>
+              <tr><td>3</td><td>Xanh Phú Quý Flex</td><td>Chỉ học nếu đã học khóa ILP và thi đạt code ILP của Bộ Tài chính</td></tr>
+              <tr><td>4</td><td>Xanh Phú Quý</td><td>Chỉ học nếu: (a) được tuyển theo chương trình Manulife Pro Ngoại Lực, HOẶC (b) đã đạt Manulife Pro Bạc theo hướng nội lực (3 hợp đồng, 40 triệu phí) — và vẫn cần đã học khóa ILP, thi đạt code ILP của Bộ Tài chính như #2</td></tr>
+            </table>
+            <p class="muted">Sản phẩm #2, #3, #4 (nhóm A.2) là sản phẩm Liên kết đơn vị (ILP) — chỉ được học/bán sau khi đã hoàn thành khóa đào tạo ILP và thi đạt code ILP do Bộ Tài chính tổ chức. Chưa có code ILP thì tạm thời tập trung nhóm sản phẩm còn lại.</p>
+
+            <h4 class="sub">B. Sản phẩm bổ trợ (6 sản phẩm)</h4>
+
+            <p class="muted" style="margin-bottom:4px;"><b>B.1 — Nhóm bổ trợ y tế</b></p>
+            <table>
+              <tr><th>#</th><th>Sản phẩm</th><th>Vai trò</th><th>Điều kiện học/thi</th></tr>
+              <tr><td>5</td><td>Sống Khỏe Mỗi Ngày 2024 — phiên bản cải tiến</td><td>Bổ trợ y tế</td><td>Học ngay</td></tr>
+              <tr><td>6</td><td>Dự Phòng Xanh</td><td>Trợ cấp y tế</td><td>Học ngay</td></tr>
+            </table>
+
+            <p class="muted" style="margin:14px 0 4px 0;"><b>B.2 — Nhóm bổ trợ khác</b></p>
+            <table>
+              <tr><th>#</th><th>Sản phẩm</th><th>Vai trò</th><th>Điều kiện học/thi</th></tr>
+              <tr><td>7</td><td>Lá Chắn Xanh</td><td>Bệnh lý nghiêm trọng</td><td>Học ngay</td></tr>
+              <tr><td>8</td><td>Hộ Vệ Xanh</td><td>Thương tật và tử vong do tai nạn</td><td>Học ngay</td></tr>
+              <tr><td>9</td><td>Bảo Thân Xanh</td><td>Tử vong và thương tật toàn bộ vĩnh viễn</td><td>Học ngay</td></tr>
+              <tr><td>10</td><td>Bảo Phí Xanh — <a href="https://www.manulife.com.vn/vi/cac-san-pham-bo-tro-bao-hiem-nhan-tho/bao-phi-xanh.html" target="_blank" rel="noopener">link sản phẩm</a></td><td>Miễn đóng phí khi Tử vong/Thương tật toàn bộ vĩnh viễn, và miễn đóng phí khi Bệnh lý nghiêm trọng</td><td>Học ngay</td></tr>
+            </table>
+            <div class="callout note">
+              <b class="tag">Sản phẩm #10 — Bảo Phí Xanh (nguồn: trang sản phẩm chính thức Manulife VN)</b>
+              Bộ đôi sản phẩm bảo hiểm đính kèm giúp bảo vệ kế hoạch đóng phí dài hạn trước biến cố bất ngờ — gồm 2 sản phẩm: <b>Bảo Phí Xanh – Tử vong hoặc Thương Tật Toàn Bộ Vĩnh Viễn</b> và <b>Bảo Phí Xanh – Bệnh Lý Nghiêm Trọng</b>. Khi biến cố xảy ra, quyền lợi miễn đóng phí kích hoạt để hợp đồng chính tiếp tục hiệu lực mà khách hàng không phải tự đóng phí. 3 điểm nổi bật: (1) Biến cố xảy ra, quyền lợi đóng phí kích hoạt, giúp duy trì kế hoạch tài chính dài hạn; (2) Chủ động chọn thời hạn miễn đóng phí theo nhu cầu ngay từ đầu; (3) Thêm lớp bảo vệ, giảm áp lực tài chính khi gặp biến cố.
+            </div>
+            <ul>
+              <li>Sau khi học xong toàn bộ sản phẩm: học <b>EPOS web</b> (công cụ minh họa quyền lợi, dùng ở Buổi 7 và khi chốt phương án với khách hàng).</li>
+              <li><b>ILP Refresh:</b> học lại đầu mỗi quý — bắt buộc nếu muốn tiếp tục bán sản phẩm Liên kết đơn vị (Xanh Tương Lai, Xanh Phú Quý Flex, Xanh Phú Quý).</li>
+            </ul>
+          </div>
+        </details>
+
+        <div class="checklist" style="margin-top:9px;">
+          <label><input type="checkbox"><span>Khơi gợi nhu cầu &amp; xác định ai nên tham gia BH <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Phân tích nhu cầu tài chính KH &amp; mức bảo vệ phù hợp <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Trình bày giải pháp — lưu ý thiết kế &amp; thứ tự trình bày <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Kỹ thuật chốt hợp đồng; giải đáp từ chối thường gặp <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Quy trình xử lý HSYCBH, lưu ý điền hồ sơ; đóng phí bảo hiểm đầu tiên qua ePOS (không thu tiền mặt, không có phiếu thu) <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Trao hợp đồng — bộ HĐ hoàn chỉnh, quy định bàn giao <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Review kết quả 30 ngày đầu với Quản lý trực tiếp <span class="tag-req">Bắt buộc</span></span></label>
+          <label><input type="checkbox"><span>Nếu mục tiêu là lên Quản lý (UM+): bắt đầu tuyển dụng ngay trong tháng đầu qua chương trình Manulife Pro Ngoại Lực <span class="tag-cond">Có điều kiện</span></span></label>
+          <label><input type="checkbox"><span>Đăng ký học khóa SBW (Skill Building Workshop) — 3 ngày offline, mở lớp mỗi tháng 2 lần — đăng ký CÀNG SỚM CÀNG TỐT <span class="tag-priority">Ưu tiên cao</span></span></label>
+          <label><input type="checkbox"><span>Điểm danh "Đội ngũ chuyên cần" tối thiểu 4/8 buổi/tháng — điều kiện nhận Thưởng chuyên cần 1,2 triệu/tháng khi có hợp đồng đạt 18 triệu FYP <span class="tag-priority">Ưu tiên cao</span></span></label>
+          <label><input type="checkbox"><span>Học &amp; điểm danh Green Friday tối thiểu 2/4 buổi/tháng (kết hợp chuyên cần 4/8 buổi) — nâng thưởng lên 2,2 triệu/tháng, cùng điều kiện hợp đồng 18 triệu FYP <span class="tag-priority">Ưu tiên cao</span></span></label>
+          <label><input type="checkbox"><span>Thực hành tư vấn tối thiểu 10 khách hàng trong 2 tháng <span class="tag-opt">Khuyến khích</span></span></label>
+        </div>
+        <div class="callout warn">
+          <b class="tag">3 việc nên làm SỚM NHẤT trong 30 ngày đầu</b>
+          SBW là khóa kỹ năng nền tảng — lịch mở 2 lần/tháng nên đăng ký ngay khi có thông báo, tránh lỡ đợt phải chờ cả tháng. Thưởng chuyên cần/Green Friday tính theo THÁNG — bỏ lỡ điểm danh tháng nào sẽ mất thưởng tháng đó, không cộng dồn. Nguồn: thông báo nội bộ "Green Friday" và slide "Hành trình phát triển đại lý mới" — không phải Thông báo chính sách thù lao Vòng 1/Vòng 2; đối chiếu lại với Trainer/Quản lý trực tiếp.
+        </div>
+
+        <h3 class="group-title">Lịch 12 buổi đào tạo tập trung</h3>
+        <details>
+          <summary><span>Buổi 1–4: Nhập môn, chân dung khách hàng, sản phẩm</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Buổi</th><th>Nội dung</th><th>Đầu ra</th></tr>
+              <tr><td>1</td><td>Welcome &amp; giới thiệu chương trình 90 ngày</td><td>File theo dõi thưởng &amp; mục tiêu học viên</td></tr>
+              <tr><td>2</td><td>Chân dung khách hàng tiềm năng</td><td>Danh sách 30 KHTN/đại lý</td></tr>
+              <tr><td>3</td><td>Sản phẩm chính (học ManuAcademy trước)</td><td>Hoàn tất quiz sản phẩm chính</td></tr>
+              <tr><td>4</td><td>Sản phẩm đính kèm (học ManuAcademy trước)</td><td>Hoàn tất quiz sản phẩm đính kèm</td></tr>
+            </table>
+          </div>
+        </details>
+        <details>
+          <summary><span>Buổi 5–8: Khơi gợi, phân tích nhu cầu, thiết kế giải pháp</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Buổi</th><th>Nội dung</th><th>Đầu ra</th></tr>
+              <tr><td>5</td><td>Kỹ năng khơi gợi nhu cầu về BHNT</td><td>Đối luyện 3 case study</td></tr>
+              <tr><td>6</td><td>Phân tích nhu cầu tài chính — dùng Khảo sát</td><td>Đối luyện 2 case study</td></tr>
+              <tr><td>7</td><td>Phân tích nhu cầu tài chính — dùng EPOS</td><td>Phân tích 2 case study thực tế</td></tr>
+              <tr><td>8</td><td>Thiết kế &amp; trình bày giải pháp</td><td>Thiết kế &amp; trình bày 2 case study</td></tr>
+            </table>
+          </div>
+        </details>
+        <details>
+          <summary><span>Buổi 9–12: Chốt sale, bàn giao, USP Manulife</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Buổi</th><th>Nội dung</th><th>Đầu ra</th></tr>
+              <tr><td>9</td><td>Phương pháp chốt sales cơ bản/nâng cao</td><td>Đối luyện chốt sale</td></tr>
+              <tr><td>10</td><td>Bàn giao hợp đồng &amp; xin lời giới thiệu</td><td>Đối luyện bàn giao &amp; xin giới thiệu</td></tr>
+              <tr><td>11</td><td>Khảo sát hài lòng nghề nghiệp + khơi gợi nhu cầu</td><td>Đối luyện bằng khảo sát</td></tr>
+              <tr><td>12</td><td>USP làm việc tại Manulife &amp; team MDRT Elites</td><td>Đối luyện 2 case study</td></tr>
+            </table>
+          </div>
+        </details>
+        <div class="callout note">
+          <b class="tag">Lưu ý khi tham gia lớp</b>
+          Phụ trách từng buổi và lịch cụ thể (ngày trong tuần, giờ học) chưa chốt — cập nhật khi có thông báo chính thức. Trễ quá 30 phút không được join. Phí tham gia: học viên Inhouse miễn phí, học viên khác 200.000đ/buổi.
+        </div>
+
+        <h3 class="group-title">Ngày 31–90 (định hướng MDRT, nâng cao)</h3>
+        <table>
+          <tr><th>Mốc ngày</th><th>Nội dung trọng tâm</th></tr>
+          <tr><td>31–40</td><td>Định hướng MDRT, tạo lập thói quen làm việc tốt</td></tr>
+          <tr><td>41–50</td><td>Tìm KHTN nâng cao; xin lời giới thiệu; xây nguồn từ TTGAH</td></tr>
+          <tr><td>51–60</td><td>Thiết lập cuộc hẹn nâng cao; giải đáp từ chối nâng cao</td></tr>
+          <tr><td>61–70</td><td>Trình bày giải pháp: 2 phong cách bán hàng, câu hỏi dẫn dắt</td></tr>
+          <tr><td>71–80</td><td>Trình bày giải pháp: dấu hiệu cảnh báo, lời thoại mẫu</td></tr>
+          <tr><td>81–90</td><td>Thu xếp hợp đồng: dấu hiệu mua hàng, kỹ thuật chốt, phục vụ sau bán</td></tr>
+        </table>
+      </section>
+
+      <!-- ============ TAB 2: CHÍNH SÁCH THÙ LAO ============ -->
+      <section class="tab-panel" id="tab-comp">
+        <div class="hero">
+          <span class="tag">PHẦN 2 · TRỌNG TÂM ĐẠI LÝ MỚI &amp; MANULIFE PRO</span>
+          <h2>Chính sách thù lao</h2>
+          <p>Tập trung vào chính sách đại lý mới và lộ trình danh hiệu Manulife Pro. Phần Quản lý UM+ chỉ tóm tắt để định hướng phát triển.</p>
+        </div>
+        <div class="callout warn">
+          <b class="tag">Nguồn &amp; giới hạn sử dụng</b>
+          Mục A–B trích nguyên văn từ Thông báo chính sách thù lao chính thức (0047M01/2026/ASBD, 0003M02/2026/ASBD) — tài liệu tham khảo cuộc thi, KHÔNG dùng làm căn cứ giải quyết khiếu nại. Mục C (lộ trình 5 năm, quyền lợi khởi đầu) trích từ tài liệu TUYỂN DỤNG/MARKETING "Đại sứ Xanh Phú Quý" (08/08/2026) — số liệu MÔ PHỎNG, không phải cam kết thu nhập.
+        </div>
+
+        <h3 class="group-title">A. Hai hệ số nhân áp dụng cho hầu hết khoản thưởng (Đại lý)</h3>
+        <details>
+          <summary><span>Hệ số nhân theo Tỷ lệ duy trì hợp đồng năm 2 (TLDTHĐ)</span><span class="badge">Áp dụng từ 04/2026</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>TLDTHĐ năm 2</th><th>Tỷ lệ nhân thưởng</th></tr>
+              <tr><td>&lt; 50%</td><td>% TLDTHĐ thực đạt / 2</td></tr>
+              <tr><td>≥ 50% và &lt; 60%</td><td>50%</td></tr>
+              <tr><td>≥ 60% và &lt; 65%</td><td>70%</td></tr>
+              <tr><td>≥ 65% và &lt; 70%</td><td>90%</td></tr>
+              <tr><td>≥ 70%</td><td>100%</td></tr>
+              <tr><td>Chưa có TLDTHĐ</td><td>100%</td></tr>
+            </table>
+          </div>
+        </details>
+        <details>
+          <summary><span>Hệ số nhân theo Chất lượng kinh doanh (CLKD)</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Quyết định kỷ luật</th><th>Tỷ lệ nhân thưởng</th></tr>
+              <tr><td>Không vi phạm kỷ luật</td><td>100% mức thưởng</td></tr>
+              <tr><td>Thư nhắc nhở</td><td>50% mức thưởng</td></tr>
+              <tr><td>Thư Cảnh cáo / Chấm dứt HĐ Đại lý</td><td>Không đạt thưởng</td></tr>
+            </table>
+            <p class="muted">Công thức chung: Mức thưởng = Mức thưởng theo bảng × Hệ số TLDTHĐ × Hệ số CLKD (một số khoản có thêm biến FYC/FYP).</p>
+          </div>
+        </details>
+
+        <h3 class="group-title">B. Các khoản thưởng dành cho Đại lý (Vòng 1)</h3>
+        <details>
+          <summary><span>1) Thưởng Đại lý mới</span><span class="badge">1.500.000 đ/tháng</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <p>Giai đoạn xét: 2 tháng làm việc đầu tiên. Yêu cầu: 1 hợp đồng và 10 triệu FYP, tham gia "Đội ngũ chuyên cần" ≥4 buổi/tháng, hoàn thành SBW 3 ngày hoặc 8 buổi.</p>
+            <p class="muted">Không áp dụng cho đại lý tái tuyển dưới 24 tháng, hoặc MSĐL cấp trước 01/2026.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span>2) Thưởng Đại lý mới Xuất sắc</span><span class="badge">5.000.000 đ, 1 lần</span><span class="chev">▸</span></summary>
+          <div class="detail-body"><p>Giai đoạn M0+M1+M2. Yêu cầu: 3 hợp đồng và 40 triệu FYP + yêu cầu hoạt động/đào tạo như trên.</p></div>
+        </details>
+        <details>
+          <summary><span>3) Thưởng năng suất tháng</span><span class="badge">Đến 50% FYC</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Mức</th><th>FYC 3 tháng gần nhất</th><th>% tỷ lệ</th></tr>
+              <tr><td>8</td><td>≥ 100 triệu</td><td>50%</td></tr>
+              <tr><td>7</td><td>≥ 80 triệu</td><td>35%</td></tr>
+              <tr><td>6</td><td>≥ 60 triệu</td><td>30%</td></tr>
+              <tr><td>5</td><td>≥ 45 triệu</td><td>25%</td></tr>
+              <tr><td>4</td><td>≥ 30 triệu</td><td>20%</td></tr>
+              <tr><td>3</td><td>≥ 15 triệu</td><td>15%</td></tr>
+              <tr><td>2</td><td>≥ 10 triệu</td><td>10%</td></tr>
+              <tr><td>1</td><td>≥ 5 triệu</td><td>5%</td></tr>
+            </table>
+            <p class="muted">Cần ít nhất 1 hợp đồng thực cấp. ĐL ≤6 tháng dùng mức 1–7; &gt;6 tháng dùng mức 2–8.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span>4) Thưởng năng suất xuất sắc tháng (theo Manulife Pro)</span><span class="badge">Đến 20 triệu</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>FYP tháng</th><th>Bạc</th><th>Vàng</th><th>Bạch Kim</th></tr>
+              <tr><td>≥15tr</td><td>1,5tr</td><td>1,5tr</td><td>2tr</td></tr>
+              <tr><td>≥30tr</td><td>3tr</td><td>3tr</td><td>4tr</td></tr>
+              <tr><td>≥45tr</td><td>—</td><td>5tr</td><td>8tr</td></tr>
+              <tr><td>≥60tr</td><td>—</td><td>7tr</td><td>10tr</td></tr>
+              <tr><td>≥80tr</td><td>—</td><td>—</td><td>12tr</td></tr>
+              <tr><td>≥100tr</td><td>—</td><td>—</td><td>16tr</td></tr>
+              <tr><td>≥120tr (*)</td><td>—</td><td>—</td><td>20tr</td></tr>
+            </table>
+            <p class="muted">(*) Chỉ áp dụng MDRT năm hiện tại/sớm MDRT năm kế, và MDRT trọn đời hoặc 5 lần MDRT/10 năm gần nhất.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span>5) Thưởng năng suất quý</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Mức</th><th>FYC quý</th><th>Đại lý</th><th>Đại lý xuất sắc</th></tr>
+              <tr><td>7</td><td>120tr</td><td>10%</td><td>20%</td></tr>
+              <tr><td>6</td><td>100tr</td><td>8%</td><td>16%</td></tr>
+              <tr><td>5</td><td>80tr</td><td>6%</td><td>12%</td></tr>
+              <tr><td>4</td><td>60tr</td><td>5%</td><td>10%</td></tr>
+              <tr><td>3</td><td>45tr</td><td>4%</td><td>8%</td></tr>
+              <tr><td>2</td><td>30tr</td><td>3%</td><td>6%</td></tr>
+              <tr><td>1 (*)</td><td>15tr</td><td>2%</td><td>4%</td></tr>
+            </table>
+            <p class="muted">(*) Chỉ áp dụng ĐL ≤6 tháng. "Xuất sắc" = đạt Thưởng năng suất tháng 3 tháng liên tục, hoặc Manulife Pro Vàng/Bạch Kim tháng cuối quý.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span>6) Thưởng kinh doanh xuất sắc năm</span><span class="badge">Tối đa 100 triệu</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Đối tượng</th><th>Số HĐ/năm</th><th>FYP/năm</th><th>TLDTHĐ</th><th>Khoản thưởng</th></tr>
+              <tr><td>Manulife Pro Bạch Kim</td><td>24</td><td>600tr</td><td>≥70%</td><td>15% FYC năm</td></tr>
+              <tr><td>Vàng &gt;12 tháng</td><td>15</td><td>360tr</td><td>≥70%</td><td>10% FYC năm</td></tr>
+              <tr><td>Vàng ≤12 tháng</td><td>10</td><td>240tr</td><td>≥70%</td><td>10% FYC năm</td></tr>
+            </table>
+            <p class="muted">Chi trả tháng 3 trong 3 năm tiếp theo: Y1 50%, Y2 30%, Y3 20%. Điều chỉnh 2026: chênh lệch dương giữa Thưởng FYC×CLKD và Thưởng KDXS năm được trả 1 lần vào tháng 3/2027.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span>7) Thưởng M-Star quý</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Thời điểm</th><th>FYP cộng dồn</th><th>Đạt 90–100%</th><th>Đạt ≥100%</th></tr>
+              <tr><td>Cuối quý 1</td><td>160tr</td><td>5tr</td><td>8tr</td></tr>
+              <tr><td>Cuối quý 2</td><td>430tr</td><td>8tr</td><td>12tr</td></tr>
+              <tr><td>Cuối quý 3</td><td>750tr</td><td>10tr</td><td>15tr</td></tr>
+              <tr><td>Cuối quý 4</td><td>1.073.645.200đ</td><td>—</td><td>20tr</td></tr>
+            </table>
+            <p class="muted">Mỗi tháng trong quý cần có hoạt động (1CC &amp; 4tr FYC). Bị thu hồi nếu chấm dứt MSĐL trước 01/03 năm kế tiếp.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span>8) Thưởng M-Star năm</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>FYP năm</th><th>Mức thưởng</th></tr>
+              <tr><td>1.073.645.200đ</td><td>55tr</td></tr>
+              <tr><td>2 tỷ</td><td>75tr</td></tr>
+              <tr><td>3 tỷ</td><td>100tr</td></tr>
+            </table>
+            <p class="muted">= Mức thưởng × Hệ số TLDTHĐ × Hệ số CLKD − Tổng M-Star quý đã nhận trong năm. Trả tháng 2 năm sau nếu dương.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span>9) Thưởng khuyến khích phát triển KD mới hàng tháng</span><span class="badge">Tối đa 3 triệu/tháng</span><span class="chev">▸</span></summary>
+          <div class="detail-body"><p>= 20% × FYC cá nhân phát sinh × Hệ số TLDTHĐ × Hệ số CLKD. Điều kiện: cá nhân có sản xuất (1CC &amp; 4tr FYC) trong tháng, VÀ tuyển mới ≥1 đại lý có hoạt động trong tháng làm việc đầy đủ đầu tiên.</p></div>
+        </details>
+        <details>
+          <summary><span>10) Quy định chung (Vòng 1)</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <ul>
+              <li>Không tính kết quả sản xuất với sản phẩm "Điểm tựa hưu trí".</li>
+              <li>Tháng làm việc đầy đủ đầu tiên (M0,M1) = M0 (tháng ký HĐBH) + M1, kết quả gộp cả hai.</li>
+              <li>TLDTHĐ = tỷ lệ duy trì hợp đồng năm 2.</li>
+              <li>Áp dụng "HĐBH qua thời gian cân nhắc của KH", trừ khi từng khoản quy định khác.</li>
+            </ul>
+          </div>
+        </details>
+
+        <h3 class="group-title">C. Danh hiệu Manulife Pro &amp; lộ trình phát triển</h3>
+        <p>3 cấp Manulife Pro Bạc — Vàng — Bạch Kim quyết định mức Thưởng năng suất xuất sắc tháng và Thưởng kinh doanh xuất sắc năm ở mục B. Danh hiệu càng cao, thưởng trên cùng một mốc FYP/FYC càng lớn.</p>
+
+        <details>
+          <summary><span>Ví dụ minh họa lộ trình thu nhập 5 năm ("Trần Thị Phú Quý")</span><span class="badge">Mô phỏng — không phải cam kết</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Cột mốc</th><th>Đạt được từ</th></tr>
+              <tr><td>Manulife Pro Bạc</td><td>Tháng 4</td></tr>
+              <tr><td>Manulife Pro Vàng</td><td>Tháng 11</td></tr>
+              <tr><td>Manulife Pro Bạch Kim</td><td>Tháng 25</td></tr>
+              <tr><td>MDRT</td><td>Từ năm 4</td></tr>
+            </table>
+            <table>
+              <tr><th>Năm</th><th>Số HĐ/tháng</th><th>FYP/HĐ (triệu)</th><th>FYP/tháng (triệu)</th><th>Thu nhập mô phỏng/tháng (triệu)</th></tr>
+              <tr><td>1</td><td>1</td><td>30</td><td>30</td><td>15</td></tr>
+              <tr><td>2</td><td>2</td><td>35</td><td>70</td><td>43</td></tr>
+              <tr><td>3</td><td>3</td><td>40</td><td>120</td><td>89</td></tr>
+              <tr><td>4</td><td>4</td><td>45</td><td>180</td><td>141</td></tr>
+              <tr><td>5</td><td>4</td><td>50</td><td>200</td><td>160</td></tr>
+            </table>
+            <ul>
+              <li>Tổng thu nhập dự kiến 5 năm (mô phỏng): 5.377 triệu đồng · tăng trưởng hàng năm mô phỏng 60%.</li>
+              <li>Cơ cấu thu nhập: 66% từ "giá trị kiến tạo" (hoa hồng năm nhất, thưởng kinh doanh định kỳ, thưởng thi đua) + 34% từ "giá trị bền vững" (hoa hồng tái tục, thưởng theo danh hiệu).</li>
+            </ul>
+            <div class="callout warn">
+              <b class="tag">Không dùng để hứa hẹn thu nhập</b>
+              Đây là MỘT kịch bản giả định, không đại diện kết quả trung bình của đại lý. Muốn lập kế hoạch cho một cá nhân cụ thể, dùng công thức 10-5-3-1 và tab "Mục tiêu &amp; tăng tốc" thay vì áp thẳng bảng này.
+            </div>
+          </div>
+        </details>
+
+        <h3 class="group-title">Hai hướng phát triển sự nghiệp song song: Đại lý và Quản lý (UM+)</h3>
+        <p>Ngay từ khi vào nghề, lộ trình đào tạo &amp; phát triển tại Manulife rẽ thành 2 hướng — không bắt buộc chọn 1, mà đại lý có thể phát triển chuyên môn trước, rồi mới quyết định có thi Quản lý hay không:</p>
+        <table>
+          <tr><th>Hướng phát triển</th><th>Điều kiện bắt đầu</th><th>Chương trình đào tạo theo giai đoạn</th><th>Mục tiêu danh hiệu</th></tr>
+          <tr><td>1. Đại lý (chuyên môn)</td><td>Ngay khi vào nghề</td><td>Đại lý 0–3 tháng → 4–12 tháng → &gt;12 tháng → Manulife Pro Vàng/Bạch Kim</td><td>Manulife Pro Bạc→Vàng→Bạch Kim, song song TOT→COT→MDRT</td></tr>
+          <tr><td>2. Quản lý (UM+)</td><td>Khi đủ điều kiện thăng UM</td><td>Trước khi lên UM → UM–SUM → Trước khi lên DM → DM+</td><td>UM/SUM→DM/SDM→BM/AM→SM+, song song MBA Pro Bạc→Vàng→Bạch Kim</td></tr>
+        </table>
+        <p class="muted"><i>Chi tiết chương trình đào tạo Hướng 1 (Đại lý) ở bảng ngay dưới đây.</i></p>
+
+        <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:4px;"><i>Hình dung theo bậc thang (nguồn: slide "Lộ trình rõ ràng – Công bằng – Đẳng cấp Châu Á & Quốc tế", Manulife Business Academy):</i></p>
+        <div class="ladder-wrap">
+          <div class="ladder agent">
+            <div class="ladder-steps">
+              <div class="ladder-step">Bạc</div>
+              <div class="ladder-step">Vàng</div>
+              <div class="ladder-step">Bạch Kim</div>
+              <div class="ladder-step">MDRT</div>
+              <div class="ladder-step">COT</div>
+              <div class="ladder-step">TOT</div>
+            </div>
+            <div class="ladder-banner">ĐẠI LÝ CHUYÊN NGHIỆP</div>
+          </div>
+          <div class="ladder manager">
+            <div class="ladder-steps">
+              <div class="ladder-step">UM/SUM</div>
+              <div class="ladder-step">DM/SDM</div>
+              <div class="ladder-step">BM/AM</div>
+              <div class="ladder-step">SM+</div>
+            </div>
+            <div class="ladder-banner">QUẢN LÝ ĐẠI LÝ CHUYÊN NGHIỆP</div>
+          </div>
+        </div>
+
+        <h4 class="sub">Kênh tuyển dụng nhanh cho Hướng 2: Chương trình Manulife Pro Ngoại Lực 2026</h4>
+        <p class="muted">Nguồn: Thông báo "Phát triển Manulife Pro Ngoại lực 2026 (Hiệu chỉnh tháng 7/2026)" — số 0018M04/2026/ASBD, ngày 01/07/2026.</p>
+        <p>Đây là chương trình tuyển đại lý mới từ nguồn nhân sự đã có kinh nghiệm ngành liên quan, xét thẳng danh hiệu Manulife Pro ngay từ tháng cấp mã số đại lý (M0) — phù hợp để đại lý mới <b>chủ động tuyển dụng ngay từ tháng đầu tiên</b> nếu đặt mục tiêu lên Quản lý (UM+), vì Thưởng khuyến khích phát triển KD mới hàng tháng và các khoản PDV phát triển nhóm mới đều tính theo số đại lý tuyển mới có hoạt động.</p>
+
+        <p><b>A. Điều kiện chung áp dụng cho mọi ứng viên</b></p>
+        <ul>
+          <li>Công dân Việt Nam từ 25 đến 55 tuổi.</li>
+          <li>Nộp thành công và đạt chuẩn hồ sơ MIT + hồ sơ yêu cầu Manulife Pro Ngoại lực trên M-PA <b>trước ngày khai giảng lớp MIT</b>.</li>
+          <li>Hồ sơ yêu cầu đạt chuẩn <b>trước ngày cấp Mã số đại lý (MSĐL)</b>.</li>
+          <li>Được cấp MSĐL trong khoảng <b>01/04/2026 – 31/12/2026</b>.</li>
+          <li>Giai đoạn đánh giá kinh nghiệm/kết quả: 3 năm gần nhất tính từ tháng ứng tuyển trở về trước.</li>
+        </ul>
+
+        <p><b>B.1 — Ứng viên là Đại lý Bảo hiểm có kinh nghiệm ngành Bảo hiểm Nhân thọ (≥ 12 tháng)</b></p>
+        <p class="muted">Cần thỏa CẢ HAI: điều kiện a (a.1 HOẶC a.2) VÀ điều kiện b.</p>
+        <table>
+          <tr><th>Mức</th><th>a.1) Tổng phí BH thực thu năm nhất /12 tháng liên tiếp</th><th>a.2) Thu nhập TB 6 tháng gần nhất từ hoạt động Đại lý BHNT</th><th>b) Tỷ lệ duy trì HĐ kỳ gần nhất</th><th>Danh hiệu</th></tr>
+          <tr><td>1</td><td>≥ 100 triệu đồng</td><td>≥ 10 triệu đồng</td><td rowspan="3">≥ 60%</td><td>Manulife Pro Bạc</td></tr>
+          <tr><td>2</td><td>≥ 360 triệu đồng</td><td>≥ 15 triệu đồng</td><td>Manulife Pro Vàng</td></tr>
+          <tr><td>3</td><td>≥ 600 triệu đồng</td><td>≥ 30 triệu đồng</td><td>Manulife Pro Bạch Kim</td></tr>
+        </table>
+
+        <p><b>B.2 — Ứng viên ngành Tài chính/Bất động sản hoặc ngành khác (vị trí liên quan Tài chính – Kế toán, ≥ 6 tháng kinh nghiệm)</b></p>
+        <p class="muted">Cần thỏa CẢ HAI: điều kiện c (kinh nghiệm ngành) VÀ điều kiện d (phí BH hoặc thu nhập) — chỉ xét danh hiệu <b>Manulife Pro Bạc</b>.</p>
+        <table>
+          <tr><th>Đối tượng</th><th>d) Yêu cầu phí BH hoặc thu nhập hàng tháng</th><th>Danh hiệu</th></tr>
+          <tr><td><b>Khách hàng hiện hữu của Manulife</b> (xem định nghĩa bên dưới)</td><td>Có <b>Phí bảo hiểm quy năm tối thiểu 20 triệu đồng</b></td><td>Manulife Pro Bạc</td></tr>
+          <tr><td><b>Chưa là khách hàng của Manulife</b></td><td><b>Thu nhập trung bình tối thiểu 10 triệu đồng/tháng</b> trong 6 tháng gần nhất</td><td>Manulife Pro Bạc</td></tr>
+        </table>
+        <div class="callout note">
+          <b class="tag">Xác nhận: 20 triệu và 10 triệu là 2 tiêu chí khác nhau, áp dụng cho 2 nhóm ứng viên khác nhau</b>
+          <b>Phí năm 20.000.000 VNĐ</b> = tiêu chí dành cho ứng viên <b>ĐANG LÀ khách hàng hiện hữu của Manulife</b> (đã mua bảo hiểm) — tính trên phí bảo hiểm quy năm. <b>Thu nhập 10.000.000 VNĐ/tháng</b> = tiêu chí dành cho ứng viên <b>CHƯA LÀ khách hàng của Manulife</b> — tính trên thu nhập cá nhân từ công việc ngành Tài chính/BĐS/Kế toán. Đây KHÔNG phải 2 điều kiện phải thỏa cùng lúc, mà là 2 con đường xét duyệt riêng theo từng nhóm ứng viên.
+        </div>
+        <p class="muted">Định nghĩa "khách hàng hiện hữu": tổng phí bảo hiểm ≥20 triệu đồng (tính theo phí quy năm, không gồm phí đóng thêm) của tất cả hợp đồng bảo hiểm cùng một Bên mua bảo hiểm — hợp đồng còn hiệu lực, đã qua 21 ngày cân nhắc, đang trong trạng thái trả phí tại thời điểm cấp MSĐL (không tính HĐBH đang miễn nộp phí, đã trả phí toàn phần, bảo hiểm giảm, tạm ngưng đóng phí, hoặc được hỗ trợ nộp phí).</p>
+
+        <p><b>Ngành nghề &amp; vị trí công việc được chấp nhận (Phụ lục thông báo)</b></p>
+        <table>
+          <tr><th>Lĩnh vực</th><th>Ngành nghề</th><th>Vị trí công việc/kinh nghiệm liên quan</th></tr>
+          <tr><td>Tài chính</td><td>Ngân hàng; Bảo hiểm Nhân thọ/Phi nhân thọ; Chứng khoán; Quỹ đầu tư; Quản lý tài sản; Tài chính tiêu dùng; Dịch vụ kế toán-kiểm toán; Tư vấn tài chính; Công nghệ tài chính</td><td>Hỗ trợ/huấn luyện/phát triển kinh doanh; Dịch vụ-chăm sóc-phát triển khách hàng; Thẩm định tín dụng &amp; định giá tài sản; Phân tích/quản lý tài chính-đầu tư; Kế toán &amp; kiểm toán</td></tr>
+          <tr><td>Bất động sản</td><td>Môi giới, kinh doanh BĐS; Đầu tư, phát triển, quản lý BĐS</td><td>—</td></tr>
+          <tr><td>Khác</td><td>—</td><td>Phân tích/quản lý tài chính-đầu tư; Kế toán &amp; kiểm toán</td></tr>
+        </table>
+
+        <ul>
+          <li>Danh hiệu Manulife Pro có hiệu lực từ <b>tháng cấp MSĐL (Tháng M0)</b>. Quy định hiệu lực trong Tháng M0 áp dụng cho hồ sơ đạt chuẩn và được cấp MSĐL từ 01/07/2026.</li>
+          <li>Ứng viên đạt danh hiệu được xét nhận Thưởng Đại lý mới, Thưởng Đại lý mới xuất sắc, Thưởng năng suất xuất sắc tháng nếu thỏa điều kiện sản xuất/hoạt động/đào tạo theo Thông báo "Chính sách Chi trả dành cho Đại lý Manulife" — 0046M01/2026/ASBD. <b>Lưu ý:</b> Thưởng ĐL mới/ĐL mới xuất sắc KHÔNG áp dụng cho ứng viên tái tuyển dụng dưới 24 tháng.</li>
+          <li>Ứng viên Manulife Pro Ngoại lực 2026 cũng có quyền ứng tuyển đồng thời chương trình Phát triển Quản lý đại lý UM+ GTF (hồ sơ theo Thông báo 0049M01/2026/ASBD).</li>
+          <li>Hồ sơ bổ sung theo yêu cầu của bộ phận AO (nếu có) phải hoàn tất chậm nhất ngày 25 tháng M1 — quá hạn hồ sơ sẽ không được xem xét.</li>
+          <li>Công ty không xét ngoại lệ nếu thiếu chứng từ hợp lệ theo yêu cầu.</li>
+        </ul>
+        <ul>
+          <li>4 lợi ích chương trình: Thu nhập hấp dẫn (xứng đáng với năng lực) · Lộ trình rõ ràng (phát triển sự nghiệp bền vững, lâu dài) · Đào tạo chuyên nghiệp (từ đội ngũ chuyên gia Manulife) · Hỗ trợ toàn diện (đồng hành đến khi thành công).</li>
+          <li>Gợi ý hành động: nếu đặt mục tiêu lên Quản lý, rà lại danh sách người quen đang làm ngành Tài chính/Bất động sản/Kế toán (kể cả khách hàng đã tư vấn) và mời tham gia chương trình Pro Ngoại Lực ngay trong tháng đầu, thay vì chờ có kinh nghiệm agent rồi mới tuyển.</li>
+        </ul>
+
+        <details open>
+          <summary><span>Hành trình phát triển đại lý mới trong 12 tháng đầu (M0–M2 và M3–M12)</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <p class="muted">Nguồn: slide "Hành trình phát triển đại lý mới" — Manulife.</p>
+            <table>
+              <tr><th>Giai đoạn</th><th>Hoạt động chính</th><th>Kết quả / Phần thưởng</th></tr>
+              <tr><td>M0–M2</td><td>Lễ Tốt Nghiệp; Kinh doanh chất lượng (SBW)</td><td>Thưởng ĐL Mới (3 triệu) + Thưởng ĐL Mới Xuất Sắc (5 triệu) → xét Manulife Pro Bạc theo Fast Track</td></tr>
+              <tr><td>M3–M12</td><td>Thúc đẩy đại lý mới hoạt động liên tục qua: Thưởng năng suất Xuất sắc tháng (Manulife Pro), Đội ngũ chuyên cần, Chương trình Phát triển Sự nghiệp dành cho Đại lý, Chương trình UM Tiềm Năng, Hội thảo khách hàng</td><td>Duy trì đà tăng trưởng, chuẩn bị điều kiện lên danh hiệu/Quản lý</td></tr>
+            </table>
+            <div class="callout warn">
+              <b class="tag">Cập nhật về mốc thời gian Fast Track (11/09/2026)</b>
+              Slide chính thức xác nhận Manulife Pro Bạc Fast Track gắn với việc hoàn thành SBW và đạt đủ điều kiện Thưởng ĐL Mới + Thưởng ĐL Mới Xuất Sắc trong khung M0–M2 — khớp với mốc "chậm nhất" 3 tháng đã nêu ở tab Mục tiêu &amp; tăng tốc. Hương đã xác nhận: tạm hiểu Fast Track tính theo khung M0–M2, và sẽ tìm lại memo chính thức để gửi đối chiếu. Mốc "tối ưu 2 tháng, M0+M1" ghi trước đó vẫn đang chờ xác nhận — chưa nên dùng để tư vấn/cam kết cho đến khi có memo.
+            </div>
+
+            <p><b>Thưởng chuyên cần &amp; Green Friday</b></p>
+            <p class="muted">Nguồn: thông báo nội bộ chương trình "Green Friday" (sinh hoạt sáng Thứ 6 hàng tuần) — không thuộc Thông báo chính sách thù lao Vòng 1/Vòng 2.</p>
+            <table>
+              <tr><th>Điều kiện</th><th>Mức thưởng/tháng</th></tr>
+              <tr><td>Điểm danh "Đội ngũ chuyên cần" ≥ 4/8 buổi + có hợp đồng đạt 18 triệu FYP trong tháng</td><td>1.200.000 đ</td></tr>
+              <tr><td>Điểm danh chuyên cần ≥ 4/8 buổi + điểm danh Green Friday ≥ 2/4 buổi + có hợp đồng đạt 18 triệu FYP trong tháng</td><td>2.200.000 đ</td></tr>
+            </table>
+            <ul>
+              <li>Green Friday là buổi sinh hoạt sáng Thứ 6 hàng tuần (09:00–09:45), điểm danh qua quét QR trong khung 8:45–9:00 — đến sau 9:00 sẽ không quét được QR và mất quyền lợi tháng đó.</li>
+              <li>Thưởng tính theo THÁNG, không cộng dồn — bỏ lỡ điểm danh tháng nào sẽ mất thưởng tháng đó.</li>
+            </ul>
+
+            <p><b>So sánh PDV khi có đại lý mới đạt Manulife Pro Fast Track — MBA Pro và UM+</b></p>
+            <table>
+              <tr><th>Khoản PDV</th><th>MBA Pro (~23tr/Manulife Pro FT)</th><th>UM+ (~9tr/Manulife Pro FT)</th></tr>
+              <tr><td>PDV Phát triển ĐL mới Manulife Pro</td><td>100% × Tổng thưởng ĐL Mới &amp; ĐL Mới XS</td><td>50% × Tổng thưởng ĐL Mới &amp; ĐL Mới XS</td></tr>
+              <tr><td>PDV Năng suất Nhóm hàng tháng</td><td>Lên đến 20% (M3–M12: x2 PDV lên đến 40% = 20% FYC BCTT + 20% FYC ĐL M3–M12 BCTT)</td><td>Lên đến 20% (cùng cơ chế x2 ở M3–M12)</td></tr>
+              <tr><td>PDV Hoạt động Nhóm hàng tháng</td><td>Lên đến 125% × Tổng thưởng NS tháng/quý nhóm trực tiếp</td><td>Lên đến 60%</td></tr>
+              <tr><td>PDV Hợp tác dài hạn</td><td>Lên đến 125% × Tổng PDV hoạt động nhóm &amp; Phát triển ĐLM Manulife Pro</td><td>0%</td></tr>
+              <tr><td>Thi đua</td><td>~2,5 triệu</td><td>~2,5 triệu</td></tr>
+            </table>
+            <div class="callout warn">
+              <b class="tag">Nguồn &amp; giới hạn</b>
+              Bảng trên trích từ slide "Hành trình phát triển đại lý mới", KHÔNG phải từ Thông báo chính sách thù lao Vòng 1/Vòng 2 đã trích ở mục A–B. Các mức "~23 triệu" và "~9 triệu" là số liệu minh họa theo slide, cần đối chiếu Thông báo chính thức khi có.
+            </div>
+
+            <p><b>Chương trình UM Tiềm Năng</b></p>
+            <div class="callout todo"><b>[CẦN BỔ SUNG]</b> Chương trình UM Tiềm Năng được nhắc đến trong slide "Hành trình phát triển đại lý mới" như một hoạt động thúc đẩy đại lý mới hoạt động liên tục trong M3–M12, nhằm khuyến khích tuyển dụng sớm nếu có mục tiêu lên Quản lý. Nội dung chi tiết (điều kiện tham gia, quyền lợi cụ thể) chưa có trong tài liệu hiện có — Hương bổ sung khi có thông tin đầy đủ.</div>
+          </div>
+        </details>
+
+        <details>
+          <summary><span>Chi tiết đào tạo Hướng 1 — Đại lý theo giai đoạn thâm niên</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>0–3 tháng</th><th>4–12 tháng</th><th>&gt;12 tháng</th><th>Pro Vàng &amp; Bạch Kim</th></tr>
+              <tr>
+                <td>SBW 3 ngày (quy trình tư vấn, KHTN, ePOS, thiết kế giải pháp, chốt HĐ, thủ tục, trao HĐ, dịch vụ sau bán) · Hội thảo ĐL mới (1/2 ngày) · Xin lời giới thiệu (1/2 ngày) · Sổ tay 90 ngày</td>
+                <td>Xin hẹn &amp; tiếp cận KH lạ (1 ngày) · Tư vấn theo nhu cầu (1/2 ngày/chủ đề) · Bán thêm bán chéo · 12 cách chốt HĐ · Kinh doanh qua MXH · Thương hiệu cá nhân 4.0 (1 ngày) · Tâm lý KH · 4 nhóm tính cách</td>
+                <td>Phục vụ KH chuyên nghiệp · Giao tiếp kinh doanh · 7 loại hình thông minh · Kiểm soát cảm xúc · Tư vấn qua doanh nghiệp · Kiến thức tài chính &amp; đầu tư (e-Learning)</td>
+                <td>Hoạch định tài chính cá nhân (MFA) 301-302-303 &amp; Workshops (15 ngày) · Hoạch định di sản (3 ngày)</td>
+              </tr>
+            </table>
+          </div>
+        </details>
+
+        <details>
+          <summary><span>Quyền lợi hỗ trợ khi mới bắt đầu</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Quyền lợi</th><th>Nội dung</th></tr>
+              <tr><td>Hỗ trợ tài chính 90 ngày đầu</td><td>Yên tâm xây nền tảng khách hàng, kỹ năng tư vấn và kết quả đầu tiên</td></tr>
+              <tr><td>Phần thưởng chào mừng</td><td>Ghi nhận nỗ lực gia nhập, học tập, bắt đầu hành trình</td></tr>
+              <tr><td>Môi trường chuyên nghiệp</td><td>Văn phòng cao cấp, bộ nhận diện, microsite cá nhân</td></tr>
+              <tr><td>Đào tạo &amp; mentor</td><td>Workshop, chương trình đào tạo, quản lý/mentor đồng hành</td></tr>
+              <tr><td>Hội nghị &amp; trải nghiệm</td><td>Cơ hội vinh danh, kết nối cộng đồng, mở rộng tầm nhìn</td></tr>
+            </table>
+            <div class="callout todo"><b>[CẦN BỔ SUNG]</b> Tài liệu gốc chưa nêu mức tiền/điều kiện cụ thể của "Hỗ trợ tài chính 90 ngày" và "Phần thưởng chào mừng" — cần bổ sung trước khi cam kết với ứng viên.</div>
+          </div>
+        </details>
+
+        <div class="callout note">
+          <b class="tag">Lộ trình phát triển xa hơn</b>
+          Sau giai đoạn đại lý, có 2 nhánh phát triển: nhánh chuyên môn (TOT → COT → MDRT, song song Manulife Pro Bạc → Vàng → Bạch Kim) và nhánh quản lý (UM/SUM → DM/SDM → BM/AM → SM+). Khi gần đủ điều kiện thăng cấp, trao đổi với Quản lý trực tiếp để tìm hiểu chi tiết cơ chế thu nhập quản lý.
+        </div>
+      </section>
+
+      <!-- ============ TAB 3: SẢN PHẨM ============ -->
+      <section class="tab-panel" id="tab-product">
+        <div class="hero">
+          <span class="tag">PHẦN 3</span>
+          <h2>Sản phẩm</h2>
+          <p>4 sản phẩm chính (Xanh Ước Mơ — UL; Xanh Phú Quý, Xanh Phú Quý Flex, Xanh Tương Lai — ILP) và 6 sản phẩm bổ trợ.</p>
+        </div>
+
+        <h3 class="group-title">3.1 Sản phẩm chính</h3>
+        <p>So sánh nhanh 4 sản phẩm chính trước khi đi vào chi tiết từng sản phẩm bên dưới:</p>
+        <table>
+          <tr><th>Tiêu chí</th><th>Xanh Phú Quý</th><th>Xanh Phú Quý Flex</th><th>Xanh Tương Lai</th><th>Xanh Ước Mơ</th></tr>
+          <tr><td>Dòng sản phẩm</td><td>Liên kết đơn vị (ILP)</td><td>Liên kết đơn vị (ILP)</td><td>Liên kết đơn vị (ILP)</td><td>Liên kết chung (UL)</td></tr>
+          <tr><td>Định vị ưu tiên</td><td>Ưu tiên tích lũy đầu tư, kiến tạo gia sản kết hợp bảo vệ sức khỏe</td><td>Cân bằng giữa nhu cầu bảo vệ và tích lũy đầu tư</td><td>Ưu tiên bảo vệ và đầu tư linh hoạt</td><td>Ưu tiên bảo vệ</td></tr>
+          <tr><td>Cơ chế thêm sản phẩm bổ trợ</td><td colspan="4">Giống nhau ở cả 4 sản phẩm chính — đều có thể đính kèm toàn bộ 6 sản phẩm bổ trợ (Sống Khỏe Mỗi Ngày, Dự Phòng Xanh, Lá Chắn Xanh, Hộ Vệ Xanh, Bảo Thân Xanh, Bảo Phí Xanh)</td></tr>
+        </table>
+
+        <h4 class="sub">3.1.1 Xanh Ước Mơ — Dòng Liên kết chung (UL)</h4>
+        <p class="muted">Nguồn: Tài liệu giới thiệu sản phẩm Xanh Ước Mơ (Bảo hiểm Liên kết chung, Phiên bản 3) — manulife.com.vn.</p>
+        <p><i>Định vị: "Cho con cuộc đời, chở che trọn đời" — bảo vệ suốt đời trước rủi ro trong cuộc sống, kết hợp tích lũy an toàn với lãi suất cam kết trong suốt thời hạn hợp đồng.</i></p>
+
+        <p><b>USP nổi bật</b></p>
+        <ul>
+          <li><b>Tự động tăng Số Tiền Bảo Hiểm (STBH) 5%/năm</b> từ Năm HĐ thứ 2 đến năm thứ 11 (tối đa +50%) — không thẩm định sức khỏe, không tăng phí (chỉ áp dụng với Lựa chọn STBH tự động gia tăng).</li>
+          <li><b>Tăng thêm 5% STBH</b> mỗi khi gia đình có thành viên mới (kết hôn, sinh con, nhận con nuôi), tối đa +25% (5 lần) — cũng không thẩm định sức khỏe, không tăng phí, chỉ cần gửi chứng từ hợp lệ trong 6 tháng.</li>
+          <li>Quyền lợi bảo vệ tốt ở cả <b>quyền lợi tử vong</b> (đến tuổi 99, ứng trước 10% STBH tối đa 30 triệu cho chu toàn hậu sự) và <b>quyền lợi TTTBVV</b> (trước tuổi 75).</li>
+          <li><b>Lãi suất đầu tư cam kết tối thiểu</b> theo năm hợp đồng, không phụ thuộc biến động thị trường — đây là khác biệt cốt lõi so với nhóm ILP (Xanh Phú Quý/Flex/Xanh Tương Lai không có lãi suất cam kết).</li>
+        </ul>
+
+        <details>
+          <summary><span>Bảng lãi suất đầu tư cam kết tối thiểu &amp; thông tin cơ bản</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Năm HĐ</th><th>1</th><th>2</th><th>3–4</th><th>5–6</th><th>7–8</th><th>9–10</th><th>≥11</th></tr>
+              <tr><td>Lãi suất cam kết tối thiểu (quy năm)</td><td>3,5%</td><td>3,0%</td><td>3,0%</td><td>2,5%</td><td>2,0%</td><td>1,5%</td><td>0,5–1,0%</td></tr>
+            </table>
+            <table>
+              <tr><th>Tiêu chí</th><th>Nội dung</th></tr>
+              <tr><td>Tuổi tham gia</td><td>30 ngày tuổi – 69 tuổi</td></tr>
+              <tr><td>Thời hạn hợp đồng</td><td>Đến khi NĐBH đạt 99 tuổi</td></tr>
+              <tr><td>Thời hạn đóng phí</td><td>Bắt buộc 3 Năm HĐ đầu; linh hoạt từ Năm HĐ thứ 4</td></tr>
+              <tr><td>Phí Ban Đầu</td><td>50%/30%/20%/2%/0% cho Năm 1/2/3–5/6–10/11+ (Phí BH Cơ Bản); phí đóng thêm 1,5% (Năm 1–10)</td></tr>
+              <tr><td>Phí chấm dứt HĐ trước hạn</td><td>90%/90%/45%/30%/20%/10%/0% cho Năm 1/2/3/4/5/6/7+</td></tr>
+              <tr><td>Thưởng duy trì HĐ</td><td>Tại Năm HĐ thứ 10 = 50% Phí BH Cơ Bản Quy Năm của Năm HĐ đầu tiên</td></tr>
+            </table>
+          </div>
+        </details>
+
+        <div class="callout note">
+          <b class="tag">Đối tượng khách hàng phù hợp</b>
+          Khách hàng không quá quan trọng phần tích lũy, rất ưu tiên có lãi suất cam kết, chưa hiểu về đầu tư và không có nhu cầu dùng bảo hiểm như một kênh đầu tư.
+        </div>
+
+        <h3 class="group-title">3.2 Bộ sản phẩm Liên kết đơn vị (ILP)</h3>
+        <p>3 sản phẩm: Xanh Phú Quý — Xanh Phú Quý Flex — Xanh Tương Lai.</p>
+        <p class="muted">Nguồn: trang sản phẩm chính thức Manulife VN; QT&amp;ĐK 3 sản phẩm; tài liệu ePOS/AGY và Leaflet; slide "Thảo luận chuyên đề Xanh Phú Quý" (04/2026); Sổ tay thẩm định nội bộ.</p>
+
+        <h4 class="sub">Định vị tổng quan</h4>
+        <table>
+          <tr><th>Tiêu chí</th><th>Xanh Phú Quý</th><th>Xanh Phú Quý Flex</th><th>Xanh Tương Lai</th></tr>
+          <tr><td>Slogan</td><td>Tối ưu đầu tư kết hợp bảo vệ, kiến tạo gia sản đa thế hệ</td><td>Linh hoạt giữa bảo vệ và hiệu quả đầu tư</td><td>"3 Cộng+": Bảo vệ + Đầu tư + Linh hoạt</td></tr>
+          <tr><td>Trục giá trị</td><td>Nghiêng TỐI ƯU ĐẦU TƯ</td><td>Cân bằng BẢO VỆ &amp; ĐẦU TƯ</td><td>Nghiêng BẢO VỆ chủ động, tự tăng STBH</td></tr>
+          <tr><td>KH mục tiêu</td><td>Thu nhập ổn định/tài sản tích lũy, ưu tiên đầu tư dài hạn</td><td>Trụ cột gia đình, mới độc lập tài chính</td><td>Năng động, đang xây dựng gia đình/sự nghiệp — <b>ưu tiên quyền lợi bảo vệ tử vong cao nhất có thể</b></td></tr>
+        </table>
+
+        <details>
+          <summary><span>So sánh chi tiết điều khoản &amp; vận hành</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Tiêu chí</th><th>Xanh Phú Quý</th><th>Flex</th><th>Xanh Tương Lai</th></tr>
+              <tr><td>Tuổi NĐBH</td><td>30 ngày–69</td><td>18–69</td><td>30 ngày–69</td></tr>
+              <tr><td>Tuổi bên mua BH</td><td>18–75</td><td>18–69</td><td>18–69</td></tr>
+              <tr><td>Thời hạn HĐ</td><td colspan="3">Đến khi NĐBH đạt 99 tuổi</td></tr>
+              <tr><td>Đóng phí bắt buộc</td><td colspan="3">3 Năm HĐ đầu</td></tr>
+              <tr><td>Quyền lợi bảo vệ</td><td>Theo Hệ Số Nhân (đến 10x), điều chỉnh theo GTTK khi rút</td><td>Bảo vệ xuyên suốt, không cuốn theo GTTK</td><td>Cố định theo Kế hoạch BH; = giá trị LỚN HƠN giữa STBH và GTTK</td></tr>
+              <tr><td>STBH tự động tăng</td><td>Không</td><td>Không</td><td><b>CÓ — +10%/năm (năm 2–6, tối đa +50%); +5%/thành viên khi kết hôn/sinh con (tối đa +25%)</b></td></tr>
+              <tr><td>Danh mục Quỹ Liên Kết Đơn Vị</td><td colspan="3">Giống hệt nhau ở cả 3 sản phẩm: 6 Quỹ theo khẩu vị rủi ro (Bảo Toàn/Tích Lũy/Ổn Định/Cân Bằng/Phát Triển/Tăng Trưởng) + 3 Quỹ Hưng Thịnh 2035/2040/2045</td></tr>
+              <tr><td>Thưởng dài hạn</td><td>Thưởng Tri Ân: lãi 2,5–5%/năm trên Phí Ban Đầu, trả năm 20</td><td>Giống Xanh Phú Quý</td><td>Thưởng duy trì HĐ tại năm 10/15/20 = % theo tuổi × Phí BH Cơ Bản năm đầu</td></tr>
+              <tr><td>Phí Ban Đầu</td><td>30%/20%/10%(N3-5)/0%(N6+)</td><td>Giống Xanh Phú Quý</td><td>50%/30%/20%/2%/0% (N1/2/3-5/6-10/11+)</td></tr>
+              <tr><td>Phí chấm dứt trước hạn</td><td>75/75/50/20/10/0% (N1-6+)</td><td>Giống Xanh Phú Quý</td><td>90/90/50/30/20/10/0% (N1-7+)</td></tr>
+              <tr><td>Phí BH Cơ Bản tối thiểu</td><td>50tr/năm ×10 năm</td><td>25tr/năm ×10 năm</td><td>9,5tr/năm (10tr nếu kèm thẻ Titan+)</td></tr>
+            </table>
+            <div class="callout note">
+              <b class="tag">Điểm nhấn của Xanh Tương Lai: Quyền lợi gia tăng STBH tự động</b>
+              Đây là điểm khác biệt LỚN NHẤT so với Xanh Phú Quý và Xanh Phú Quý Flex (cả 2 đều KHÔNG có quyền lợi này). STBH tự động +10%/năm liên tục từ Năm HĐ 2–6 (tối đa +50%), CỘNG THÊM +5%/thành viên khi kết hôn/sinh con/nhận con nuôi (tối đa +25%) — không thẩm định sức khỏe, không tăng phí. Đây là lý do Xanh Tương Lai phù hợp nhất với khách hàng ưu tiên quyền lợi bảo vệ tử vong cao nhất có thể, hơn là các sản phẩm còn lại trong nhóm ILP.
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary><span>Ví dụ minh họa — Nam 31 tuổi, độc thân</span><span class="badge">Số liệu ước tính</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <div class="callout warn"><b class="tag">Không dùng để chốt phương án thật</b>Số liệu suy ra từ hồ sơ 35 tuổi (không có hồ sơ 31 tuổi chính thức). Khi tư vấn khách hàng thật, PHẢI chạy minh họa chính thức trên ePOS.</div>
+            <table>
+              <tr><th>Hạng mục</th><th>Xanh Phú Quý</th><th>Flex</th><th>Xanh Tương Lai</th></tr>
+              <tr><td>Phí đóng minh họa</td><td colspan="3">100 triệu/năm × 5 năm = 500 triệu</td></tr>
+              <tr><td>Năm hòa vốn (ước tính)</td><td>~Năm 5</td><td>Tương đương/sớm hơn nhẹ</td><td>Không công bố mốc cố định</td></tr>
+              <tr><td>GTTK/tổng phí (xu hướng)</td><td>N10:~1,6-1,7x · N15:~2,5-2,6x · N20:~4,1-4,3x</td><td>Tương tự, có thể thấp hơn chút</td><td>Biến động theo Quỹ + Thưởng duy trì HĐ</td></tr>
+            </table>
+          </div>
+        </details>
+
+        <h4 class="sub">Gợi ý sử dụng khi tư vấn</h4>
+        <ul>
+          <li><b>Xanh Phú Quý</b> — KH đã có nền bảo vệ cơ bản, ưu tiên tích lũy/chuyển giao tài sản; phù hợp 36–55 tuổi (giai đoạn Tích lũy).</li>
+          <li><b>Xanh Phú Quý Flex</b> — trụ cột gia đình cần bảo vệ chắc chắn không phụ thuộc thị trường; phù hợp 18–35 tuổi mới độc lập tài chính.</li>
+          <li><b>Xanh Tương Lai</b> — KH trẻ/mới lập gia đình, <b>ưu tiên quyền lợi bảo vệ tử vong cao nhất có thể</b>, quyền lợi tự tăng theo cột mốc cuộc sống; phù hợp 28–35 tuổi "Xây dựng gia đình".</li>
+        </ul>
+
+        <h3 class="group-title">3.3 Sản phẩm bổ trợ (6 sản phẩm)</h3>
+
+        <h4 class="sub">3.3.1 Nhóm bổ trợ y tế</h4>
+        <table>
+          <tr><th>Sản phẩm</th><th>Vai trò</th><th>Mô tả</th></tr>
+          <tr><td>Sống Khỏe Mỗi Ngày 2024 — phiên bản cải tiến</td><td>Bổ trợ y tế</td><td>Giúp khách hàng an tâm điều trị với quyền lợi bảo vệ lên đến 2 tỷ đồng/năm, tự do lựa chọn với 5 chương trình bảo hiểm.</td></tr>
+          <tr><td>Dự Phòng Xanh</td><td>Trợ cấp y tế</td><td>Chi trả 100–300% số tiền bảo hiểm/ngày, hỗ trợ cho quyền lợi Sống Khỏe Mỗi Ngày.</td></tr>
+        </table>
+
+        <h4 class="sub">3.3.2 Nhóm bổ trợ khác</h4>
+        <table>
+          <tr><th>Sản phẩm</th><th>Vai trò</th><th>Mô tả</th></tr>
+          <tr><td>Lá Chắn Xanh</td><td>Bệnh lý nghiêm trọng</td><td>Linh hoạt lựa chọn 3 lớp bảo vệ, lên đến 143 bệnh lý nghiêm trọng.</td></tr>
+          <tr><td>Hộ Vệ Xanh</td><td>Thương tật và tử vong do tai nạn</td><td>Bảo vệ cơ thể trước nhiều mức độ thương tật, tổn thương do tai nạn. Mở rộng chi trả cho các tai nạn phổ biến như bỏng, gãy xương, tổn thương nội tạng.</td></tr>
+          <tr><td>Bảo Thân Xanh</td><td>Tử vong và thương tật toàn bộ vĩnh viễn</td><td>Bổ sung thêm quyền lợi tử vong và thương tật toàn bộ vĩnh viễn, nâng tổng mức bảo vệ ngoài sản phẩm chính.</td></tr>
+          <tr><td>Bảo Phí Xanh — <a href="https://www.manulife.com.vn/vi/cac-san-pham-bo-tro-bao-hiem-nhan-tho/bao-phi-xanh.html" target="_blank" rel="noopener">link sản phẩm</a></td><td>Miễn đóng phí khi Tử vong/TTTBVV, và miễn đóng phí khi Bệnh lý nghiêm trọng</td><td>Giúp duy trì kế hoạch tài chính trong dài hạn — xem chi tiết bộ đôi sản phẩm bên dưới.</td></tr>
+        </table>
+        <div class="callout note">
+          <b class="tag">Bảo Phí Xanh (nguồn: trang sản phẩm chính thức Manulife VN)</b>
+          Bộ đôi sản phẩm bảo hiểm đính kèm giúp bảo vệ kế hoạch đóng phí dài hạn trước biến cố bất ngờ — gồm 2 sản phẩm: <b>Bảo Phí Xanh – Tử vong hoặc Thương Tật Toàn Bộ Vĩnh Viễn</b> và <b>Bảo Phí Xanh – Bệnh Lý Nghiêm Trọng</b>. Khi biến cố xảy ra, quyền lợi miễn đóng phí kích hoạt để hợp đồng chính tiếp tục hiệu lực mà khách hàng không phải tự đóng phí. 3 điểm nổi bật: (1) Biến cố xảy ra, quyền lợi đóng phí kích hoạt, giúp duy trì kế hoạch tài chính dài hạn; (2) Chủ động chọn thời hạn miễn đóng phí theo nhu cầu ngay từ đầu; (3) Thêm lớp bảo vệ, giảm áp lực tài chính khi gặp biến cố.
+        </div>
+      </section>
+
+      <!-- ============ TAB 4: CHAIN ============ -->
+      <section class="tab-panel" id="tab-chain">
+        <div class="hero">
+          <span class="tag">PHẦN 4</span>
+          <h2>Khách hàng tiềm năng — công thức CHAIN</h2>
+          <p>Công cụ chuẩn: file "DS khách hàng tiềm năng (Họ tên đại lý_Mã số).xlsx" — điền theo 5 tiêu chí CHAIN cho từng KHTN.</p>
+        </div>
+
+        <table>
+          <tr><th>Chữ</th><th>Tiêu chí</th><th>Câu hỏi cần trả lời</th></tr>
+          <tr><td><b>C</b></td><td>Character</td><td>Hoàn cảnh gia đình, giá trị sống, mức độ trách nhiệm</td></tr>
+          <tr><td><b>H</b></td><td>Health</td><td>Sức khỏe bản thân &amp; người thân gần — điểm khơi gợi bảo vệ trực tiếp nhất</td></tr>
+          <tr><td><b>A</b></td><td>Approachability</td><td>Mối quan hệ hiện có, mức độ dễ/khó đặt hẹn</td></tr>
+          <tr><td><b>I</b></td><td>Income</td><td>Thu nhập, cách trả lương (cố định/theo KPI) — ảnh hưởng mức phí phù hợp</td></tr>
+          <tr><td><b>N</b></td><td>Needs</td><td>Nhu cầu tài chính đã bộc lộ hay chưa</td></tr>
+        </table>
+        <p>Cột "Dự đoán nhu cầu" là bước tổng hợp 5 tiêu chí CHAIN thành 1–3 nhu cầu bảo hiểm cụ thể — dùng làm input cho Buổi 6–7.</p>
+
+        <details>
+          <summary><span>Ví dụ minh họa (trích từ file mẫu)</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <table>
+              <tr><th>Họ tên</th><th>C</th><th>H</th><th>A</th><th>I</th><th>N</th></tr>
+              <tr><td>Nguyễn Văn A (40, Hà Nội)</td><td>1 vợ 2 con; trách nhiệm, lo xa</td><td>Khỏe. Mẹ bị K phổi</td><td>Đồng nghiệp, dễ tiếp cận</td><td>50tr, lương cố định</td><td>Bảo vệ sức khỏe</td></tr>
+              <tr><td>Trần Thị Y (30, TP.HCM)</td><td>Độc thân, thích hưởng thụ</td><td>Khỏe, năm ngoái sốt xuất huyết</td><td>Bạn cấp 3, khó tiếp cận</td><td>20tr+bonus~20% KPI</td><td>Chưa có, cần khơi gợi</td></tr>
+            </table>
+            <p class="muted">Cùng là KHTN nhưng hướng tiếp cận khác hẳn nhau: người có gia đình/trách nhiệm nên dẫn dắt bằng câu chuyện bảo vệ người thân; người độc thân/thu nhập biến động nên khơi gợi trước và đầu tư nhiều bước đặt hẹn hơn.</p>
+          </div>
+        </details>
+
+        <h3 class="group-title">Cách điền &amp; bài tập thực hành</h3>
+        <ul>
+          <li>Cột "Địa điểm" dùng danh sách chọn có sẵn: Hà Nội, Hải Phòng, Hồ Chí Minh, Đà Nẵng, Nước ngoài, Tỉnh khác.</li>
+          <li>Điền đủ 5 cột CHAIN trước khi điền "Dự đoán nhu cầu" — tránh đoán khi thiếu dữ kiện, đặc biệt Needs và Income.</li>
+          <li>Trước MIT: tối thiểu 20 dòng. Buổi 2: hoàn thiện lên 30 dòng đầy đủ CHAIN.</li>
+          <li>Nếu quá nửa danh sách "khó tiếp cận" (Approachability), bổ sung thêm KHTN từ nguồn giới thiệu/TTGAH.</li>
+        </ul>
+        <div class="callout warn"><b class="tag">Bảo mật dữ liệu khách hàng</b>File CHAIN chứa thông tin cá nhân nhạy cảm (sức khỏe, thu nhập) — chỉ lưu trữ/chia sẻ nội bộ theo đúng quy định bảo mật của Manulife.</div>
+      </section>
+
+      <!-- ============ TAB 5: MỤC TIÊU & TĂNG TỐC ============ -->
+      <section class="tab-panel" id="tab-goal">
+        <div class="hero">
+          <span class="tag">PHẦN 5 · THÔNG ĐIỆP CHÍNH</span>
+          <h2>Gia tốc lớn thời gian đầu → hiệu suất vượt mặt bằng chung</h2>
+          <p>90 ngày đầu là lúc động lực, thời gian rảnh để học và sự chú ý của môi trường xung quanh dành cho bạn ở mức cao nhất — và chưa bị pha loãng bởi các cam kết khác. Người tập trung dồn lực (gia tốc lớn) ngay từ đầu, đặt mục tiêu LỚN thay vì mục tiêu an toàn nhỏ, thường đạt hiệu suất lao động (kết quả/đơn vị thời gian) vượt hẳn mặt bằng chung về sau — vì thói quen, tốc độ và tư duy "chuẩn cao" được thiết lập ngay từ vạch xuất phát.</p>
+        </div>
+        <ul>
+          <li>Ưu tiên số lượng hoạt động lớn (số KHTN tiếp cận, số cuộc hẹn) trong giai đoạn đầu, thay vì chờ "chuẩn bị hoàn hảo" rồi mới hành động.</li>
+          <li>Mục tiêu lớn buộc phải tổ chức công việc hiệu quả hơn (ưu tiên, loại bỏ việc thừa) — đây chính là cách "mục tiêu lớn tăng hiệu suất lao động".</li>
+          <li>Xem lại to-do 90 ngày (tab 1) và áp mật độ hoạt động cao nhất có thể trong 30 ngày đầu.</li>
+        </ul>
+
+        <h3 class="group-title">Cơ sở lý thuyết cho thông điệp này</h3>
+        <p class="bigquote">&ldquo;Average is a failing formula.&rdquo;</p>
+        <p class="bigquote-src">— Grant Cardone, The 10X Rule: The Only Difference Between Success and Failure (2011)</p>
+        <p class="bigquote-note">(Tác giả thật, sách thật, là dân sales/BĐS nên khá khó ngữ cảnh corporate training sales.)</p>
+        <p class="bigquote">&ldquo;The president of the United States gets 100 days to prove himself.&rdquo;</p>
+        <p class="bigquote-src">— Michael D. Watkins, The First 90 Days (2003, bản cập nhật 2013)</p>
+        <p class="bigquote-note">(Sách kinh điển về onboarding lãnh đạo, không phải riêng cho sale, nhưng khung "90 ngày = giai đoạn định hình" khớp chính xác luận điểm.)</p>
+        <p class="muted"><i>Hai câu trích dẫn này không phải nghiên cứu chuyên biệt về ngành bảo hiểm/corporate sales training, nhưng cùng củng cố logic của thông điệp trên: (1) mục tiêu lớn tạo ra hành vi khác biệt ngay từ đầu (10X Rule), và (2) giai đoạn đầu ở vai trò mới có tính quyết định lâu dài đến quỹ đạo thành công (First 90 Days).</i></p>
+
+        <h3 class="group-title">Công thức 10-5-3-1</h3>
+        <p>Công thức thể hiện: nếu <b>ĐỦ VỀ SỐ LƯỢNG</b> ở đầu phễu, kết quả (<b>CHẤT LƯỢNG</b> — hợp đồng chốt) sẽ đến một cách tự nhiên. Ứng viên mới nên tập trung đảm bảo đủ số lượng KHTN tiếp cận, hơn là lo lắng kiểm soát tỷ lệ chuyển đổi ngay từ đầu.</p>
+        <div class="funnel">
+          <div class="step s1"><div class="n">10</div><div class="l">khách hàng tiềm năng</div></div>
+          <div class="arrow">▼</div>
+          <div class="step s2"><div class="n">5</div><div class="l">cuộc hẹn bảo hiểm</div></div>
+          <div class="arrow">▼</div>
+          <div class="step s3"><div class="n">3</div><div class="l">khách hàng trình bày giải pháp</div></div>
+          <div class="arrow">▼</div>
+          <div class="step s4"><div class="n">1</div><div class="l">hợp đồng được chốt</div></div>
+        </div>
+        <div class="callout note">
+          <b class="tag">Cách dùng với ứng viên</b>
+          Nếu một tháng cần 4 hợp đồng (ví dụ Mức 4 trong bảng Thưởng năng suất tháng), theo công thức 10-5-3-1 ứng viên cần chuẩn bị khoảng 40 KHTN, 20 cuộc hẹn, 12 khách hàng trình bày giải pháp trong tháng đó. Đây là cách biến một mục tiêu thu nhập trừu tượng thành hành động đếm được mỗi ngày.
+        </div>
+
+        <h3 class="group-title">Mục tiêu quan trọng nhất trong 90 ngày đầu: 3 hợp đồng — 40 triệu phí</h3>
+        <p>Đây là mục tiêu cụ thể nhất để hiện thực hóa thông điệp "gia tốc lớn thời gian đầu" — không phải mục tiêu chung chung, mà là một con số đếm được ngay từ ngày đầu tiên.</p>
+        <ul>
+          <li><b>Chậm nhất:</b> đạt 3 hợp đồng và 40 triệu đồng FYP trong 3 tháng làm việc đầy đủ đầu tiên (M0+M1+M2) — đây chính là điều kiện của Thưởng Đại lý mới Xuất sắc (xem tab Chính sách thù lao, mục B).</li>
+          <li><b>Tối ưu nhất:</b> đạt ngay trong 2 tháng đầu (M0+M1), sớm hơn 1 tháng so với mức tối thiểu — để đủ điều kiện xét <b>Manulife Pro Bạc theo Fast Track</b>.</li>
+        </ul>
+        <div class="callout warn">
+          <b class="tag">Nguồn thông tin "Fast Track" — cập nhật 11/09/2026</b>
+          Hương tạm xác nhận Fast Track tính theo khung <b>M0–M2</b> (3 tháng) — khớp với slide "Hành trình phát triển đại lý mới" ở tab Chính sách thù lao, không phải riêng M0+M1 (2 tháng) như ghi chú ban đầu. Đây vẫn là hiểu biết tạm thời; Hương sẽ tìm lại memo chính thức về tiêu chí Manulife Pro để gửi đối chiếu chính xác mốc thời gian và điều kiện trước khi dùng để tư vấn/cam kết.
+        </div>
+        <p>Cùng một khối lượng hoạt động (khoảng 30 KHTN, 15 cuộc hẹn, 9 lần trình bày giải pháp để ra 3 hợp đồng), chỉ khác nhịp độ dồn vào 2 hay 3 tháng — đây chính là "gia tốc" theo đúng nghĩa đen:</p>
+        <table>
+          <tr><th>Nhịp độ</th><th>KHTN/tháng</th><th>Cuộc hẹn/tháng</th><th>Trình bày/tháng</th><th>Hợp đồng/tháng</th><th>Thời gian</th><th>Kết quả</th></tr>
+          <tr><td>Tối thiểu (đúng nhịp 10-5-3-1)</td><td>10</td><td>5</td><td>3</td><td>1</td><td>3 tháng (M0+M1+M2)</td><td>Đạt điều kiện Thưởng ĐL mới Xuất sắc</td></tr>
+          <tr><td>Gia tốc (Fast Track)</td><td>~15</td><td>~8</td><td>~5</td><td>~1,5</td><td>2 tháng (M0+M1)</td><td>Xét Manulife Pro Bạc theo Fast Track</td></tr>
+          <tr><td>Nâng cao (phễu 10-8-4-2, nhờ phân tích KHTN tốt)</td><td>~8</td><td>~6</td><td>~3</td><td>~1,5</td><td>2 tháng (M0+M1)</td><td>Cùng Fast Track — nhưng cần ÍT KHTN hơn hẳn</td></tr>
+        </table>
+
+        <h3 class="group-title">Điểm mạnh của team: phễu chuyển đổi cao hơn nhờ phân tích KHTN tốt (CHAIN)</h3>
+        <p>Điểm mạnh của team Hương là phân tích khách hàng tiềm năng (theo công thức CHAIN, xem tab Khách hàng — CHAIN) rất tốt — điều này làm tăng tỷ lệ chuyển đổi ở MỌI bước của phễu, không chỉ riêng bước đặt hẹn. Từ cùng 10 KHTN, thay vì ra 5 cuộc hẹn – 3 trình bày – 1 hợp đồng (phễu chuẩn), team đạt 8 cuộc hẹn – 4 trình bày – 2 hợp đồng — gấp đôi kết quả trên cùng một khối lượng hoạt động, tức cùng một hiệu suất lao động.</p>
+        <table>
+          <tr><th>Bước chuyển đổi</th><th>Phễu chuẩn (10-5-3-1)</th><th>Phễu nâng cao — team Hương (10-8-4-2)</th></tr>
+          <tr><td>KHTN → Cuộc hẹn</td><td>50% (5/10)</td><td>80% (8/10)</td></tr>
+          <tr><td>Cuộc hẹn → Trình bày giải pháp</td><td>60% (3/5)</td><td>50% (4/8)</td></tr>
+          <tr><td>Trình bày → Hợp đồng chốt</td><td>33% (1/3)</td><td>50% (2/4)</td></tr>
+          <tr><td>Tổng (KHTN → Hợp đồng)</td><td>10%</td><td>20%</td></tr>
+        </table>
+        <p class="muted"><i>Mục tiêu là tăng TẤT CẢ các tỷ lệ chuyển đổi này để số hợp đồng gia tăng trên cùng một hiệu suất lao động — nghĩa là đầu tư vào CHẤT LƯỢNG phân tích KHTN ngay từ đầu (CHAIN), song song với việc tăng SỐ LƯỢNG hoạt động (thông điệp gia tốc ở đầu tab), thay vì chỉ chọn một trong hai.</i></p>
+
+        <h3 class="group-title">Công cụ tính thu nhập SOP 2026 — mô phỏng trước khi đặt mục tiêu</h3>
+        <p>File Excel chính thức "Agency Distribution Deck 2026" (đính kèm cùng bộ tài liệu) — mô phỏng thu nhập tháng/quý/năm dựa trên các chỉ số sản xuất cá nhân, có 2 chế độ: Dành cho Cá nhân (đại lý) và Dành cho Quản lý Đại lý (UM+).</p>
+        <ul>
+          <li>Các chỉ số cần nhập (sheet "Agent - UI"): tháng cần tính thu nhập; đại lý mới hay hiện hữu; danh hiệu Manulife Pro; có tham gia "UM tiềm năng" không; có đạt "Đội ngũ chuyên cần" không; trung bình số hợp đồng/tháng (và theo từng tuần trong tháng); trung bình FYC/hợp đồng; số lượng tuyển dụng mới/tháng; tỷ lệ duy trì hợp đồng năm 2.</li>
+          <li>Kết quả tự động xuất ra: Hoa hồng, Thưởng Đại lý mới M1/M2, Thưởng Đại lý mới xuất sắc, Thưởng năng suất xuất sắc tháng theo Manulife Pro, Thưởng năng suất tháng, Thưởng khuyến khích phát triển KD mới, tổng thưởng chương trình thi đua tháng — cộng thêm thu nhập theo quý (Thưởng năng suất quý, Thưởng M-Star quý) và theo năm (Thưởng kinh doanh xuất sắc năm, Thưởng M-Star năm).</li>
+          <li>Cách dùng cho mục tiêu: điền thử số hợp đồng/FYC mục tiêu vào file để xem ngay số tiền thực nhận theo tháng/quý/năm, thay vì chỉ tính tay theo % trong tab Chính sách thù lao.</li>
+        </ul>
+        <div class="callout warn">
+          <b class="tag">Lỗi cần Hương kiểm tra lại trước khi dùng chính thức</b>
+          Một số ô tổng trong file gốc (ví dụ "Tổng thu nhập" ở phần tháng, quý) đang hiển thị lỗi #REF! thay vì số liệu — có thể do đứt liên kết công thức khi trích xuất/gửi file. Cần mở file gốc trong Excel, kiểm tra và sửa lại công thức trước khi dùng để tính thu nhập thực tế cho đại lý.
+        </div>
+
+        <h3 class="group-title">Kế hoạch hành động 90 ngày theo tuần</h3>
+        <table>
+          <tr><th>Tuần</th><th>Trọng tâm</th><th>Đầu ra cần có</th></tr>
+          <tr><td>1 (Trước/Trong MIT)</td><td>Hoàn tất khảo sát, phỏng vấn, học MIT+ILP</td><td>Danh sách 20 KHTN; hoàn thành MIT</td></tr>
+          <tr><td>2–4 (Ngày 1–30)</td><td>Áp dụng 10-5-3-1 ngay từ tuần đầu tiên đi thị trường</td><td>30 KHTN (CHAIN); ≥1 hợp đồng đầu tiên</td></tr>
+          <tr><td>5–7 (Ngày 31–50)</td><td>Duy trì mật độ hoạt động cao; mở rộng nguồn qua giới thiệu/TTGAH</td><td>Nhật ký hoạt động hàng tuần theo phễu 10-5-3-1</td></tr>
+          <tr><td>8–10 (Ngày 51–70)</td><td>Nâng cao kỹ năng đặt hẹn, trình bày giải pháp theo 2 phong cách</td><td>Đối luyện case study đạt yêu cầu Trainer</td></tr>
+          <tr><td>11–13 (Ngày 71–90)</td><td>Hoàn thiện kỹ thuật chốt, bàn giao, chăm sóc sau bán</td><td>Tổng kết 90 ngày so với mục tiêu Tuần 1</td></tr>
+        </table>
+      </section>
+
+      <!-- ============ TAB 6: SALE KIT ============ -->
+      <section class="tab-panel" id="tab-kit">
+        <div class="hero">
+          <span class="tag">SALE KIT CƠ BẢN</span>
+          <h2>Bộ khảo sát &amp; công cụ nền tảng</h2>
+          <p>Những khảo sát/công cụ đã dùng xuyên suốt quy trình onboarding — coi đây là sale kit căn bản nhất, dùng lại được cho mọi ứng viên/khách hàng mới.</p>
+        </div>
+        <div class="callout note">
+          <b class="tag">Về các file đính kèm</b>
+          Sổ tay 90 ngày, công cụ tính thu nhập SOP, 3 khảo sát, file mẫu CHAIN và Hành trình hợp đồng được gửi kèm dưới dạng file riêng (PDF/Excel/HTML) cùng với tài liệu này, không nhúng vào trong file — để đảm bảo mở được ổn định trên mọi thiết bị, kể cả điện thoại.
+        </div>
+
+        <div class="kit-grid">
+          <div class="kit-card"><span class="when">Trước MIT</span><h5>E-pamphlet</h5><p>Khảo sát nghề nghiệp — bước đầu tìm hiểu định hướng và động lực của ứng viên.</p></div>
+          <div class="kit-card"><span class="when">Trước MIT</span><h5>Popscreen</h5><p>Khảo sát mức độ phù hợp công việc — sàng lọc trước khi cam kết đào tạo.</p></div>
+          <div class="kit-card"><span class="when">Ngày 6–30</span><h5>Khảo sát thị trường</h5><p>Công cụ giúp đại lý mới hiểu thị trường mục tiêu trước khi tiếp cận KHTN.</p></div>
+          <div class="kit-card"><span class="when">Buổi 6</span><h5>Khảo sát nhu cầu tài chính</h5><p>Công cụ khơi gợi &amp; phân tích nhu cầu tài chính khách hàng — dùng trước khi lên EPOS.</p></div>
+          <div class="kit-card"><span class="when">Buổi 7</span><h5>EPOS</h5><p>Công cụ phân tích nhu cầu tài chính chính thức, dùng để chốt phương án minh họa với khách hàng.</p></div>
+          <div class="kit-card"><span class="when">Buổi 11</span><h5>Khảo sát hài lòng nghề nghiệp</h5><p>Song song khơi gợi nhu cầu — dùng cho cả đối tượng tuyển dụng lẫn khách hàng là người quen trong nghề.</p></div>
+          <div class="kit-card"><span class="when">Xuyên suốt</span><h5>File CHAIN — DS khách hàng tiềm năng</h5><p>Công cụ phác họa chân dung KHTN theo 5 tiêu chí Character/Health/Approachability/Income/Needs (xem tab 4). File đính kèm riêng.</p></div>
+          <div class="kit-card"><span class="when">Buổi 5–10, xuyên suốt</span><h5>Hành trình hợp đồng — 9 chặng</h5><p>Công cụ tra cứu việc cần làm &amp; rủi ro ở từng chặng từ gặp khách đến bàn giao (Tiếp cận → Lập hồ sơ → Thẩm định → Bàn giao). File đính kèm riêng.</p></div>
+          <div class="kit-card"><span class="when">Trong MIT, tra cứu xuyên suốt</span><h5>Sổ tay 90 ngày Đại lý mới <small style="font-weight:500;color:var(--ink-soft);font-size:11px;">(Bản 17/09/2025)</small></h5><p>Tài liệu chính thức của công ty — tổng hợp việc cần làm, quy trình, chính sách dành cho đại lý mới trong 90 ngày đầu. File đính kèm riêng, hoặc <a href="https://drive.google.com/file/d/1IoH-7N049DLGnGGfDzK2OuDyABIdKXhB/view?usp=sharing" target="_blank" rel="noopener">đọc trực tuyến trên Google Drive</a>.</p></div>
+          <div class="kit-card"><span class="when">Buổi 1, dùng khi đặt/điều chỉnh mục tiêu</span><h5>Công cụ tính thu nhập SOP 2026</h5><p>File Excel chính thức (Agency Distribution Deck) mô phỏng thu nhập tháng/quý/năm từ các chỉ số sản xuất cá nhân — xem chi tiết cách dùng ở tab Mục tiêu &amp; tăng tốc. File đính kèm riêng.</p></div>
+        </div>
+        <div class="callout note" style="margin-top:16px;"><b class="tag">Cách dùng</b>Đưa toàn bộ 10 công cụ này vào bộ tài liệu cầm tay (sale kit) phát cho đại lý mới ngay từ Buổi 1, thay vì để rải rác theo từng buổi — giúp ứng viên chủ động dùng sớm hơn lịch học chính thức.</div>
+
+        <h3 class="group-title">Hành trình hợp đồng — 9 chặng (tóm tắt)</h3>
+        <p>Công cụ tra cứu (file HTML tương tác riêng, đính kèm cùng bộ tài liệu) — theo dõi hợp đồng từ lúc gặp khách đến khi bàn giao xong, chia làm 4 giai đoạn lớn. Đối chiếu Sổ tay Thẩm định &amp; Phát hành Hợp đồng VS.27 (hiệu lực 03/07/2026) — quy định có thể đổi, luôn kiểm tra bản mới nhất trên AWS.</p>
+        <table>
+          <tr><th>Chặng</th><th>Giai đoạn</th><th>Rủi ro lớn nhất cần tránh</th></tr>
+          <tr><td>1. Gặp khách &amp; khơi gợi nhu cầu</td><td>Tiếp cận</td><td>Nhắc tên sản phẩm trước khi khách xác nhận bức tranh tài chính → khách vào thế phòng thủ</td></tr>
+          <tr><td>2. Trình bày giải pháp</td><td>Tiếp cận</td><td>Tô hồng, không nói rõ điểm yếu/loại trừ trước khi khách đồng ý → vỡ kỳ vọng đúng lúc cần quyền lợi</td></tr>
+          <tr><td>3. Khai thông tin &amp; upload hồ sơ</td><td>Lập hồ sơ</td><td>Khai thiếu sức khỏe, hoặc đọc OTP thay khách/dùng SĐT-email của mình → vi phạm nghiêm trọng</td></tr>
+          <tr><td>4. Thanh toán</td><td>Lập hồ sơ</td><td>Nhận tiền mặt hộ khách → rủi ro kỷ luật nghề nghiệp lớn nhất, không có ngoại lệ</td></tr>
+          <tr><td>5. Theo dõi thẩm định</td><td>Thẩm định</td><td>Im lặng không cập nhật cho khách; để đến nhắc lần 3 (T+21) mới xử lý, gần chạm mốc tự đóng T+30</td></tr>
+          <tr><td>6. Xử lý yêu cầu thẩm định</td><td>Thẩm định</td><td>Chậm bổ sung giấy tờ → hệ thống tự đóng hồ sơ và hoàn phí ở mốc T+30</td></tr>
+          <tr><td>7. Kết quả &amp; thư thỏa thuận</td><td>Thẩm định</td><td>Để khách ký thư thỏa thuận mà chưa hiểu rõ điều kiện loại trừ/tăng phí</td></tr>
+          <tr><td>8. Xác thực M-Pro</td><td>Thẩm định</td><td>Ngày hoàn tất trùng/sau sinh nhật khách → đổi phí, phải làm lại BCTT và M-Pro</td></tr>
+          <tr><td>9. Bàn giao &amp; xác nhận bàn giao</td><td>Bàn giao</td><td>Quá 21 ngày kể từ ngày cấp → khấu trừ 300.000đ; quá 30 ngày → mất 100% hoa hồng hợp đồng đó</td></tr>
+        </table>
+        <p class="muted"><i>Mỗi chặng trong file gốc còn có đầy đủ danh sách công cụ dùng (ePOS, M-PA, AWS, Synergy Portal 2.0...) và việc cần làm chi tiết — mở file "Hành trình hợp đồng — 9 chặng" đính kèm để tra cứu đầy đủ.</i></p>
+
+        <h3 class="group-title">Ba khảo sát nhu cầu tài chính theo phân khúc khách hàng</h3>
+        <p>Ba khảo sát chính thức Hương đã xây dựng, dùng trong buổi gặp đầu tiên với khách hàng (trước khi lên phương án ePOS ở Buổi 7). Mỗi khảo sát gồm 4 phần: A – Xác nhận hiện trạng tài chính (Check-in), B – Khảo sát nhu cầu &amp; mục tiêu ưu tiên, C – Bảo vệ chính khoản đang tích lũy, D – Lập kế hoạch cho buổi gặp tiếp theo.</p>
+
+        <details>
+          <summary><span>A. Khảo sát khách hàng ĐỘC THÂN — Bảo vệ sức khỏe &amp; Tích lũy</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <p><b>Phần A — Xác nhận hiện trạng tài chính (Check-in)</b></p>
+            <ul>
+              <li>Câu 1: Tổng thu nhập hàng tháng — Dưới 20 triệu / 20–30 triệu / 30–50 triệu / Trên 50 triệu (bảo mật).</li>
+              <li>Câu 2: Dòng tiền bổ sung/thu nhập khác — Chưa có / Dưới 10tr/tháng / Trên 10tr/tháng.</li>
+              <li>Câu 3: Mỗi ngày có thể dành riêng bao nhiêu mà không ảnh hưởng sinh hoạt — 30.000đ / 50.000đ / 100.000đ / Khác.</li>
+              <li>Câu 4: Phân bổ ngân sách hàng tháng — Chi tiêu cá nhân (Dưới 50% / 50–60% / Trên 60%); Tích lũy &amp; dành dụm (Dưới 20% / 20–30% / Trên 30%).</li>
+            </ul>
+            <p><b>Phần B — Khảo sát nhu cầu &amp; mục tiêu ưu tiên</b></p>
+            <p><i>I. Chăm sóc sức khỏe</i></p>
+            <ul>
+              <li>Câu 4: Dịch vụ y tế mong muốn khi khám/nằm viện — BHYT nhà nước / Tự chi trả bằng tiết kiệm / Thẻ bảo hiểm sức khỏe tư nhân (chọn viện tư/quốc tế).</li>
+              <li>Câu 5: Điều lo nhất nếu nằm viện dài ngày — Hụt tiết kiệm / Mất thu nhập nghỉ việc / Không người thân lo thủ tục / Thành gánh nặng cho bố mẹ.</li>
+              <li>Câu 6: Ngân sách bảo vệ sức khỏe mong muốn/năm — Cơ bản (125–250 triệu) / Nâng cao (500 triệu) / Cực cao (1 tỷ).</li>
+            </ul>
+            <p><i>II. Phòng ngừa rủi ro bệnh hiểm nghèo &amp; tai nạn</i></p>
+            <ul>
+              <li>Câu 7: Khi gặp tai nạn cần điều trị/nghỉ dưỡng — Có ngân sách hỗ trợ y tế + bù thu nhập bị mất / Tự thu xếp bằng nguồn tiền sẵn có.</li>
+            </ul>
+            <p><i>III. Trách nhiệm với gia đình gốc</i></p>
+            <ul>
+              <li>Câu 8: Hiện có phụ giúp tài chính cho bố mẹ/người thân — Có, hàng tháng đều đặn / Có, khi cần thiết / Chưa, nhưng vài năm tới sẽ phải lo / Chưa.</li>
+              <li>Câu 9: Nếu gặp rủi ro, khoản phụ giúp này duy trì thế nào — Cần có khoản dự phòng để bố mẹ không bị hụt / Gia đình có thể tự xoay xở / Chưa nghĩ đến.</li>
+            </ul>
+            <p><i>IV. Mục tiêu tích lũy</i></p>
+            <ul>
+              <li>Câu 10: Mục tiêu tài chính lớn nhất 5–10 năm tới — Mua nhà/mua xe / Lập gia đình / Khởi nghiệp-đầu tư / Học lên cao-du học / Tự do tài chính sớm / Chưa có mục tiêu cụ thể.</li>
+              <li>Câu 11: Đang tích lũy qua kênh nào — Gửi ngân hàng / Giữ tiền mặt / Vàng-BĐS-USD / Chứng khoán-quỹ mở / Chưa có kênh cụ thể.</li>
+            </ul>
+            <p><b>Phần C — Bảo vệ chính khoản đang tích lũy</b></p>
+            <ul>
+              <li>Câu 12: Nguyên nhân khiến tiền bạc/tài sản tích lũy bị hao hụt hoặc mất đi — Lạm phát, chi tiêu vượt kế hoạch / Tai nạn bất ngờ / Đầu tư thua lỗ / Ốm đau bệnh tật, điều trị bệnh hiểm nghèo / Khác.</li>
+              <li>Câu 13: Nếu mắc bệnh lý nghiêm trọng (ung thư, đột quỵ, tim mạch...), cần khoảng bao nhiêu tiền để yên tâm điều trị mà không phải lo tài chính — khách hàng tự ghi số tiền cụ thể (không có mức chuẩn chung).</li>
+              <li>Câu 14: Với số tiền để dành mỗi ngày đã ghi ở Phần A, cần khoảng bao lâu để tích lũy đủ khoản đó — Dưới 5 năm / 5–10 năm / Trên 10 năm / Chưa tính bao giờ.</li>
+              <li>Câu 15: Trong thời gian đang tích lũy, nếu rủi ro xảy ra TRƯỚC khi quỹ đủ — Rút toàn bộ tiết kiệm, còn thiếu thì vay mượn / Bán bớt tài sản đang có / Dùng khoản đang dành cho mục tiêu khác / Chưa nghĩ đến tình huống này.</li>
+              <li>Câu 16: Nếu có giải pháp vẫn tích lũy như kênh đang dùng, NHƯNG khoản dự phòng có hiệu lực đầy đủ NGAY TỪ NGÀY ĐẦU — Quan tâm ngay / Cần tìm hiểu kỹ hơn / Vẫn ưu tiên tự tích lũy, chấp nhận khoảng thời gian chưa được bảo vệ.</li>
+            </ul>
+            <p><b>Phần D — Lập kế hoạch cho buổi gặp tiếp theo</b></p>
+            <ul>
+              <li>Câu 17: Ưu tiên mục tiêu nào nhất cho buổi trao đổi số 2 — Tối ưu Thẻ sức khỏe cá nhân + dự phòng bệnh hiểm nghèo có hiệu lực ngay / Lập kế hoạch tích lũy có kỷ luật cho mục tiêu 5–10 năm / Kế hoạch toàn diện: Bảo vệ ngay + Tích lũy dài hạn + Báo hiếu.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary><span>B. Khảo sát khách hàng GIA ĐÌNH TRẺ — Mới lập gia đình và/hoặc có con nhỏ</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <p class="muted">Phần A — Xác nhận hiện trạng tài chính (Check-in): cấu trúc giống Khảo sát A (Câu 1–4), đổi ngữ cảnh cá nhân thành gia đình.</p>
+            <p><b>Phần B — Khảo sát nhu cầu &amp; mục tiêu ưu tiên</b></p>
+            <p><i>I. Chăm sóc sức khỏe &amp; Quyền lợi thai sản</i></p>
+            <ul>
+              <li>Câu 4: Dịch vụ y tế khi em bé/bố mẹ cần khám/nằm viện — BHYT nhà nước / Tự chi trả bằng tiết kiệm / Thẻ bảo hiểm sức khỏe tư nhân (viện tư/quốc tế).</li>
+              <li>Câu 5: Tiêu chí chăm sóc quan trọng nhất khi em bé ốm phải nhập viện — Đội ngũ bác sĩ giỏi, cơ sở uy tín / Phòng bệnh riêng tư, sạch sẽ / Được bảo lãnh viện phí trực tiếp / Kết hợp tất cả các tiêu chí trên.</li>
+              <li>Câu 6: Gia đình có kế hoạch đón thêm bé 1–2 năm tới, có muốn chuẩn bị sẵn Quỹ thai sản — Rất cần, muốn BH chi trả chi phí sinh nở tại viện uy tín / Tự trích tiền tiết kiệm để chi trả khi sinh / Chưa có kế hoạch cụ thể.</li>
+              <li>Câu 7: Ngân sách bảo vệ sức khỏe &amp; thai sản mong muốn cho cả gia đình/năm — Cơ bản (125–250 triệu) / Nâng cao (500 triệu) / Cực cao (1 tỷ).</li>
+            </ul>
+            <p><i>II. Phòng ngừa rủi ro bệnh hiểm nghèo &amp; tai nạn</i></p>
+            <ul>
+              <li>Câu 8: Nếu gặp rủi ro tai nạn cần điều trị hoặc nghỉ ngơi phục hồi — Có ngân sách hỗ trợ chi trả y tế + bù đắp tiền lương bị mất / Tự thu xếp bằng nguồn tiền sẵn có của gia đình.</li>
+            </ul>
+            <p><i>III. Bảo vệ nguồn thu nhập trụ cột</i></p>
+            <ul>
+              <li>Câu 9: Nếu người trụ cột vắng mặt, muốn thu nhập gia đình được bảo vệ bao lâu — Đảm bảo sinh hoạt cho con &amp; gia đình ít nhất 5–10 năm tới / Đảm bảo trả xong các khoản nợ-chi phí cố định hiện tại / Gia đình tự xoay xở.</li>
+            </ul>
+            <p><i>IV. Tích lũy Quỹ học vấn cho con</i></p>
+            <ul>
+              <li>Câu 10: Định hướng môi trường học tập cho con — Công lập chất lượng cao / Dân lập-song ngữ / Quốc tế trong nước / Du học nước ngoài.</li>
+              <li>Câu 11: Mong muốn chuẩn bị Quỹ học vấn theo định hướng nào — Không cần chuẩn bị, đến đâu hay đến đó / Có chuẩn bị vẫn hơn, đủ học trong nước / Đảm bảo quỹ học vấn đúng chất lượng nhất quán tới ngày ra trường.</li>
+            </ul>
+            <p class="muted">Phần C — Bảo vệ chính khoản đang tích lũy: cấu trúc giống Khảo sát A (Câu 12, 14, 16), riêng Câu 13 và 15 điều chỉnh theo ngữ cảnh gia đình:</p>
+            <ul>
+              <li>Câu 13: Nếu người trụ cột mắc bệnh lý nghiêm trọng, gia đình cần khoảng bao nhiêu tiền để yên tâm điều trị mà không động đến các quỹ khác — khách hàng tự ghi số tiền cụ thể.</li>
+              <li>Câu 15: Nếu rủi ro xảy ra TRƯỚC khi quỹ đủ — Rút toàn bộ tiết kiệm, còn thiếu thì vay mượn / Bán bớt tài sản đang có / Dùng quỹ đang dành cho việc học của con / Chưa nghĩ đến tình huống này.</li>
+            </ul>
+            <p><b>Phần D — Lập kế hoạch cho buổi gặp tiếp theo</b></p>
+            <ul>
+              <li>Câu 17: Ưu tiên mục tiêu nào nhất — Tối ưu Thẻ sức khỏe cho em bé + Quyền lợi Thai sản cho mẹ / Lập Bảng tính Quỹ học vấn chắc chắn cho con / Kế hoạch Toàn diện: Bảo vệ có hiệu lực ngay + Tích lũy tương lai cho con.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary><span>C. Khảo sát khách hàng ĐÃ LẬP GIA ĐÌNH VÀ/HOẶC CON LỚN</span><span class="chev">▸</span></summary>
+          <div class="detail-body">
+            <p class="muted">Phần A — Xác nhận hiện trạng tài chính (Check-in): cấu trúc giống Khảo sát A/B (Câu 1–4), ngữ cảnh gia đình.</p>
+            <p><b>Phần B — Khảo sát nhu cầu &amp; mục tiêu ưu tiên</b></p>
+            <p><i>I. Chăm sóc sức khỏe</i></p>
+            <ul>
+              <li>Câu 4: Dịch vụ y tế mong muốn cho các thành viên gia đình — BHYT nhà nước / Tự chi trả bằng tiết kiệm / Thẻ bảo hiểm sức khỏe tư nhân (viện tư/quốc tế).</li>
+              <li>Câu 5: Mức ngân sách bảo vệ sức khỏe mong muốn cho gia đình/năm — Cơ bản (125–250 triệu/người) / Nâng cao (500 triệu/người) / Cực cao (1 tỷ/người).</li>
+            </ul>
+            <p><i>II. Bảo vệ nguồn thu nhập &amp; trách nhiệm tài chính</i></p>
+            <ul>
+              <li>Câu 6: Khoản nợ/trách nhiệm tài chính cố định hiện có — Vay mua nhà / Vay mua xe-tiêu dùng / Phụng dưỡng bố mẹ hai bên / Chi phí học của con / Không có khoản nào đáng kể.</li>
+              <li>Câu 7: Nếu người trụ cột vắng mặt, muốn thu nhập gia đình được bảo vệ bao lâu — Đến khi con hoàn tất việc học và tự lập / Đảm bảo trả xong toàn bộ các khoản nợ hiện tại / Cả hai nội dung trên / Gia đình tự xoay xở.</li>
+            </ul>
+            <p><i>III. Quỹ học vấn &amp; Quỹ hưu trí</i></p>
+            <ul>
+              <li>Câu 8: Quỹ học vấn cho con hiện đã chuẩn bị đến đâu — Đã có quỹ riêng, đủ cho lộ trình dự kiến / Có tích lũy nhưng chưa tách riêng, dùng chung tiền gia đình / Chưa chuẩn bị, dự định lo bằng thu nhập hàng tháng.</li>
+              <li>Câu 9: Khi nghỉ hưu, mong muốn nguồn thu nhập đến từ đâu — Lương hưu BHXH / Tiền tiết kiệm đã tích lũy / Cho thuê tài sản / Một khoản thu nhập đều đặn đã chuẩn bị riêng từ trước / Trông cậy vào con cái.</li>
+            </ul>
+            <p><b>Phần C — Bảo vệ chính khoản đang tích lũy</b></p>
+            <ul>
+              <li>Câu 10: Nguyên nhân khiến tiền bạc/tài sản tích lũy bị hao hụt hoặc mất đi — Lạm phát, chi tiêu vượt kế hoạch / Tai nạn bất ngờ / Đầu tư thua lỗ / Ốm đau bệnh tật, điều trị bệnh hiểm nghèo / Khác.</li>
+              <li>Câu 11: Nếu không may mắc bệnh lý nghiêm trọng, gia đình cần khoảng bao nhiêu tiền để yên tâm điều trị mà không động đến quỹ học của con hay quỹ hưu trí — khách hàng tự ghi số tiền cụ thể.</li>
+              <li>Câu 12: Với số tiền để dành mỗi ngày đã ghi ở Phần A, cần khoảng bao lâu để tích lũy đủ khoản đó — Dưới 5 năm / 5–10 năm / Trên 10 năm / Chưa tính bao giờ.</li>
+              <li>Câu 13: Trong thời gian đang tích lũy, nếu rủi ro xảy ra TRƯỚC khi quỹ đủ — Rút toàn bộ tiết kiệm, còn thiếu thì vay mượn / Bán bớt tài sản đang có / Dùng quỹ đang dành cho việc học của con hoặc quỹ hưu trí / Chưa nghĩ đến tình huống này.</li>
+              <li>Câu 14: Nếu có giải pháp vẫn tích lũy như kênh đang dùng, NHƯNG khoản dự phòng có hiệu lực đầy đủ NGAY TỪ NGÀY ĐẦU — Quan tâm ngay / Cần tìm hiểu kỹ hơn / Vẫn ưu tiên tự tích lũy, chấp nhận khoảng thời gian chưa được bảo vệ.</li>
+            </ul>
+            <p><b>Phần D — Lập kế hoạch cho buổi gặp tiếp theo</b></p>
+            <ul>
+              <li>Câu 15: Ưu tiên mục tiêu nào nhất — Tối ưu bảo vệ sức khỏe cả gia đình + dự phòng bệnh hiểm nghèo có hiệu lực ngay / Lập Bảng tính Quỹ học vấn hoàn tất lộ trình cho con / Lập Kế hoạch Quỹ hưu trí — thu nhập đều đặn sau khi ngừng làm việc / Kế hoạch Toàn diện: Bảo vệ ngay + Giáo dục + Hưu trí.</li>
+            </ul>
+          </div>
+        </details>
+
+        <div class="callout warn">
+          <b class="tag">Nguồn &amp; cách dùng</b>
+          Nội dung 3 khảo sát trên trích nguyên văn từ 3 file PDF chính thức do Hương biên soạn: khao-sat-a-doc-than.pdf, khao-sat-b-gia-dinh-tre.pdf, khao-sat-c-con-lon.pdf. Bản PDF gốc có định dạng ô tick chọn (☐) để in ra dùng trực tiếp với khách hàng — nên dùng bản PDF khi gặp khách hàng thực tế; bản liệt kê ở đây chỉ để tra cứu nhanh khi ôn tập hoặc đối chiếu.
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+// ---- Tab switching ----
+const navButtons = document.querySelectorAll('.nav button');
+const panels = document.querySelectorAll('.tab-panel');
+const topTitle = document.getElementById('topTitle');
+navButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    navButtons.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const target = btn.dataset.target;
+    panels.forEach(p=>p.classList.toggle('active', p.id===target));
+    topTitle.textContent = btn.querySelector('span:last-child').textContent;
+    document.querySelector('.content').scrollTop = 0;
+    window.scrollTo(0,0);
+    if(window.innerWidth <= 860){
+      document.getElementById('sidebar').classList.remove('mobile-open');
+      document.getElementById('sidebarBackdrop').classList.remove('show');
+    }
+  });
+});
+
+// ---- Auto-hide sidebar ----
+const sidebarEl = document.getElementById('sidebar');
+document.getElementById('autohideToggle').addEventListener('change', (e)=>{
+  sidebarEl.classList.toggle('autohide', e.target.checked);
+});
+
+// ---- Mobile hamburger ----
+document.getElementById('hamburger').addEventListener('click', ()=>{
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+  document.getElementById('sidebarBackdrop').classList.toggle('show');
+});
+document.getElementById('sidebarBackdrop').addEventListener('click', ()=>{
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebarBackdrop').classList.remove('show');
+});
+
+// ---- Expand / collapse all details in active panel ----
+document.getElementById('expandAll').addEventListener('click', ()=>{
+  document.querySelector('.tab-panel.active').querySelectorAll('details').forEach(d=>d.open=true);
+});
+document.getElementById('collapseAll').addEventListener('click', ()=>{
+  document.querySelector('.tab-panel.active').querySelectorAll('details').forEach(d=>d.open=false);
+});
+</script>
+</body>
+</html>
