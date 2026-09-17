@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist hồ sơ Claim bảo hiểm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F6F5F1;
+    --panel: #FFFFFF;
+    --ink: #1C2420;
+    --ink-soft: #5B655D;
+    --line: #DEDBD1;
+    --teal: #0F5D4A;
+    --teal-deep: #0A4436;
+    --teal-tint: #E3EFEA;
+    --amber: #C1791E;
+    --amber-tint: #FBF0DF;
+    --clay: #A8452F;
+    --clay-tint: #F7E7E1;
+    --check-bg: #FFFFFF;
+    --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --font-sans: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  :root[data-theme="dark"]{
+    --bg: #141815;
+    --panel: #1C211D;
+    --ink: #ECEAE3;
+    --ink-soft: #A6AB9F;
+    --line: #313830;
+    --teal: #4FAE8E;
+    --teal-deep: #6FC5A6;
+    --teal-tint: #1B2F27;
+    --amber: #E0A54E;
+    --amber-tint: #2E2415;
+    --clay: #D98267;
+    --clay-tint: #33201A;
+    --check-bg: #20261F;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg: #141815;
+      --panel: #1C211D;
+      --ink: #ECEAE3;
+      --ink-soft: #A6AB9F;
+      --line: #313830;
+      --teal: #4FAE8E;
+      --teal-deep: #6FC5A6;
+      --teal-tint: #1B2F27;
+      --amber: #E0A54E;
+      --amber-tint: #2E2415;
+      --clay: #D98267;
+      --clay-tint: #33201A;
+      --check-bg: #20261F;
+    }
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--font-sans);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+
+  .app{
+    display:flex;
+    min-height:100vh;
+    width:100%;
+  }
+
+  /* ---------- SIDEBAR (20%) ---------- */
+  .sidebar{
+    flex:0 0 20%;
+    max-width:300px;
+    min-width:230px;
+    background:var(--teal-deep);
+    color:#F3F7F4;
+    display:flex;
+    flex-direction:column;
+    padding:28px 20px 20px;
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+    transition:margin-left .28s ease, transform .28s ease;
+  }
+  .sidebar.collapsed{
+    margin-left:-320px;
+  }
+  .brand{
+    font-family:var(--font-serif);
+    font-size:20px;
+    line-height:1.25;
+    font-weight:600;
+    margin:0 0 4px;
+    color:#fff;
+  }
+  .brand-sub{
+    font-size:12.5px;
+    color:#BFE0D2;
+    margin:0 0 22px;
+  }
+  .overall-progress{
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:10px;
+    padding:12px 14px;
+    margin-bottom:22px;
+  }
+  .overall-progress .label{
+    font-size:11.5px;
+    text-transform:none;
+    color:#BFE0D2;
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+  }
+  .bar-track{
+    height:6px;
+    background:rgba(255,255,255,.16);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .bar-fill{
+    height:100%;
+    background:#7FD8B4;
+    border-radius:4px;
+    width:0%;
+    transition:width .35s ease;
+  }
+
+  nav.catlist{
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+    flex:1;
+  }
+  .nav-btn{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    text-align:left;
+    background:transparent;
+    border:none;
+    color:#DCEDE4;
+    font-family:var(--font-sans);
+    font-size:14.5px;
+    font-weight:500;
+    padding:10px 10px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .nav-btn:hover{ background:rgba(255,255,255,.08); color:#fff; }
+  .nav-btn.active{ background:#fff; color:var(--teal-deep); font-weight:600; }
+  .nav-btn .dot{
+    flex:0 0 8px; height:8px; border-radius:50%;
+    background:rgba(255,255,255,.35);
+  }
+  .nav-btn.active .dot{ background:var(--teal); }
+  .nav-btn .cnt{
+    margin-left:auto;
+    font-size:11.5px;
+    color:#9FCBB8;
+    font-weight:600;
+  }
+  .nav-btn.active .cnt{ color:var(--teal); }
+
+  .sidebar-foot{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px solid rgba(255,255,255,.14);
+  }
+  .foot-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.16);
+    color:#EAF4EF;
+    font-family:var(--font-sans);
+    font-size:13px;
+    padding:9px 10px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .foot-btn:hover{ background:rgba(255,255,255,.14); }
+
+  /* Toggle handle, visible when sidebar collapsed OR always as pin */
+  .sidebar-toggle{
+    position:fixed;
+    top:18px;
+    left:18px;
+    z-index:40;
+    width:38px;
+    height:38px;
+    border-radius:9px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    color:var(--teal-deep);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 2px 8px rgba(15,30,25,.08);
+  }
+  .sidebar-toggle svg{ width:18px; height:18px; }
+
+  .overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(10,20,16,.35);
+    z-index:20;
+  }
+  .overlay.show{ display:block; }
+
+  /* ---------- MAIN (80%) ---------- */
+  main{
+    flex:1;
+    min-width:0;
+    padding:52px 44px 80px;
+    max-width:900px;
+  }
+  .eyebrow-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+  }
+  .cat-icon{
+    width:34px; height:34px;
+    border-radius:8px;
+    background:var(--teal-tint);
+    color:var(--teal);
+    display:flex; align-items:center; justify-content:center;
+    flex:0 0 34px;
+  }
+  h1.page-title{
+    font-family:var(--font-serif);
+    font-weight:600;
+    font-size:30px;
+    margin:0 0 6px;
+    line-height:1.2;
+  }
+  .page-desc{
+    color:var(--ink-soft);
+    font-size:15px;
+    line-height:1.55;
+    max-width:62ch;
+    margin:0 0 26px;
+  }
+
+  .progress-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:28px;
+  }
+  .progress-row .bar-track{
+    flex:1;
+    height:8px;
+    background:var(--line);
+  }
+  .progress-row .bar-fill{ background:var(--teal); }
+  .progress-num{
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--teal-deep);
+    white-space:nowrap;
+  }
+
+  .callout{
+    border-left:3px solid var(--clay);
+    background:var(--clay-tint);
+    border-radius:0 10px 10px 0;
+    padding:14px 18px;
+    margin-bottom:24px;
+  }
+  .callout.amber{ border-left-color:var(--amber); background:var(--amber-tint); }
+  .callout h3{
+    margin:0 0 6px;
+    font-size:14px;
+    font-weight:700;
+    color:var(--clay);
+  }
+  .callout.amber h3{ color:var(--amber); }
+  .callout p, .callout li{
+    margin:0 0 4px;
+    font-size:14px;
+    line-height:1.55;
+    color:var(--ink);
+  }
+  .callout a{ color:var(--teal-deep); }
+  .callout ul{ margin:0; padding-left:18px; }
+
+  .view-toggle{
+    display:inline-flex;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:9px;
+    padding:3px;
+    margin-bottom:20px;
+  }
+  .view-toggle button{
+    border:none;
+    background:transparent;
+    padding:7px 16px;
+    font-family:var(--font-sans);
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+    border-radius:7px;
+    cursor:pointer;
+  }
+  .view-toggle button.active{
+    background:var(--teal);
+    color:#fff;
+  }
+
+  .group-title{
+    font-family:var(--font-serif);
+    font-size:16.5px;
+    font-weight:600;
+    margin:26px 0 10px;
+    color:var(--teal-deep);
+  }
+  .group-title:first-of-type{ margin-top:0; }
+
+  ul.checklist{
+    list-style:none;
+    margin:0 0 6px;
+    padding:0;
+    border:1px solid var(--line);
+    border-radius:12px;
+    overflow:hidden;
+    background:var(--panel);
+  }
+  li.item{
+    display:flex;
+    gap:12px;
+    padding:13px 16px;
+    border-bottom:1px solid var(--line);
+    align-items:flex-start;
+  }
+  li.item:last-child{ border-bottom:none; }
+  li.item.checked{ background:var(--teal-tint); }
+
+  .chk{
+    flex:0 0 20px;
+    width:20px; height:20px;
+    margin-top:1px;
+    border-radius:5px;
+    border:1.5px solid var(--ink-soft);
+    background:var(--check-bg);
+    cursor:pointer;
+    appearance:none;
+    -webkit-appearance:none;
+    position:relative;
+    transition:background .12s ease, border-color .12s ease;
+  }
+  .chk:checked{
+    background:var(--teal);
+    border-color:var(--teal);
+  }
+  .chk:checked::after{
+    content:"";
+    position:absolute;
+    left:5px; top:1px;
+    width:6px; height:11px;
+    border:solid white;
+    border-width:0 2px 2px 0;
+    transform:rotate(40deg);
+  }
+  .chk:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+
+  .item-body{ flex:1; min-width:0; }
+  .item-top{
+    display:flex;
+    align-items:baseline;
+    gap:9px;
+    flex-wrap:wrap;
+  }
+  .item-n{
+    font-family:var(--font-serif);
+    font-size:13px;
+    color:var(--ink-soft);
+    flex:0 0 auto;
+  }
+  .item-name{
+    font-size:14.5px;
+    font-weight:600;
+    line-height:1.4;
+  }
+  li.item.checked .item-name{ color:var(--ink-soft); text-decoration:line-through; text-decoration-color:var(--ink-soft); text-decoration-thickness:1px; }
+
+  .tag{
+    font-size:10.5px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .tag.required{ background:var(--teal-tint); color:var(--teal-deep); }
+  .tag.conditional{ background:var(--amber-tint); color:var(--amber); }
+
+  .item-note{
+    font-size:13px;
+    color:var(--ink-soft);
+    line-height:1.55;
+    margin-top:5px;
+    max-width:64ch;
+  }
+  .view-summary .item-note{ display:none; }
+  .view-summary .tag{ display:none; }
+
+  .note-box{
+    border:1px dashed var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    margin-top:22px;
+    background:var(--panel);
+    font-size:13.5px;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+  .note-box strong{ color:var(--ink); }
+
+  /* Overview page */
+  .ov-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin-top:6px;
+  }
+  .ov-card{
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px 18px;
+    background:var(--panel);
+    cursor:pointer;
+    text-align:left;
+    font-family:var(--font-sans);
+    transition:border-color .15s ease, transform .1s ease;
+  }
+  .ov-card:hover{ border-color:var(--teal); transform:translateY(-1px); }
+  .ov-card h4{
+    font-family:var(--font-serif);
+    font-size:16px;
+    margin:0 0 6px;
+    color:var(--ink);
+  }
+  .ov-card p{
+    margin:0 0 12px;
+    font-size:13px;
+    color:var(--ink-soft);
+    line-height:1.5;
+  }
+  .ov-bar-track{ height:5px; background:var(--line); border-radius:3px; overflow:hidden; }
+  .ov-bar-fill{ height:100%; background:var(--teal); border-radius:3px; }
+  .ov-cnt{ font-size:12px; color:var(--ink-soft); margin-top:6px; }
+
+  .block{
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:var(--panel);
+    padding:16px 18px;
+    margin-bottom:14px;
+  }
+  .block h4{
+    font-family:var(--font-serif);
+    font-size:15px;
+    margin:0 0 8px;
+    color:var(--teal-deep);
+  }
+  .block ol{ margin:0; padding-left:18px; }
+  .block li{ font-size:13.8px; line-height:1.6; margin-bottom:6px; color:var(--ink); }
+  .block li:last-child{ margin-bottom:0; }
+  .block a{ color:var(--teal-deep); }
+
+  @media print{
+    .sidebar, .sidebar-toggle, .overlay, .view-toggle, .foot-btn{ display:none !important; }
+    main{ max-width:100%; padding:10px; }
+    body{ background:#fff; }
+    .item-note{ display:block !important; }
+    .tag{ display:inline-block !important; }
+  }
+
+  @media (max-width: 860px){
+    main{ padding:74px 18px 60px; }
+    .sidebar{
+      position:fixed;
+      z-index:30;
+      left:0; top:0;
+      width:82%;
+      max-width:320px;
+      margin-left:0;
+      transform:translateX(-105%);
+    }
+    .sidebar.mobile-open{ transform:translateX(0); }
+    .ov-grid{ grid-template-columns:1fr; }
+    h1.page-title{ font-size:24px; }
+  }
+</style>
+</head>
+<body>
+
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="Ẩn/hiện menu">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+</button>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <p class="brand">Hồ sơ Claim<br>Quyền lợi bảo hiểm</p>
+    <p class="brand-sub">Phòng Hương Nguyễn · Manulife</p>
+
+    <div class="overall-progress">
+      <div class="label"><span>Tổng tiến độ</span><span id="ovLabel">0/0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="ovBar"></div></div>
+    </div>
+
+    <nav class="catlist" id="navList"></nav>
+
+    <div class="sidebar-foot">
+      <button class="foot-btn" id="printBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        In / Lưu PDF
+      </button>
+      <button class="foot-btn" id="resetBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+        Bỏ tích tất cả
+      </button>
+    </div>
+  </aside>
+
+  <main id="main"></main>
+</div>
+
+<script>
+/* ================= DATA ================= */
+const DATA = {
+  overview: {
+    label: "Tổng quan & Lưu ý chung",
+    icon: "home"
+  },
+  trocap: {
+    label: "Trợ cấp Y tế",
+    icon: "doc",
+    items: [
+      {name:"Giấy ra viện"},
+      {name:"Bảng kê chi phí y tế", note:"Không cần nếu hóa đơn VAT đã có chi tiết khoản mục."},
+      {name:"Hóa đơn VAT"},
+      {name:"Chứng nhận phẫu thuật", note:"Chỉ áp dụng nếu khách hàng có thực hiện phẫu thuật."},
+      {name:"Tóm tắt bệnh án", note:"Có thể mất phí — nên xin sớm ngay khi khách hàng còn ở viện."},
+      {name:"Tờ điều trị hàng ngày / phiếu công khai dịch vụ khám chữa bệnh", note:"Nên chụp trong thời gian ở viện, vì rất khó xin lại nếu ở viện công."},
+      {name:"Kết quả khám, xét nghiệm, chụp chiếu trước khi nhập viện và trước khi ra viện", note:"Nên chụp trong thời gian ở viện, vì rất khó xin lại nếu ở viện công."},
+      {name:"Bản cam kết hồ sơ khám bệnh lần đầu", note:"Tùy bệnh — các bệnh đặc biệt (viêm dạ dày, trĩ, cao huyết áp, tiểu đường…) và hợp đồng mua dưới 2 năm thường bị yêu cầu. Nếu có hồ sơ khám lần đầu thì nộp bổ sung."},
+      {name:"Giấy xác nhận nằm tại khoa CSĐB", note:"Chỉ cần trong trường hợp yêu cầu chi trả quyền lợi trợ cấp tại khoa Chăm sóc đặc biệt."},
+      {name:"Đơn tường trình", note:"Chỉ cần nếu thiếu một trong các hồ sơ y tế nêu trên."}
+    ],
+    callout: {
+      title: "Nếu quyền lợi liên quan tới tai nạn",
+      items: [
+        "Chụp rõ nét 2 mặt bằng lái xe (xe máy hoặc ô tô) tùy phương tiện sử dụng khi xảy ra tai nạn.",
+        'Làm tường trình tai nạn theo mẫu, in ra và ký: <a href="https://docs.google.com/document/d/1zz6yHpos07trrxJw0gNbygZic-PTfsNJ9cR7j7n0UGk/edit?usp=sharing" target="_blank" rel="noopener">xem mẫu tường trình</a>.'
+      ]
+    }
+  },
+  thaisan: {
+    label: "Thai sản",
+    icon: "doc",
+    items: [
+      {name:"Giấy ra viện", note:"Cần có chữ ký và đóng dấu bệnh viện."},
+      {name:"Bảng kê chi phí y tế", note:"Không cần nếu hóa đơn VAT đã có chi tiết khoản mục. Cần chữ ký và đóng dấu bệnh viện. Hóa đơn có thời hạn nộp 30 ngày kể từ ngày phát sinh sự kiện bảo hiểm. Các dịch vụ như chọn giờ, chọn bác sĩ, gây tê màng cứng (sinh thường), tầm soát sau sinh… không được thanh toán."},
+      {name:"Hóa đơn VAT (đỏ / chuyển đổi / điện tử)", note:"Cần chữ ký và đóng dấu bệnh viện nếu là hóa đơn đỏ hoặc hóa đơn chuyển đổi. Xin hóa đơn kèm bảng kê của hóa đơn đó."},
+      {name:"Tóm tắt bệnh án", note:"Có thể mất phí — nên xin sớm khi còn ở viện. Cần chữ ký và đóng dấu bệnh viện. Ghi rõ lý do mổ (ví dụ: mổ ngôi ngược, mổ cấp cứu vì cạn ối…). Không ghi lý do mổ chủ động."},
+      {name:"Phiếu chỉ định mổ", note:"Ghi rõ lý do mổ (mổ ngôi ngược, mổ cấp cứu vì cạn ối…)."},
+      {name:"Đơn thuốc", note:"Cần có chữ ký và đóng dấu bệnh viện."},
+      {name:"Kết quả khám thai định kỳ từ khi phát hiện có thai", note:"Bao gồm sổ khám, kết quả xét nghiệm, kết quả chẩn đoán hình ảnh, toa thuốc."},
+      {name:"Chứng nhận phẫu thuật", note:"Chỉ áp dụng nếu có phẫu thuật. Cần chữ ký và đóng dấu bệnh viện, lý do mổ phù hợp (không dùng lý do mổ chủ động / chọn giờ)."},
+      {name:"Tờ điều trị hàng ngày / phiếu công khai dịch vụ khám chữa bệnh", note:"Nên chụp trong thời gian ở viện, vì rất khó xin lại nếu ở viện công. Cần chữ ký và đóng dấu bệnh viện."},
+      {name:"Đơn tường trình", note:"Chỉ cần nếu thiếu một trong các hồ sơ y tế nêu trên — có thể in kèm chữ ký của khách hàng."}
+    ],
+    callout: {
+      title: "Lưu ý riêng",
+      items: [
+        "Bệnh viện Phụ sản Hà Nội: mổ dịch vụ phải thực hiện ở nhà D. Nếu mổ dịch vụ tại nhà A, chi phí sẽ không được bảo hiểm thanh toán."
+      ],
+      tone:"amber"
+    }
+  },
+  noitru: {
+    label: "Nội trú",
+    icon: "doc",
+    items: [
+      {name:"Giấy ra viện", note:"Cần có chữ ký và đóng dấu bệnh viện."},
+      {name:"Bảng kê chi phí y tế", note:"Không cần nếu hóa đơn VAT đã có chi tiết khoản mục. Cần chữ ký và đóng dấu bệnh viện. Hóa đơn có thời hạn nộp 30 ngày kể từ ngày phát sinh sự kiện bảo hiểm."},
+      {name:"Hóa đơn VAT (đỏ / chuyển đổi / điện tử)", note:"Cần chữ ký và đóng dấu bệnh viện nếu là hóa đơn đỏ hoặc hóa đơn chuyển đổi."},
+      {name:"Chứng nhận phẫu thuật", note:"Chỉ áp dụng nếu có phẫu thuật. Cần chữ ký và đóng dấu bệnh viện."},
+      {name:"Tóm tắt bệnh án", note:"Có thể mất phí — nên xin sớm khi còn ở viện. Cần chữ ký và đóng dấu bệnh viện."},
+      {name:"Đơn thuốc", note:"Cần chữ ký và đóng dấu bệnh viện. Phải có thuốc biệt dược điều trị bệnh đó — không chấp nhận thực phẩm chức năng."},
+      {name:"Tờ điều trị hàng ngày / phiếu công khai dịch vụ khám chữa bệnh", note:"Nên chụp trong thời gian ở viện, vì rất khó xin lại nếu ở viện công. Cần chữ ký và đóng dấu bệnh viện."},
+      {name:"Kết quả khám, xét nghiệm, chụp chiếu trước khi nhập viện và trước khi ra viện", note:"Nên chụp trong thời gian ở viện, vì rất khó xin lại nếu ở viện công. Cần chữ ký và đóng dấu bệnh viện."},
+      {name:"Bản cam kết hồ sơ khám bệnh lần đầu", note:"Tùy bệnh — các bệnh đặc biệt (viêm dạ dày, trĩ, cao huyết áp, tiểu đường…) và hợp đồng mua dưới 2 năm thường bị yêu cầu. Nếu có hồ sơ khám lần đầu thì nộp bổ sung."},
+      {name:"Đơn tường trình", note:"Chỉ cần nếu thiếu một trong các hồ sơ y tế nêu trên — có thể in kèm chữ ký của khách hàng."}
+    ]
+  },
+  ngoaitru: {
+    label: "Ngoại trú",
+    icon: "doc",
+    items: [
+      {name:"Hóa đơn VAT (đỏ / chuyển đổi / điện tử)", note:"Nhớ chụp lại biên nhận tại quầy BCS khi nộp hóa đơn."},
+      {name:"Bảng kê chi phí y tế", note:"Không cần nếu hóa đơn VAT đã có chi tiết khoản mục."},
+      {name:"Đơn thuốc", note:"Phải có thuốc biệt dược điều trị bệnh đó — không chấp nhận thực phẩm chức năng."},
+      {name:"Sổ khám bệnh / phiếu khám", note:"Viện công thường có sổ khám; viện tư có phiếu khám."},
+      {name:"Kết quả khám, xét nghiệm, chụp chiếu"},
+      {name:"Bản cam kết hồ sơ khám bệnh lần đầu", note:"Tùy bệnh — các bệnh đặc biệt (viêm dạ dày, trĩ, cao huyết áp, tiểu đường…) và hợp đồng mua dưới 2 năm thường bị yêu cầu."}
+    ]
+  },
+  blnt: {
+    label: "Bệnh lý nghiêm trọng",
+    icon: "doc",
+    groups: [
+      {
+        title: "1. Hồ sơ y tế",
+        items: [
+          {name:"Giấy ra viện"},
+          {name:"Bảng kê chi phí y tế", note:"Không cần nếu hóa đơn VAT đã có chi tiết khoản mục."},
+          {name:"Hóa đơn VAT (đỏ / chuyển đổi / điện tử)"},
+          {name:"Chứng nhận phẫu thuật", note:"Chỉ áp dụng nếu khách hàng có thực hiện phẫu thuật."},
+          {name:"Kết quả giải phẫu bệnh", note:"Áp dụng nếu chẩn đoán ung thư."},
+          {name:"Tóm tắt bệnh án", note:"Có thể mất phí — nên xin sớm ngay khi khách hàng còn ở viện."},
+          {name:"Đơn thuốc"},
+          {name:"Kết quả khám, xét nghiệm, chụp chiếu trước khi nhập viện và trước khi ra viện", note:"Nên chụp trong thời gian ở viện, vì rất khó xin lại nếu ở viện công."}
+        ]
+      },
+      {
+        title: "2. Chứng từ y tế khác",
+        items: [
+          {name:"Chứng từ y tế phát hiện bệnh lần đầu"},
+          {name:"Chứng từ y tế khác trong quá khứ", note:"Trong khoảng thời gian sát thời điểm tham gia bảo hiểm nhân thọ."},
+          {name:"Đơn tường trình", note:"Chỉ cần nếu thiếu một trong các hồ sơ y tế nêu trên."}
+        ]
+      }
+    ]
+  }
+};
+
+const GENERAL_NOTES = [
+  {
+    title:"Nếu quyền lợi liên quan tới tai nạn",
+    items:[
+      "Chụp rõ nét 2 mặt bằng lái xe (xe máy hoặc ô tô) tùy phương tiện sử dụng khi xảy ra tai nạn.",
+      'Làm tường trình tai nạn theo mẫu, in ra và ký: <a href="https://docs.google.com/document/d/1zz6yHpos07trrxJw0gNbygZic-PTfsNJ9cR7j7n0UGk/edit?usp=sharing" target="_blank" rel="noopener">xem mẫu tường trình</a>.'
+    ]
+  },
+  {
+    title:"Giám sát một bộ hồ sơ claim — với khách hàng",
+    items:[
+      "Theo dõi tiến trình claim qua SMS/Zalo, hoặc trong app Manulife Vietnam ở mục Thư thông báo."
+    ]
+  },
+  {
+    title:"Giám sát một bộ hồ sơ claim — với TVV",
+    items:[
+      "Follow claim tới khi được thanh toán: gọi hotline Insmart nếu là chế độ bảo lãnh viện phí; gọi hotline Manulife 19001776 hoặc email claims-online nếu là chế độ ngoại trú/nội trú thanh toán sau. Định kỳ theo dõi 3–5 ngày/lần.",
+      "Hồ sơ upload theo một trình tự cụ thể để người nhận dễ theo dõi."
+    ]
+  },
+  {
+    title:"Khi claim hồ sơ y tế",
+    items:[
+      "Một số khoản mục dịch vụ sẽ không được thanh toán tại các viện Sản – Công (Phụ sản Hà Nội, Phụ sản Trung ương, Nhi Trung ương…).",
+      "Quyền lợi ngoại trú chỉ được thanh toán khi có chẩn đoán bệnh và đơn thuốc biệt dược.",
+      "Lưu ý khi khai nhận thông tin về tiền sử bệnh — cần nhất quán với thông tin đã khai trong đơn yêu cầu bảo hiểm nhân thoại ban đầu."
+    ]
+  }
+];
+
+const ICONS = {
+  home: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>',
+  doc: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'
+};
+
+/* ================= STATE ================= */
+let state = {};
+try{
+  const saved = localStorage.getItem('claimChecklistState');
+  state = saved ? JSON.parse(saved) : {};
+}catch(e){ state = {}; }
+
+function saveState(){
+  try{ localStorage.setItem('claimChecklistState', JSON.stringify(state)); }catch(e){}
+}
+
+function keyFor(catKey, idx, groupIdx){
+  return groupIdx === undefined ? `${catKey}:${idx}` : `${catKey}:${groupIdx}:${idx}`;
+}
+
+let currentCat = 'overview';
+let viewMode = 'detail'; // 'summary' | 'detail'
+
+/* ================= HELPERS ================= */
+function allItemsOf(catKey){
+  const cat = DATA[catKey];
+  if(!cat) return [];
+  if(cat.groups){
+    let out = [];
+    cat.groups.forEach((g, gi) => g.items.forEach((it, i) => out.push({item:it, key:keyFor(catKey, i, gi)})));
+    return out;
+  }
+  if(cat.items){
+    return cat.items.map((it,i) => ({item:it, key:keyFor(catKey, i)}));
+  }
+  return [];
+}
+
+function progressOf(catKey){
+  const all = allItemsOf(catKey);
+  const done = all.filter(x => state[x.key]).length;
+  return {done, total: all.length};
+}
+
+function overallProgress(){
+  let done = 0, total = 0;
+  Object.keys(DATA).forEach(k => {
+    if(k === 'overview') return;
+    const p = progressOf(k);
+    done += p.done; total += p.total;
+  });
+  return {done, total};
+}
+
+function tagFor(item){
+  const note = (item.note || '').toLowerCase();
+  const conditional = note.startsWith('chỉ') || note.startsWith('tùy') || note.startsWith('nếu') || note.startsWith('áp dụng nếu') || note.includes('chỉ áp dụng') || note.includes('chỉ cần');
+  return conditional ? {cls:'conditional', label:'Tùy trường hợp'} : {cls:'required', label:'Bắt buộc'};
+}
+
+/* ================= RENDER: SIDEBAR ================= */
+function renderSidebar(){
+  const nav = document.getElementById('navList');
+  nav.innerHTML = '';
+
+  const ovBtn = document.createElement('button');
+  ovBtn.className = 'nav-btn' + (currentCat==='overview' ? ' active' : '');
+  ovBtn.innerHTML = `<span class="dot"></span><span>Tổng quan</span>`;
+  ovBtn.onclick = () => { currentCat = 'overview'; render(); closeMobileSidebar(); };
+  nav.appendChild(ovBtn);
+
+  Object.keys(DATA).forEach(k => {
+    if(k === 'overview') return;
+    const p = progressOf(k);
+    const btn = document.createElement('button');
+    btn.className = 'nav-btn' + (currentCat===k ? ' active' : '');
+    btn.innerHTML = `<span class="dot"></span><span>${DATA[k].label}</span><span class="cnt">${p.done}/${p.total}</span>`;
+    btn.onclick = () => { currentCat = k; render(); closeMobileSidebar(); };
+    nav.appendChild(btn);
+  });
+
+  const ov = overallProgress();
+  const pct = ov.total ? Math.round(ov.done/ov.total*100) : 0;
+  document.getElementById('ovLabel').textContent = `${ov.done}/${ov.total}`;
+  document.getElementById('ovBar').style.width = pct + '%';
+}
+
+/* ================= RENDER: MAIN ================= */
+function itemRow(item, key){
+  const checked = !!state[key];
+  const tag = tagFor(item);
+  const li = document.createElement('li');
+  li.className = 'item' + (checked ? ' checked' : '');
+  li.innerHTML = `
+    <input type="checkbox" class="chk" ${checked?'checked':''} aria-label="${item.name}">
+    <div class="item-body">
+      <div class="item-top">
+        <span class="item-name">${item.name}</span>
+        <span class="tag ${tag.cls}">${tag.label}</span>
+      </div>
+      ${item.note ? `<div class="item-note">${item.note}</div>` : ''}
+    </div>
+  `;
+  li.querySelector('.chk').addEventListener('change', (e) => {
+    state[key] = e.target.checked;
+    saveState();
+    li.classList.toggle('checked', e.target.checked);
+    renderSidebar();
+    updateCatProgressBar();
+  });
+  return li;
+}
+
+function updateCatProgressBar(){
+  if(currentCat === 'overview') return;
+  const p = progressOf(currentCat);
+  const pct = p.total ? Math.round(p.done/p.total*100) : 0;
+  const bar = document.getElementById('catBarFill');
+  const num = document.getElementById('catProgNum');
+  if(bar) bar.style.width = pct + '%';
+  if(num) num.textContent = `${p.done}/${p.total} đã chuẩn bị`;
+}
+
+function renderOverview(){
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  const head = document.createElement('div');
+  head.innerHTML = `
+    <div class="eyebrow-row"><div class="cat-icon">${ICONS.home}</div></div>
+    <h1 class="page-title">Chuẩn bị hồ sơ claim đúng ngay từ đầu</h1>
+    <p class="page-desc">Chọn đúng loại quyền lợi cần claim ở menu bên trái, tích vào từng giấy tờ khi đã xin/chụp xong tại viện. Trang tự lưu tiến độ trên máy của bạn.</p>
+  `;
+  main.appendChild(head);
+
+  GENERAL_NOTES.forEach(block => {
+    const div = document.createElement('div');
+    div.className = 'block';
+    div.innerHTML = `<h4>${block.title}</h4><ol>${block.items.map(i=>`<li>${i}</li>`).join('')}</ol>`;
+    main.appendChild(div);
+  });
+
+  const gridTitle = document.createElement('div');
+  gridTitle.className = 'group-title';
+  gridTitle.textContent = 'Chọn loại quyền lợi';
+  main.appendChild(gridTitle);
+
+  const grid = document.createElement('div');
+  grid.className = 'ov-grid';
+  Object.keys(DATA).forEach(k => {
+    if(k === 'overview') return;
+    const p = progressOf(k);
+    const pct = p.total ? Math.round(p.done/p.total*100) : 0;
+    const card = document.createElement('button');
+    card.className = 'ov-card';
+    card.innerHTML = `
+      <h4>${DATA[k].label}</h4>
+      <p>${p.total} loại giấy tờ cần chuẩn bị</p>
+      <div class="ov-bar-track"><div class="ov-bar-fill" style="width:${pct}%"></div></div>
+      <div class="ov-cnt">${p.done}/${p.total} đã chuẩn bị</div>
+    `;
+    card.onclick = () => { currentCat = k; render(); };
+    grid.appendChild(card);
+  });
+  main.appendChild(grid);
+}
+
+function renderCategory(catKey){
+  const cat = DATA[catKey];
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  const p = progressOf(catKey);
+  const pct = p.total ? Math.round(p.done/p.total*100) : 0;
+
+  const head = document.createElement('div');
+  head.innerHTML = `
+    <div class="eyebrow-row"><div class="cat-icon">${ICONS.doc}</div></div>
+    <h1 class="page-title">${cat.label}</h1>
+    <p class="page-desc">Danh mục hồ sơ cần chuẩn bị để claim quyền lợi ${cat.label.toLowerCase()}. Tích vào từng mục khi đã có trong tay.</p>
+    <div class="progress-row">
+      <div class="bar-track"><div class="bar-fill" id="catBarFill" style="width:${pct}%"></div></div>
+      <span class="progress-num" id="catProgNum">${p.done}/${p.total} đã chuẩn bị</span>
+    </div>
+  `;
+  main.appendChild(head);
+
+  if(cat.callout){
+    const tone = cat.callout.tone === 'amber' ? 'amber' : '';
+    const cb = document.createElement('div');
+    cb.className = 'callout ' + tone;
+    cb.innerHTML = `<h3>${cat.callout.title}</h3><ul>${cat.callout.items.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+    main.appendChild(cb);
+  }
+
+  const toggle = document.createElement('div');
+  toggle.className = 'view-toggle';
+  toggle.innerHTML = `
+    <button data-mode="summary" class="${viewMode==='summary'?'active':''}">Tóm tắt</button>
+    <button data-mode="detail" class="${viewMode==='detail'?'active':''}">Chi tiết</button>
+  `;
+  toggle.querySelectorAll('button').forEach(b => {
+    b.onclick = () => { viewMode = b.dataset.mode; render(); };
+  });
+  main.appendChild(toggle);
+
+  const wrap = document.createElement('div');
+  wrap.className = viewMode === 'summary' ? 'view-summary' : 'view-detail';
+
+  if(cat.groups){
+    cat.groups.forEach((g, gi) => {
+      const gt = document.createElement('div');
+      gt.className = 'group-title';
+      gt.textContent = g.title;
+      wrap.appendChild(gt);
+
+      const ul = document.createElement('ul');
+      ul.className = 'checklist';
+      g.items.forEach((it, i) => ul.appendChild(itemRow(it, keyFor(catKey, i, gi))));
+      wrap.appendChild(ul);
+    });
+  } else {
+    const ul = document.createElement('ul');
+    ul.className = 'checklist';
+    cat.items.forEach((it, i) => ul.appendChild(itemRow(it, keyFor(catKey, i))));
+    wrap.appendChild(ul);
+  }
+
+  main.appendChild(wrap);
+
+  const tip = document.createElement('div');
+  tip.className = 'note-box';
+  tip.innerHTML = `<strong>Mẹo:</strong> những giấy tờ cần "chữ ký và đóng dấu bệnh viện" nên xin ngay tại viện, vì rất khó xin bổ sung sau khi xuất viện — đặc biệt ở viện công.`;
+  main.appendChild(tip);
+}
+
+function render(){
+  renderSidebar();
+  if(currentCat === 'overview'){
+    renderOverview();
+  } else {
+    renderCategory(currentCat);
+  }
+  window.scrollTo(0,0);
+}
+
+/* ================= SIDEBAR TOGGLE (desktop auto-hide + mobile drawer) ================= */
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const toggleBtn = document.getElementById('sidebarToggle');
+
+function isMobile(){ return window.matchMedia('(max-width: 860px)').matches; }
+
+toggleBtn.addEventListener('click', () => {
+  if(isMobile()){
+    sidebar.classList.toggle('mobile-open');
+    overlay.classList.toggle('show', sidebar.classList.contains('mobile-open'));
+  } else {
+    sidebar.classList.toggle('collapsed');
+  }
+});
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('mobile-open');
+  overlay.classList.remove('show');
+});
+function closeMobileSidebar(){
+  if(isMobile()){
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('show');
+  }
+}
+
+document.getElementById('printBtn').onclick = () => window.print();
+document.getElementById('resetBtn').onclick = () => {
+  if(confirm('Bỏ tích toàn bộ checklist? Thao tác này không thể hoàn tác.')){
+    state = {};
+    saveState();
+    render();
+  }
+};
+
+render();
+</script>
+</body>
+</html>
