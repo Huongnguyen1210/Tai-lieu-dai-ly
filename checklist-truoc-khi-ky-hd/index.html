@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chuẩn bị hồ sơ ký hợp đồng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    box-sizing:border-box;
+    --paper:#FAFAF8;
+    --paper-raised:#FFFFFF;
+    --ink:#1F2937;
+    --ink-soft:#5B6472;
+    --line:#E1E7E2;
+    --line-strong:#C3CFC7;
+    --stamp:#0F6B3A;
+    --stamp-ink:#0B4A29;
+    --gold:#B45309;
+    --panel-bg:#0B4A29;
+    --panel-bg-raised:#0F6B3A;
+    --panel-ink:#E7F3EC;
+    --panel-ink-soft:#BFE3CE;
+    --panel-line:#15803D;
+    --ok:#1F9D5A;
+    --focus:#0F6B3A;
+    --radius-tab: 10px 10px 0 0;
+    --radius-sm: 6px;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F1712;
+      --paper-raised:#16211B;
+      --ink:#E7F3EC;
+      --ink-soft:#9CBBAB;
+      --line:#22332A;
+      --line-strong:#33493C;
+      --stamp:#3FAE72;
+      --stamp-ink:#8FE3B3;
+      --gold:#E3B37A;
+      --panel-bg:#071510;
+      --panel-bg-raised:#0D2016;
+      --panel-ink:#E7F3EC;
+      --panel-ink-soft:#7FCB9F;
+      --panel-line:#173A28;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1712;
+    --paper-raised:#16211B;
+    --ink:#E7F3EC;
+    --ink-soft:#9CBBAB;
+    --line:#22332A;
+    --line-strong:#33493C;
+    --stamp:#3FAE72;
+    --stamp-ink:#8FE3B3;
+    --gold:#E3B37A;
+    --panel-bg:#071510;
+    --panel-bg-raised:#0D2016;
+    --panel-ink:#E7F3EC;
+    --panel-ink-soft:#7FCB9F;
+    --panel-line:#173A28;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{font-family:"Lora",Georgia,"Times New Roman",serif;}
+  button{font-family:inherit;}
+  ::selection{background:var(--stamp);color:#fff;}
+  :focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+
+  .app{
+    display:flex;
+    min-height:100vh;
+    height:100%;
+  }
+
+  /* ---------- Control panel (spine) ---------- */
+  .panel{
+    background:var(--panel-bg);
+    color:var(--panel-ink);
+    width:20%;
+    min-width:260px;
+    max-width:340px;
+    flex:0 0 auto;
+    position:sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    transition:width .28s ease, min-width .28s ease, max-width .28s ease, transform .28s ease;
+    border-right:1px solid var(--panel-line);
+    z-index:40;
+  }
+  .app.collapsed .panel{
+    width:64px;
+    min-width:64px;
+    max-width:64px;
+  }
+  .panel-inner{
+    padding:22px 18px 28px;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+    min-width:224px;
+  }
+  .app.collapsed .panel-inner{opacity:0;pointer-events:none;}
+  .panel-head{display:flex;align-items:flex-start;gap:10px;}
+  .collapse-btn{
+    background:var(--panel-bg-raised);
+    border:1px solid var(--panel-line);
+    color:var(--panel-ink);
+    width:30px;height:30px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:15px;
+    line-height:1;
+    flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--stamp);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:"Lora",serif;font-weight:700;font-size:14px;
+    flex:0 0 auto;
+  }
+  .brand-text strong{display:block;font-family:"Lora",serif;font-size:15.5px;font-weight:600;line-height:1.25;}
+  .brand-text span{display:block;font-size:12px;color:var(--panel-ink-soft);margin-top:2px;}
+
+  .progress-ring-wrap{display:flex;align-items:center;gap:14px;}
+  .progress-ring{transform:rotate(-90deg);}
+  .progress-ring circle{fill:none;stroke-width:6;}
+  .progress-ring .track{stroke:var(--panel-line);}
+  .progress-ring .fill{stroke:var(--stamp);stroke-linecap:round;transition:stroke-dashoffset .4s ease;}
+  .progress-num{display:flex;flex-direction:column;}
+  .progress-num span{font-family:"Lora",serif;font-size:22px;font-weight:700;line-height:1;}
+  .progress-num small{color:var(--panel-ink-soft);font-size:11.5px;margin-top:4px;}
+  .progress-detail{font-size:12px;color:var(--panel-ink-soft);margin-top:-10px;}
+  .progress-detail b{color:var(--panel-ink);font-weight:600;}
+
+  .section-nav{display:flex;flex-direction:column;gap:3px;}
+  .section-nav button{
+    display:flex;align-items:center;gap:10px;
+    background:transparent;border:none;color:var(--panel-ink-soft);
+    text-align:left;padding:9px 10px;border-radius:var(--radius-sm);
+    cursor:pointer;font-size:13.5px;
+  }
+  .section-nav button .dot{
+    width:8px;height:8px;border-radius:50%;flex:0 0 auto;
+    background:var(--panel-line);
+  }
+  .section-nav button.done .dot{background:var(--ok);}
+  .section-nav button.active{background:var(--panel-bg-raised);color:var(--panel-ink);}
+  .section-nav button .count{margin-left:auto;font-variant-numeric:tabular-nums;font-size:11.5px;color:var(--panel-ink-soft);}
+
+  .panel-options{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--panel-line);padding-top:16px;}
+  .switch-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--panel-ink);cursor:pointer;}
+  .switch-row input{accent-color:var(--stamp);width:34px;height:18px;}
+
+  .panel-actions{display:flex;flex-direction:column;gap:8px;}
+  .panel-actions button{
+    border:1px solid var(--panel-line);
+    background:var(--panel-bg-raised);
+    color:var(--panel-ink);
+    padding:10px 12px;border-radius:var(--radius-sm);
+    font-size:13px;font-weight:500;cursor:pointer;
+    display:flex;align-items:center;gap:8px;
+  }
+  .panel-actions button:hover{border-color:var(--line-strong);}
+  .panel-actions button.danger{color:#E3A79C;}
+  .privacy-note{font-size:11px;color:var(--panel-ink-soft);line-height:1.5;margin:0;}
+
+  .drawer-toggle{
+    display:none;
+    position:fixed;
+    top:calc(14px + env(safe-area-inset-top,0px));
+    left:14px;
+    z-index:60;
+    background:var(--panel-bg);
+    color:var(--panel-ink);
+    border:1px solid var(--panel-line);
+    width:42px;height:42px;border-radius:50%;
+    font-size:17px;cursor:pointer;
+  }
+  .backdrop{display:none;}
+
+  /* collapsed rail hint icons */
+  .rail-hint{display:none;}
+  .app.collapsed .rail-hint{
+    display:flex;flex-direction:column;align-items:center;gap:16px;
+    position:absolute;top:74px;left:0;width:64px;
+  }
+  .rail-hint .rdot{width:9px;height:9px;border-radius:50%;background:var(--panel-line);}
+  .rail-hint .rdot.done{background:var(--ok);}
+
+  /* ---------- Main content ---------- */
+  .main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;}
+  .topbar{
+    position:sticky;top:0;z-index:20;
+    background:var(--paper);
+    padding-top:env(safe-area-inset-top,0px);
+    border-bottom:1px solid var(--line);
+  }
+  .tabs{
+    display:flex;gap:2px;overflow-x:auto;
+    padding:14px 20px 0;
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{
+    flex:0 0 auto;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-bottom:none;
+    padding:10px 16px 12px;
+    border-radius:var(--radius-tab);
+    font-size:13.5px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    white-space:nowrap;
+    transform:translateY(2px);
+    display:flex;align-items:center;gap:7px;
+  }
+  .tab .tdot{width:6px;height:6px;border-radius:50%;background:var(--line-strong);}
+  .tab.done .tdot{background:var(--ok);}
+  .tab[aria-selected="true"]{
+    background:var(--paper-raised);
+    color:var(--ink);
+    font-weight:600;
+    border-color:var(--line-strong);
+    transform:translateY(0);
+    box-shadow:0 -1px 0 var(--paper-raised);
+  }
+
+  .pages{flex:1 1 auto;background:var(--paper-raised);}
+  .page{display:none;padding:30px 22px 90px;max-width:760px;margin:0 auto;}
+  .page.active{display:block;}
+
+  .lede{font-size:14.5px;color:var(--ink-soft);line-height:1.7;margin:0 0 18px;max-width:64ch;}
+  .banner{
+    border:1px solid var(--stamp);
+    background:rgba(15,107,58,.07);
+    background:color-mix(in srgb, var(--stamp) 8%, transparent);
+    border-radius:var(--radius-sm);
+    padding:14px 16px;
+    font-size:13.5px;
+    line-height:1.65;
+    margin:0 0 22px;
+    display:flex;gap:10px;
+  }
+  .banner .mark{color:var(--stamp);font-weight:700;flex:0 0 auto;font-family:"Lora",serif;}
+
+  h1.page-title{font-size:22px;font-weight:600;margin:0 0 6px;}
+  .page-sub{font-size:12.5px;color:var(--ink-soft);margin:0 0 20px;text-transform:none;}
+
+  .summary-row{
+    display:flex;align-items:center;justify-content:space-between;
+    border:1px solid var(--line);
+    background:var(--paper);
+    border-radius:var(--radius-sm);
+    padding:14px 16px;
+    margin-bottom:22px;
+  }
+  .summary-row .s-left strong{font-family:"Lora",serif;font-size:16px;display:block;}
+  .summary-row .s-left span{font-size:12px;color:var(--ink-soft);}
+  .summary-row .s-right{text-align:right;font-variant-numeric:tabular-nums;}
+  .summary-row .s-right b{font-family:"Lora",serif;font-size:20px;}
+  .summary-row .s-right small{display:block;font-size:11px;color:var(--ink-soft);}
+
+  .item{
+    display:flex;gap:12px;
+    padding:14px 4px;
+    border-bottom:1px solid var(--line);
+  }
+  .item:first-of-type{border-top:1px solid var(--line);}
+  .item input[type="checkbox"]{
+    width:19px;height:19px;flex:0 0 auto;margin-top:2px;
+    accent-color:var(--stamp);cursor:pointer;
+  }
+  .item .num{
+    font-family:"Lora",serif;font-size:12px;color:var(--ink-soft);
+    width:20px;flex:0 0 auto;margin-top:2px;
+  }
+  .item .body{flex:1 1 auto;}
+  .item .t{font-size:14.5px;font-weight:600;line-height:1.4;}
+  .item .d{font-size:13px;color:var(--ink-soft);margin-top:3px;line-height:1.6;}
+  .item.checked .t{color:var(--ink-soft);text-decoration:line-through;text-decoration-color:var(--line-strong);}
+  .item .linked{display:inline-block;margin-top:6px;font-size:11.5px;color:var(--gold);border:1px solid var(--gold);border-radius:20px;padding:2px 9px;}
+
+  .steps{list-style:none;margin:0 0 26px;padding:0;counter-reset:step;display:flex;flex-direction:column;gap:0;}
+  .steps li{counter-increment:step;position:relative;padding:0 0 20px 34px;border-left:1px solid var(--line-strong);margin-left:11px;}
+  .steps li:last-child{border-left:1px solid transparent;padding-bottom:0;}
+  .steps li::before{
+    content:counter(step);
+    position:absolute;left:-12px;top:-1px;
+    width:23px;height:23px;border-radius:50%;
+    background:var(--paper-raised);border:1px solid var(--stamp);color:var(--stamp);
+    font-family:"Lora",serif;font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .steps li b{display:block;font-size:14px;margin-bottom:2px;}
+  .steps li span{font-size:12.5px;color:var(--ink-soft);}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+  .card{
+    border:1px solid var(--line);background:var(--paper);border-radius:var(--radius-sm);
+    padding:13px 14px;cursor:pointer;text-align:left;
+  }
+  .card:hover{border-color:var(--line-strong);}
+  .card .c-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
+  .card .c-name{font-family:"Lora",serif;font-size:14px;font-weight:600;}
+  .card .c-pct{font-size:12px;font-variant-numeric:tabular-nums;color:var(--ink-soft);}
+  .card .bar{height:4px;background:var(--line);border-radius:3px;margin-top:9px;overflow:hidden;}
+  .card .bar i{display:block;height:100%;background:var(--stamp);}
+
+  .notes{margin-top:6px;}
+  .notes li{font-size:13px;color:var(--ink-soft);line-height:1.7;padding-left:16px;position:relative;margin-bottom:6px;}
+  .notes li::before{content:"—";position:absolute;left:0;color:var(--line-strong);}
+
+  .person-block{border:1px solid var(--line);border-radius:8px;padding:4px 14px 6px;margin-bottom:18px;background:var(--paper);}
+  .person-block .p-head{display:flex;align-items:center;justify-content:space-between;padding:12px 2px 8px;}
+  .person-block .p-head strong{font-family:"Lora",serif;font-size:14.5px;}
+  .person-block .p-remove{background:none;border:none;color:var(--stamp-ink);font-size:12px;cursor:pointer;}
+
+  .add-person{
+    display:flex;align-items:center;gap:8px;
+    border:1px dashed var(--line-strong);background:transparent;color:var(--ink-soft);
+    padding:11px 14px;border-radius:var(--radius-sm);width:100%;
+    font-size:13.5px;cursor:pointer;margin-bottom:22px;
+  }
+  .add-person:hover{color:var(--ink);border-color:var(--stamp);}
+
+  .empty-state{
+    border:1px dashed var(--line-strong);border-radius:8px;
+    padding:26px 20px;text-align:center;color:var(--ink-soft);font-size:13.5px;
+  }
+  .empty-state button{
+    margin-top:12px;background:var(--stamp);color:#fff;border:none;
+    padding:9px 16px;border-radius:20px;font-size:13px;cursor:pointer;
+  }
+
+  footer.page-foot{margin-top:8px;padding-top:18px;border-top:1px solid var(--line);}
+  footer.page-foot h3{font-size:13px;margin:0 0 8px;color:var(--ink-soft);font-weight:600;}
+
+  @media (max-width:860px){
+    .app{display:block;}
+    .panel{
+      position:fixed;left:0;top:0;height:100dvh;width:82vw;max-width:320px;min-width:0;
+      transform:translateX(-100%);
+      box-shadow:0 0 0 1px var(--panel-line);
+    }
+    .app.drawer-open .panel{transform:translateX(0);}
+    .app.collapsed .panel{width:82vw;max-width:320px;}
+    .app.collapsed .panel-inner{opacity:1;pointer-events:auto;}
+    .collapse-btn{display:none;}
+    .drawer-toggle{display:flex;align-items:center;justify-content:center;}
+    .backdrop{
+      display:none;position:fixed;inset:0;background:rgba(10,14,12,.45);z-index:39;
+    }
+    .app.drawer-open .backdrop{display:block;}
+    .main{padding-top:0;}
+    .topbar{padding-left:64px;}
+    .page{padding:22px 16px 100px;}
+    .cards{grid-template-columns:1fr;}
+    .summary-row{flex-direction:column;align-items:flex-start;gap:10px;}
+    .summary-row .s-right{text-align:left;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <button class="drawer-toggle" id="drawerToggle" aria-label="Mở bảng điều khiển">☰</button>
+
+  <aside class="panel" id="panel">
+    <div class="rail-hint" id="railHint"></div>
+    <div class="panel-inner">
+      <div class="panel-head">
+        <button class="collapse-btn" id="collapseBtn" aria-label="Thu gọn bảng điều khiển">⟨</button>
+        <div class="brand">
+          <span class="brand-mark">HS</span>
+          <div class="brand-text">
+            <strong>Chuẩn bị hồ sơ</strong>
+            <span>Trước buổi ký hợp đồng</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="progress-ring-wrap">
+        <svg class="progress-ring" width="60" height="60" viewBox="0 0 60 60">
+          <circle class="track" cx="30" cy="30" r="26"></circle>
+          <circle class="fill" id="ringFill" cx="30" cy="30" r="26"></circle>
+        </svg>
+        <div class="progress-num">
+          <span id="progressPct">0%</span>
+          <small>đã chuẩn bị</small>
+        </div>
+      </div>
+      <div class="progress-detail" id="progressDetail"></div>
+
+      <nav class="section-nav" id="sectionNav" aria-label="Các mục hồ sơ"></nav>
+
+      <div class="panel-options">
+        <label class="switch-row">
+          <span>Có Người được bảo hiểm bổ trợ</span>
+          <input type="checkbox" id="toggleC2">
+        </label>
+        <label class="switch-row">
+          <span>Bên mua cũng là NĐBH chính</span>
+          <input type="checkbox" id="toggleSame">
+        </label>
+      </div>
+
+      <div class="panel-actions">
+        <button id="printBtn">🖨️ In / Lưu thành PDF</button>
+        <button id="resetBtn" class="danger">↺ Đặt lại toàn bộ</button>
+      </div>
+
+      <p class="privacy-note">Các mục đã đánh dấu chỉ được lưu trên thiết bị này (trình duyệt của bạn) để bạn xem lại sau — không được gửi đi bất cứ đâu.</p>
+    </div>
+  </aside>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="tabs" id="tabs" role="tablist"></div>
+    </div>
+    <div class="pages" id="pages"></div>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Data (transcribed from "Checklist chuẩn bị trước khi ký hợp đồng") ----------
+  var C1_ITEMS = [
+    {key:"6", t:"Giấy tờ tùy thân", d:"Căn cước công dân (2 mặt), hoặc giấy khai sinh nếu là trẻ em chưa đủ tuổi làm căn cước công dân."},
+    {key:"7", t:"Thông tin cơ bản", d:"Họ tên, ngày sinh, quan hệ với Bên mua bảo hiểm, nghề nghiệp và nơi làm việc hiện tại."},
+    {key:"8", t:"Chiều cao, cân nặng hiện tại", d:"Số đo ở thời điểm hiện tại."},
+    {key:"9", t:"Tiền sử gia đình", d:"Bố, mẹ, anh chị em ruột có mắc bệnh nan y, ung thư, tim mạch… hay không."},
+    {key:"10", t:"Hồ sơ y tế (nếu có)", d:"Chụp ảnh lại các giấy tờ, kết quả khám đã có."},
+    {key:"11", t:"Việc đi nước ngoài", d:"Trong nửa năm qua có đi nước ngoài không? Trong nửa năm tới có kế hoạch đi không?"}
+  ];
+
+  var SECTIONS = [
+    {id:"overview", label:"Tổng quan", icon:"◎"},
+    {id:"a", label:"A. Bên mua bảo hiểm", short:"Bên mua",
+      items:[
+        {key:"1", t:"Ảnh chụp rõ nét 2 mặt Căn cước công dân", d:"Của Bên mua bảo hiểm."},
+        {key:"2", t:"Địa chỉ, email, số điện thoại", d:"Địa chỉ nơi ở hiện tại, email, số điện thoại liên hệ."},
+        {key:"3", t:"Chức danh và nơi làm việc", d:"Chức danh, mô tả công việc và địa chỉ nơi làm việc hiện tại."},
+        {key:"4", t:"Thông tin tài khoản ngân hàng", d:"Số tài khoản, ngân hàng, chi nhánh, tên chủ tài khoản (chủ tài khoản là Bên mua bảo hiểm)."}
+      ]},
+    {id:"b", label:"B. Người thụ hưởng", short:"Thụ hưởng",
+      items:[
+        {key:"5", t:"Thông tin người thụ hưởng hợp đồng", d:"Họ tên, ngày sinh, số căn cước công dân / chứng minh thư / hộ chiếu, quan hệ với Người được bảo hiểm."}
+      ]},
+    {id:"c1", label:"C1. Người được bảo hiểm chính", short:"NĐBH chính", items:C1_ITEMS},
+    {id:"c2", label:"C2. Người được bảo hiểm bổ trợ", short:"NĐBH bổ trợ", dynamic:true},
+    {id:"d", label:"D. Thanh toán", short:"Thanh toán",
+      items:[
+        {key:"18", t:"Hình thức thanh toán", d:"Chuyển khoản hay quẹt thẻ Visa / Mastercard."}
+      ]}
+  ];
+
+  var STEPS = [
+    {t:"Rà soát lại toàn bộ thông tin đã khai", d:"Tư vấn viên đọc lại cùng bạn từng mục để chắc chắn không sai sót."},
+    {t:"Ghi âm", d:"Buổi ký được ghi âm lại theo quy định."},
+    {t:"Xác nhận bằng mã OTP", d:"Vui lòng chuẩn bị sẵn điện thoại để nhận mã."}
+  ];
+
+  var LS_KEY = "hs_checklist_v1";
+
+  // ---------- State ----------
+  var state = loadState();
+
+  function defaultState(){
+    return {
+      checked:{},          // itemId -> true
+      c2enabled:false,
+      same:false,
+      c2people:1,
+      theme:null,
+      collapsed:false
+    };
+  }
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(LS_KEY);
+      if(!raw) return defaultState();
+      var parsed = JSON.parse(raw);
+      var d = defaultState();
+      for(var k in d){ if(parsed[k]!==undefined) d[k]=parsed[k]; }
+      if(typeof d.checked!=="object"||d.checked===null) d.checked={};
+      if(!d.c2people || d.c2people<1) d.c2people=1;
+      return d;
+    }catch(e){ return defaultState(); }
+  }
+  function saveState(){
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){ /* private mode / full storage: ignore */ }
+  }
+
+  // ---------- Build C2 dynamic items per person ----------
+  function c2ItemsFor(personIdx){
+    return C1_ITEMS.map(function(it){
+      return {key:personIdx+"-"+it.key, t:it.t, d:it.d};
+    });
+  }
+  function allItemIdsForSection(sec){
+    if(sec.id==="c2"){
+      if(!state.c2enabled) return [];
+      var ids=[];
+      for(var p=1;p<=state.c2people;p++){
+        c2ItemsFor(p).forEach(function(it){ ids.push("c2-"+it.key); });
+      }
+      return ids;
+    }
+    return (sec.items||[]).map(function(it){ return sec.id+"-"+it.key; });
+  }
+
+  function itemChecked(id){ return !!state.checked[id]; }
+  function setItemChecked(id, val){
+    if(val) state.checked[id]=true; else delete state.checked[id];
+  }
+
+  function sectionProgress(sec){
+    var ids = allItemIdsForSection(sec);
+    if(ids.length===0) return {done:0,total:0};
+    var done=0;
+    ids.forEach(function(id){ if(itemChecked(id)) done++; });
+    return {done:done,total:ids.length};
+  }
+
+  function overallProgress(){
+    var done=0,total=0;
+    SECTIONS.forEach(function(sec){
+      if(sec.id==="overview") return;
+      if(sec.id==="c2" && !state.c2enabled) return;
+      var p=sectionProgress(sec);
+      done+=p.done; total+=p.total;
+    });
+    return {done:done,total:total};
+  }
+
+  // ---------- Rendering ----------
+  var app = document.getElementById("app");
+  var tabsEl = document.getElementById("tabs");
+  var pagesEl = document.getElementById("pages");
+  var navEl = document.getElementById("sectionNav");
+  var railHint = document.getElementById("railHint");
+
+  var activeTab = "overview";
+
+  function visibleSections(){
+    return SECTIONS.filter(function(s){ return s.id!=="c2" || state.c2enabled; });
+  }
+
+  function render(){
+    renderTabs();
+    renderNav();
+    renderRailHint();
+    renderPages();
+    renderProgress();
+    document.getElementById("toggleC2").checked = state.c2enabled;
+    document.getElementById("toggleSame").checked = state.same;
+  }
+
+  function renderTabs(){
+    tabsEl.innerHTML="";
+    visibleSections().forEach(function(sec){
+      var b=document.createElement("button");
+      b.className="tab"+(sec.id===activeTab?"":"");
+      b.setAttribute("role","tab");
+      b.setAttribute("aria-selected", sec.id===activeTab ? "true":"false");
+      var showDot = sec.id!=="overview";
+      var prog = sec.id!=="overview" ? sectionProgress(sec) : null;
+      if(showDot && prog && prog.total>0 && prog.done===prog.total) b.classList.add("done");
+      b.innerHTML = (showDot ? '<span class="tdot"></span>' : '') + (sec.short||sec.label);
+      b.addEventListener("click", function(){ activeTab=sec.id; render(); scrollTabIntoView(b); });
+      tabsEl.appendChild(b);
+      if(sec.id===activeTab){
+        b.setAttribute("aria-selected","true");
+      }
+    });
+  }
+  function scrollTabIntoView(el){ try{ el.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"}); }catch(e){} }
+
+  function renderNav(){
+    navEl.innerHTML="";
+    visibleSections().forEach(function(sec){
+      var b=document.createElement("button");
+      var isOverview = sec.id==="overview";
+      var prog = isOverview? null : sectionProgress(sec);
+      if(!isOverview && prog.total>0 && prog.done===prog.total) b.classList.add("done");
+      if(sec.id===activeTab) b.classList.add("active");
+      b.innerHTML = '<span class="dot"></span><span>'+sec.label+'</span>'+
+        (!isOverview ? '<span class="count">'+prog.done+'/'+prog.total+'</span>' : '');
+      b.addEventListener("click", function(){ activeTab=sec.id; render(); });
+      navEl.appendChild(b);
+    });
+  }
+
+  function renderRailHint(){
+    railHint.innerHTML="";
+    visibleSections().forEach(function(sec){
+      if(sec.id==="overview") return;
+      var prog=sectionProgress(sec);
+      var d=document.createElement("div");
+      d.className="rdot"+(prog.total>0 && prog.done===prog.total ? " done":"");
+      d.title=sec.label+" — "+prog.done+"/"+prog.total;
+      railHint.appendChild(d);
+    });
+  }
+
+  function renderProgress(){
+    var o=overallProgress();
+    var pct = o.total? Math.round(o.done/o.total*100) : 0;
+    document.getElementById("progressPct").textContent=pct+"%";
+    document.getElementById("progressDetail").innerHTML = "<b>"+o.done+"/"+o.total+"</b> mục đã sẵn sàng";
+    var r=26, circ=2*Math.PI*r;
+    var fill=document.getElementById("ringFill");
+    fill.setAttribute("stroke-dasharray", circ.toFixed(2));
+    fill.setAttribute("stroke-dashoffset", (circ*(1-pct/100)).toFixed(2));
+  }
+
+  function itemRow(sectionId, it, opts){
+    opts=opts||{};
+    var id = opts.idOverride || (sectionId+"-"+it.key);
+    var wrap=document.createElement("label");
+    wrap.className="item"+(itemChecked(id)?" checked":"");
+    wrap.htmlFor="chk-"+id;
+    var cb=document.createElement("input");
+    cb.type="checkbox"; cb.id="chk-"+id; cb.checked=itemChecked(id);
+    cb.disabled = !!opts.forceChecked;
+    if(opts.forceChecked) cb.checked=true;
+    cb.addEventListener("change", function(){
+      setItemChecked(id, cb.checked);
+      saveState();
+      render();
+    });
+    var num=document.createElement("span");
+    num.className="num"; num.textContent=opts.numLabel!==undefined? opts.numLabel : it.key;
+    var body=document.createElement("span");
+    body.className="body";
+    var t=document.createElement("span"); t.className="t"; t.textContent=it.t;
+    var d=document.createElement("span"); d.className="d"; d.textContent=it.d;
+    body.appendChild(t); body.appendChild(d);
+    if(opts.linkedNote){
+      var ln=document.createElement("span");
+      ln.className="linked"; ln.textContent=opts.linkedNote;
+      body.appendChild(document.createElement("br"));
+      body.appendChild(ln);
+    }
+    wrap.appendChild(cb); wrap.appendChild(num); wrap.appendChild(body);
+    return wrap;
+  }
+
+  function buildOverviewPage(){
+    var el=document.createElement("div");
+    el.innerHTML =
+      '<h1 class="page-title">Chuẩn bị hồ sơ trước buổi ký</h1>'+
+      '<p class="page-sub">Danh sách này giúp buổi ký chỉ mất khoảng 15 phút — chủ yếu để rà soát lại thông tin, ghi âm và xác nhận OTP.</p>'+
+      '<p class="lede">Vui lòng chuẩn bị đủ các mục dưới đây trước buổi ký. Mục nào chưa có hoặc chưa chắc chắn, hãy báo lại với tư vấn viên trước, thay vì để đến buổi ký mới phát hiện thiếu.</p>'+
+      '<div class="banner"><span class="mark">Nếu mua bảo hiểm cho con</span><span>Bên mua bảo hiểm cần có căn cước công dân. Người con cần có giấy khai sinh, hoặc căn cước công dân nếu đã đủ tuổi.</span></div>';
+
+    var cardsWrap=document.createElement("div"); cardsWrap.className="cards";
+    visibleSections().forEach(function(sec){
+      if(sec.id==="overview") return;
+      var prog=sectionProgress(sec);
+      var pct = prog.total? Math.round(prog.done/prog.total*100) : 0;
+      var card=document.createElement("button");
+      card.className="card";
+      card.innerHTML =
+        '<div class="c-top"><span class="c-name">'+sec.label+'</span><span class="c-pct">'+prog.done+'/'+prog.total+'</span></div>'+
+        '<div class="bar"><i style="width:'+pct+'%"></i></div>';
+      card.addEventListener("click", function(){ activeTab=sec.id; render(); });
+      cardsWrap.appendChild(card);
+    });
+    el.appendChild(cardsWrap);
+
+    var h2=document.createElement("h2"); h2.className="serif"; h2.style.fontSize="15px"; h2.style.margin="0 0 12px"; h2.textContent="Buổi ký diễn ra thế nào";
+    el.appendChild(h2);
+    var ol=document.createElement("ol"); ol.className="steps";
+    STEPS.forEach(function(s){
+      var li=document.createElement("li");
+      li.innerHTML="<b>"+s.t+"</b><span>"+s.d+"</span>";
+      ol.appendChild(li);
+    });
+    el.appendChild(ol);
+
+    var foot=document.createElement("footer"); foot.className="page-foot";
+    foot.innerHTML='<h3>Lưu ý</h3>';
+    var ul=document.createElement("ul"); ul.className="notes";
+    [
+      "Mua bảo hiểm cho con: Bên mua bảo hiểm cần có căn cước công dân. Người con cần có giấy khai sinh, hoặc căn cước công dân nếu đã đủ tuổi.",
+      "Nếu có Người được bảo hiểm bổ trợ, chuẩn bị riêng một bộ thông tin cho từng người.",
+      "Thông tin sức khỏe cần khai đầy đủ và đúng thực tế.",
+      "Mục nào chưa có hoặc chưa chắc chắn, vui lòng báo lại với tư vấn viên trước buổi ký."
+    ].forEach(function(n){ var li=document.createElement("li"); li.textContent=n; ul.appendChild(li); });
+    foot.appendChild(ul);
+    el.appendChild(foot);
+    return el;
+  }
+
+  function buildSimplePage(sec){
+    var el=document.createElement("div");
+    var prog=sectionProgress(sec);
+    el.innerHTML =
+      '<h1 class="page-title">'+sec.label+'</h1>';
+    var sr=document.createElement("div"); sr.className="summary-row";
+    sr.innerHTML =
+      '<div class="s-left"><strong>'+(sec.items?sec.items.length:0)+' mục cần chuẩn bị</strong><span>Đánh dấu khi bạn đã có đủ thông tin / giấy tờ.</span></div>'+
+      '<div class="s-right"><b>'+prog.done+'/'+prog.total+'</b><small>đã sẵn sàng</small></div>';
+    el.appendChild(sr);
+
+    var list=document.createElement("div");
+    sec.items.forEach(function(it){
+      if(sec.id==="c1" && it.key==="6" && state.same){
+        list.appendChild(itemRow(sec.id, it, {forceChecked:true, linkedNote:"Dùng lại ảnh CCCD đã chuẩn bị ở mục A.1"}));
+      } else {
+        list.appendChild(itemRow(sec.id, it));
+      }
+    });
+    el.appendChild(list);
+
+    if(sec.id==="c1"){
+      var note=document.createElement("p"); note.className="lede"; note.style.marginTop="16px";
+      note.textContent="Nếu Bên mua bảo hiểm cũng chính là Người được bảo hiểm chính, bật công tắc “Bên mua cũng là NĐBH chính” ở bảng điều khiển bên trái — mục Giấy tờ tùy thân sẽ dùng lại ảnh CCCD đã chuẩn bị ở mục A.";
+      el.appendChild(note);
+    }
+    return el;
+  }
+
+  function buildC2Page(){
+    var el=document.createElement("div");
+    el.innerHTML = '<h1 class="page-title">C2. Người được bảo hiểm bổ trợ</h1>';
+
+    if(!state.c2enabled){
+      var empty=document.createElement("div"); empty.className="empty-state";
+      empty.innerHTML = "Hợp đồng của bạn chưa được đánh dấu là có Người được bảo hiểm bổ trợ.<br>Nếu hợp đồng có thêm người được bảo hiểm ngoài người chính, hãy bật mục này.";
+      var btn=document.createElement("button");
+      btn.textContent="Có Người được bảo hiểm bổ trợ";
+      btn.addEventListener("click", function(){ state.c2enabled=true; saveState(); render(); });
+      empty.appendChild(btn);
+      el.appendChild(empty);
+      return el;
+    }
+
+    var lede=document.createElement("p"); lede.className="lede";
+    lede.textContent="Mỗi Người được bảo hiểm bổ trợ cần một bộ thông tin riêng, giống C1. Nếu có nhiều người, thêm từng người bên dưới.";
+    el.appendChild(lede);
+
+    for(var p=1;p<=state.c2people;p++){
+      (function(p){
+        var block=document.createElement("div"); block.className="person-block";
+        var head=document.createElement("div"); head.className="p-head";
+        var prog = (function(){
+          var ids=c2ItemsFor(p).map(function(it){return "c2-"+it.key;});
+          var done=0; ids.forEach(function(id){ if(itemChecked(id)) done++; });
+          return {done:done,total:ids.length};
+        })();
+        head.innerHTML = '<strong>Người được bảo hiểm bổ trợ '+(state.c2people>1?("#"+p):"")+'</strong>';
+        var rightWrap=document.createElement("div");
+        rightWrap.style.display="flex"; rightWrap.style.alignItems="center"; rightWrap.style.gap="10px";
+        var pctSpan=document.createElement("span");
+        pctSpan.style.fontSize="12px"; pctSpan.style.color="var(--ink-soft)";
+        pctSpan.textContent=prog.done+"/"+prog.total;
+        rightWrap.appendChild(pctSpan);
+        if(state.c2people>1){
+          var rm=document.createElement("button"); rm.className="p-remove"; rm.textContent="Xoá";
+          rm.addEventListener("click", function(){
+            // remove this person's checked items, then shift later people's ids down by one
+            var newChecked={};
+            Object.keys(state.checked).forEach(function(id){
+              var m=id.match(/^c2-(\d+)-(.+)$/);
+              if(!m){ newChecked[id]=true; return; }
+              var idx=parseInt(m[1],10), key=m[2];
+              if(idx===p) return;
+              var newIdx= idx>p? idx-1: idx;
+              newChecked["c2-"+newIdx+"-"+key]=true;
+            });
+            state.checked=newChecked;
+            state.c2people-=1;
+            saveState(); render();
+          });
+          rightWrap.appendChild(rm);
+        }
+        head.appendChild(rightWrap);
+        block.appendChild(head);
+        var list=document.createElement("div");
+        c2ItemsFor(p).forEach(function(it){
+          list.appendChild(itemRow("c2", it, {idOverride:"c2-"+it.key, numLabel:""}));
+        });
+        block.appendChild(list);
+        el.appendChild(block);
+      })(p);
+    }
+
+    var add=document.createElement("button"); add.className="add-person";
+    add.textContent="+ Thêm một Người được bảo hiểm bổ trợ khác";
+    add.addEventListener("click", function(){
+      if(state.c2people>=6) return;
+      state.c2people+=1; saveState(); render();
+    });
+    el.appendChild(add);
+
+    var turnOff=document.createElement("button"); turnOff.className="p-remove"; turnOff.style.fontSize="12px";
+    turnOff.style.marginTop="4px";
+    turnOff.textContent="Hợp đồng không có Người được bảo hiểm bổ trợ";
+    turnOff.addEventListener("click", function(){ state.c2enabled=false; saveState(); render(); });
+    el.appendChild(turnOff);
+
+    return el;
+  }
+
+  function renderPages(){
+    pagesEl.innerHTML="";
+    visibleSections().forEach(function(sec){
+      var page=document.createElement("div");
+      page.className="page"+(sec.id===activeTab?" active":"");
+      page.id="page-"+sec.id;
+      var content;
+      if(sec.id==="overview") content=buildOverviewPage();
+      else if(sec.id==="c2") content=buildC2Page();
+      else content=buildSimplePage(sec);
+      page.appendChild(content);
+      pagesEl.appendChild(page);
+    });
+  }
+
+  // ---------- Panel controls ----------
+  document.getElementById("toggleC2").addEventListener("change", function(e){
+    state.c2enabled = e.target.checked;
+    if(state.c2enabled && activeTab!=="c2"){ /* stay */ }
+    if(!state.c2enabled && activeTab==="c2"){ activeTab="overview"; }
+    saveState(); render();
+  });
+  document.getElementById("toggleSame").addEventListener("change", function(e){
+    state.same = e.target.checked;
+    if(state.same) setItemChecked("c1-6", true);
+    saveState(); render();
+  });
+  document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    if(!confirm("Đặt lại toàn bộ các mục đã đánh dấu?")) return;
+    state = defaultState();
+    saveState(); render();
+  });
+  document.getElementById("collapseBtn").addEventListener("click", function(){
+    state.collapsed = !state.collapsed;
+    app.classList.toggle("collapsed", state.collapsed);
+    saveState();
+  });
+  document.getElementById("drawerToggle").addEventListener("click", function(){
+    app.classList.toggle("drawer-open");
+  });
+  document.getElementById("backdrop").addEventListener("click", function(){
+    app.classList.remove("drawer-open");
+  });
+
+  // ---------- Init ----------
+  if(state.collapsed) app.classList.add("collapsed");
+  if(state.same) setItemChecked("c1-6", true);
+  render();
+
+})();
+</script>
+</body>
+</html>
