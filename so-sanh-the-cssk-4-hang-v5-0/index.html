@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>So sánh thẻ sức khỏe — Khung phân tích 4 hãng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F4EF;
+    --ink:#1C2430;
+    --ink-soft:#5B6472;
+    --ink-faint:#8B92A0;
+    --accent:#0E6E55;
+    --accent-ink:#083D2F;
+    --accent-soft:#E1EFE9;
+    --line:#DEDAD0;
+    --line-soft:#EAE7DE;
+    --card:#FFFFFF;
+    --warn-bg:#FBEFE4;
+    --warn-ink:#8A4B12;
+    --danger-bg:#FBE9E6;
+    --danger-ink:#9B2C1F;
+
+    --c-manu:#1B6E4A;
+    --c-manu-bg:#E4F1E9;
+    --c-dai:#AE3B2E;
+    --c-dai-bg:#F6E7E4;
+    --c-aia:#7A2141;
+    --c-aia-bg:#F1E3E9;
+    --c-gen:#1B4B72;
+    --c-gen-bg:#E3EAF1;
+
+    --sidebar-w:20vw;
+    --sidebar-min:250px;
+    --sidebar-max:320px;
+    --sidebar-collapsed:64px;
+    --radius:10px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Be Vietnam Pro', system-ui, sans-serif;
+    font-size:15px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  h1,h2,h3,h4{font-family:'Fraunces', Georgia, serif; font-weight:600; margin:0 0 .4em; color:var(--ink);}
+  p{margin:0 0 1em;}
+  a{color:var(--accent-ink);}
+  ::selection{background:var(--accent-soft);}
+
+  /* ---------- App shell ---------- */
+  .app{display:flex; min-height:100vh;}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:clamp(var(--sidebar-min), var(--sidebar-w), var(--sidebar-max));
+    flex:0 0 auto;
+    background:var(--ink);
+    color:#EDEEE9;
+    display:flex;
+    flex-direction:column;
+    position:sticky;
+    top:0;
+    height:100vh;
+    transition:width .28s ease;
+    overflow:hidden;
+    padding-top:env(safe-area-inset-top,0px);
+  }
+  .sidebar.collapsed{width:var(--sidebar-collapsed);}
+
+  .brand{
+    display:flex; align-items:center; gap:.65rem;
+    padding:1.35rem 1.2rem 1.1rem;
+    border-bottom:1px solid rgba(255,255,255,.1);
+    white-space:nowrap;
+  }
+  .brand-mark{
+    width:34px; height:34px; flex:0 0 auto; border-radius:8px;
+    background:var(--accent);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif; font-weight:700; font-size:16px; color:#fff;
+  }
+  .brand-text{overflow:hidden;}
+  .brand-text .t1{font-family:'Fraunces', serif; font-size:15.5px; font-weight:600; color:#fff; line-height:1.2;}
+  .brand-text .t2{font-size:11.5px; color:#A9B0A8; margin-top:1px;}
+  .sidebar.collapsed .brand-text{display:none;}
+
+  .side-toggle{
+    margin:.7rem 1rem 0;
+    display:flex; align-items:center; gap:.5rem;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);
+    color:#D7DAD3;
+    border-radius:8px;
+    padding:.5rem .6rem;
+    cursor:pointer;
+    font-family:inherit; font-size:12.5px;
+    transition:background .15s ease;
+  }
+  .side-toggle:hover{background:rgba(255,255,255,.12);}
+  .side-toggle svg{flex:0 0 auto; transition:transform .28s ease;}
+  .sidebar.collapsed .side-toggle svg{transform:rotate(180deg);}
+  .sidebar.collapsed .side-toggle{justify-content:center; margin-left:.5rem; margin-right:.5rem;}
+  .side-toggle .lbl{white-space:nowrap;}
+  .sidebar.collapsed .side-toggle .lbl{display:none;}
+
+  nav.side-nav{padding:1rem .7rem; overflow-y:auto; flex:1 1 auto;}
+  .nav-group-label{
+    font-size:10.5px; letter-spacing:.06em; color:#8B9289;
+    padding:.9rem .6rem .35rem; text-transform:none;
+  }
+  .sidebar.collapsed .nav-group-label{display:none;}
+
+  .nav-btn{
+    width:100%; display:flex; align-items:center; gap:.7rem;
+    background:none; border:none; color:#CCD0C8;
+    padding:.62rem .65rem; border-radius:8px; cursor:pointer;
+    font-family:inherit; font-size:13.5px; text-align:left;
+    white-space:nowrap; overflow:hidden;
+  }
+  .nav-btn svg{flex:0 0 auto; opacity:.85;}
+  .nav-btn:hover{background:rgba(255,255,255,.07); color:#fff;}
+  .nav-btn.active{background:var(--accent); color:#fff;}
+  .nav-btn.active svg{opacity:1;}
+  .nav-btn .lbl{overflow:hidden; text-overflow:ellipsis;}
+  .sidebar.collapsed .nav-btn{justify-content:center; padding:.62rem;}
+  .sidebar.collapsed .nav-btn .lbl{display:none;}
+
+  .side-foot{
+    padding:1rem 1.2rem 1.3rem; border-top:1px solid rgba(255,255,255,.1);
+    font-size:11.5px; color:#8B9289; line-height:1.5;
+  }
+  .sidebar.collapsed .side-foot{display:none;}
+
+  /* mobile drawer trigger */
+  .mobile-bar{display:none;}
+
+  /* ---------- Main ---------- */
+  .main{flex:1 1 auto; min-width:0; display:flex; flex-direction:column;}
+
+  .topbar{
+    position:sticky; top:0; z-index:5;
+    background:rgba(245,244,239,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+    padding:1.1rem 2.2rem;
+    display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+    padding-top:calc(1.1rem + env(safe-area-inset-top,0px));
+  }
+  .topbar-titles .eyebrow{font-size:12px; color:var(--ink-faint); margin-bottom:.15rem;}
+  .topbar-titles h1{font-size:26px; margin:0;}
+  .topbar-titles .sub{color:var(--ink-soft); font-size:13.5px; margin-top:.25rem; max-width:56ch;}
+
+  .view-toggle{
+    display:flex; background:var(--line-soft); border-radius:999px; padding:3px; flex:0 0 auto;
+  }
+  .view-toggle button{
+    border:none; background:none; font-family:inherit; font-size:12.5px; font-weight:600;
+    padding:.45rem 1rem; border-radius:999px; cursor:pointer; color:var(--ink-soft);
+  }
+  .view-toggle button.active{background:var(--ink); color:#fff;}
+
+  .content{padding:2rem 2.2rem 5rem; max-width:1180px;}
+
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  body[data-view="summary"] .view-detail{display:none;}
+  body[data-view="detail"] .view-summary{display:none;}
+
+  /* ---------- Generic building blocks ---------- */
+  .lede{font-size:16px; color:var(--ink-soft); max-width:66ch; margin-bottom:1.8rem;}
+
+  .card-grid{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:1rem; margin-bottom:2rem;
+  }
+  .co-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:1.15rem 1.2rem 1.3rem; border-top:4px solid var(--tag-color, var(--accent));
+  }
+  .co-card .co-name{font-family:'Fraunces', serif; font-size:17px; font-weight:600; margin-bottom:.55rem;}
+  .co-card ul{margin:0; padding-left:1.05rem; font-size:13.5px; color:var(--ink-soft);}
+  .co-card li{margin-bottom:.35rem;}
+  .co-card .co-usp{
+    margin-top:.8rem; padding-top:.7rem; border-top:1px dashed var(--line);
+    font-size:12.5px; color:var(--ink);
+  }
+  .co-card .co-usp b{color:var(--tag-color, var(--accent-ink));}
+
+  .tag{
+    display:inline-block; font-size:11px; font-weight:700; letter-spacing:.01em;
+    padding:.18rem .55rem; border-radius:999px; color:#fff; background:var(--accent);
+  }
+  .tag.manu{background:var(--c-manu);} .tag.dai{background:var(--c-dai);}
+  .tag.aia{background:var(--c-aia);} .tag.gen{background:var(--c-gen);}
+
+  table.cmp{
+    width:100%; border-collapse:collapse; background:var(--card);
+    border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    font-size:13.5px; margin-bottom:1.6rem;
+  }
+  table.cmp caption{text-align:left; caption-side:top; padding:.2rem 0 .7rem; font-size:12.5px; color:var(--ink-faint);}
+  table.cmp th, table.cmp td{padding:.65rem .8rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--line-soft);}
+  table.cmp thead th{
+    background:var(--ink); color:#fff; font-family:'Fraunces', serif; font-weight:600; font-size:13.5px;
+    position:sticky; top:0;
+  }
+  table.cmp thead th:first-child{border-top-left-radius:0;}
+  table.cmp tbody th{font-weight:600; color:var(--ink); width:26%; background:var(--line-soft);}
+  table.cmp tbody tr:last-child td, table.cmp tbody tr:last-child th{border-bottom:none;}
+  table.cmp td.manu-col{border-left:3px solid var(--c-manu);}
+  table.cmp td.dai-col{border-left:3px solid var(--c-dai);}
+  table.cmp td.aia-col{border-left:3px solid var(--c-aia);}
+  table.cmp td.gen-col{border-left:3px solid var(--c-gen);}
+
+  .note-block{
+    border-radius:var(--radius); padding:1rem 1.15rem; margin:1.2rem 0; font-size:13.5px;
+    border:1px solid var(--line);
+  }
+  .note-block.warn{background:var(--warn-bg); border-color:#EAD2B0; color:var(--warn-ink);}
+  .note-block.danger{background:var(--danger-bg); border-color:#EFC4BC; color:var(--danger-ink);}
+  .note-block.info{background:var(--accent-soft); border-color:#C7E0D4; color:var(--accent-ink);}
+  .note-block b{font-weight:700;}
+  .note-block .note-title{display:block; font-weight:700; margin-bottom:.3rem; font-size:12.5px; letter-spacing:.01em;}
+
+  .checklist{list-style:none; margin:0 0 2rem; padding:0; counter-reset:item;}
+  .checklist li{
+    counter-increment:item;
+    display:grid; grid-template-columns:2.1rem 1fr; gap:.9rem;
+    padding:1rem 0; border-bottom:1px solid var(--line-soft);
+  }
+  .checklist li:last-child{border-bottom:none;}
+  .checklist li::before{
+    content:counter(item);
+    font-family:'Fraunces', serif; font-weight:600; font-size:16px; color:var(--accent);
+    width:2.1rem; height:2.1rem; border-radius:50%; background:var(--accent-soft);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .checklist h4{font-size:14.5px; margin-bottom:.25rem;}
+  .checklist p{font-size:13.5px; color:var(--ink-soft); margin:0;}
+
+  .usp-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:1rem;}
+  .usp-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:1.2rem 1.3rem;}
+  .usp-card .co-head{display:flex; align-items:center; gap:.6rem; margin-bottom:.8rem;}
+  .usp-card .dot{width:11px; height:11px; border-radius:50%; background:var(--tag-color);}
+  .usp-card .co-head span{font-family:'Fraunces', serif; font-weight:600; font-size:16.5px;}
+  .usp-card ul{margin:0; padding-left:1.1rem; font-size:13.5px; color:var(--ink-soft);}
+  .usp-card li{margin-bottom:.5rem;}
+  .usp-card li b{color:var(--ink);}
+
+  .section-gap{margin-top:2.6rem;}
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:1.4rem;}
+  @media (max-width:760px){.two-col{grid-template-columns:1fr;}}
+
+  .foot-source{font-size:11.5px; color:var(--ink-faint); margin-top:.4rem;}
+
+  code.k{
+    background:var(--line-soft); border-radius:4px; padding:.05rem .35rem; font-size:12px; font-family:inherit;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:900px){
+    .sidebar{
+      position:fixed; z-index:40; left:0; top:0; height:100%;
+      width:min(80vw, 320px);
+      transform:translateX(-100%);
+      transition:transform .28s ease;
+    }
+    .sidebar.mobile-open{transform:translateX(0);}
+    .sidebar.collapsed{width:min(80vw,320px);}
+    .sidebar.collapsed .brand-text,
+    .sidebar.collapsed .nav-btn .lbl,
+    .sidebar.collapsed .side-toggle .lbl,
+    .sidebar.collapsed .nav-group-label,
+    .sidebar.collapsed .side-foot{display:block;}
+    .sidebar .side-toggle{display:none;}
+
+    .mobile-bar{
+      display:flex; align-items:center; gap:.8rem;
+      padding:.8rem 1.1rem; padding-top:calc(.8rem + env(safe-area-inset-top,0px));
+      border-bottom:1px solid var(--line); background:var(--bg);
+      position:sticky; top:0; z-index:20;
+    }
+    .mobile-bar button{
+      border:1px solid var(--line); background:#fff; border-radius:8px; width:38px; height:38px;
+      display:flex; align-items:center; justify-content:center; cursor:pointer;
+    }
+    .mobile-bar .m-title{font-family:'Fraunces', serif; font-weight:600; font-size:15px;}
+    .scrim{
+      display:none; position:fixed; inset:0; background:rgba(15,20,15,.4); z-index:30;
+    }
+    .scrim.show{display:block;}
+    .topbar{padding:1rem 1.2rem;}
+    .content{padding:1.4rem 1.2rem 4rem;}
+    table.cmp{font-size:12.5px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .sidebar, .side-toggle svg, .scrim{transition:none !important;}
+  }
+</style>
+</head>
+<body data-view="summary">
+
+<div class="scrim" id="scrim"></div>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">4T</div>
+      <div class="brand-text">
+        <div class="t1">So sánh Thẻ Sức Khỏe</div>
+        <div class="t2">Phòng Hương Nguyễn</div>
+      </div>
+    </div>
+
+    <button class="side-toggle" id="sideToggle" aria-label="Thu gọn menu">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 2L4 8l6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="lbl">Thu gọn</span>
+    </button>
+
+    <nav class="side-nav" id="sideNav">
+      <div class="nav-group-label">Bắt đầu</div>
+      <button class="nav-btn active" data-panel="framework">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M15 9l-2 5-4 1 2-5 4-1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        <span class="lbl">Cách phân tích</span>
+      </button>
+      <button class="nav-btn" data-panel="tongquan">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="7" height="7" rx="1.3" stroke="currentColor" stroke-width="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.3" stroke="currentColor" stroke-width="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.3" stroke="currentColor" stroke-width="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.3" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span class="lbl">Tổng quan 4 hãng</span>
+      </button>
+      <button class="nav-btn" data-panel="sosanhnhanh">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 4h16M4 10h16M4 16h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <span class="lbl">So sánh nhanh — tất cả nhóm</span>
+      </button>
+
+      <div class="nav-group-label">Quyền lợi theo nhóm</div>
+      <button class="nav-btn" data-panel="noitru">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M3 18v-6a2 2 0 012-2h14a2 2 0 012 2v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M3 14h18M7 10V7a2 2 0 012-2h6a2 2 0 012 2v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M3 18v2M21 18v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <span class="lbl">Điều trị nội trú</span>
+      </button>
+      <button class="nav-btn" data-panel="ngoaitru">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M6 3v6a4 4 0 008 0V3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M10 13v2a5 5 0 005 5 5 5 0 005-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="20" cy="8" r="1.6" stroke="currentColor" stroke-width="1.4"/></svg>
+        <span class="lbl">Điều trị ngoại trú</span>
+      </button>
+      <button class="nav-btn" data-panel="nhakhoa">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 4c-2.2 0-3.6 1.3-4.6 1.3-1.2 0-1.9-.8-2.9-.8C3 4.5 2.2 6.5 2.6 9c.5 3 2.2 4 2.7 7.3.3 1.9 1 3.7 2.2 3.7 1.5 0 1.5-2.6 2-4.4.3-1.1.7-1.8 1.5-1.8.8 0 1.2.7 1.5 1.8.5 1.8.5 4.4 2 4.4 1.2 0 1.9-1.8 2.2-3.7.5-3.3 2.2-4.3 2.7-7.3.4-2.5-.4-4.5-2-4.5-1 0-1.7.8-2.9.8-1 0-2.4-1.3-4.6-1.3-1.5 0-1.5 0-1.5 0z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        <span class="lbl">Chăm sóc răng</span>
+      </button>
+      <button class="nav-btn" data-panel="thaisan">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.5-4.8-9.6-9.2C.8 7.9 3 4 6.8 4c2 0 3.5 1.1 5.2 3 1.7-1.9 3.2-3 5.2-3 3.8 0 6 3.9 4.4 7.8C19.5 16.2 12 21 12 21z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span class="lbl">Thai sản</span>
+      </button>
+
+      <div class="nav-group-label">Điều kiện &amp; chi phí</div>
+      <button class="nav-btn" data-panel="thoigiancho">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="lbl">Thời gian chờ</span>
+      </button>
+      <button class="nav-btn" data-panel="loaitru">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5.5c0 4.6-3 7.7-7 9.5-4-1.8-7-4.9-7-9.5V6l7-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 9l6 6M15 9l-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span class="lbl">Loại trừ chính</span>
+      </button>
+      <button class="nav-btn" data-panel="phi">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="8.5" cy="8.5" r="5" stroke="currentColor" stroke-width="1.6"/><circle cx="15" cy="15" r="5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span class="lbl">Biểu phí</span>
+      </button>
+
+      <div class="nav-group-label">Tư vấn</div>
+      <button class="nav-btn" data-panel="baolanh">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3l7 3v5.5c0 4.6-3 7.7-7 9.5-4-1.8-7-4.9-7-9.5V6l7-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span class="lbl">Bảo lãnh &amp; Bồi thường</span>
+      </button>
+      <button class="nav-btn" data-panel="usp">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5-4.8-4.6 6.6-.9 2.9-6z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        <span class="lbl">USP từng hãng</span>
+      </button>
+    </nav>
+
+    <div class="side-foot">
+      Cập nhật theo QTĐK chính thức 4 hãng · Dùng song song với file Excel so sánh chi tiết
+    </div>
+  </aside>
+
+  <div class="main">
+
+    <div class="mobile-bar">
+      <button id="mobileOpen" aria-label="Mở menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#1C2430" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <div class="m-title" id="mobileTitle">Cách phân tích</div>
+    </div>
+
+    <header class="topbar">
+      <div class="topbar-titles">
+        <div class="eyebrow" id="topEyebrow">01 · Phương pháp</div>
+        <h1 id="topTitle">Cách phân tích &amp; so sánh</h1>
+        <div class="sub" id="topSub">Khung câu hỏi dùng trước khi đặt hai thẻ sức khỏe cạnh nhau — để không so nhầm hai thứ khác bản chất.</div>
+      </div>
+      <div class="view-toggle">
+        <button id="btnSummary" class="active">Tóm tắt</button>
+        <button id="btnDetail">Chi tiết</button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ============================================================ FRAMEWORK ============================================================ -->
+      <section class="panel active" id="panel-framework">
+        <p class="lede">4 hãng đều dùng chữ giống nhau — “hạn mức”, “đồng chi trả”, “thời gian chờ” — nhưng cách tính phía sau khác nhau. So sai chỗ này là nguồn gốc gần như mọi hiểu lầm khi tư vấn khách. Trước khi so hai thẻ, đi qua 8 câu hỏi dưới đây.</p>
+
+        <ol class="checklist">
+          <li>
+            <div>
+              <h4>Hạn mức tính theo NĂM hợp đồng hay theo TRỌN ĐỜI tham gia cho một bệnh?</h4>
+              <p>Manulife, AIA, Generali reset hạn mức mỗi năm hợp đồng. Dai-ichi tính "Quyền lợi tối đa của một Bệnh/Thương tật" — dùng dần trong <b>suốt thời gian tham gia</b>, không reset. Một con số "2 tỷ" ở hai hãng này không cùng ý nghĩa.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h4>Đồng chi trả là mức CỐ ĐỊNH hay khách được CHỌN?</h4>
+              <p>Manulife cố định theo tuổi (0% hoặc 20%). Dai-ichi và Generali cho khách chọn 0/20%(/30%) lúc tham gia — ảnh hưởng trực tiếp phí, cần hỏi khách đã chọn mức nào trước khi so phí giữa các hãng.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h4>Thai sản: có sẵn, mua thêm, hay là sản phẩm khác hẳn?</h4>
+              <p>4 hãng có 4 mô hình khác nhau — xem tab "Thai sản". Đây là điểm dễ tư vấn sai nhất vì tên gọi giống nhau nhưng bản chất khác hẳn.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h4>Phạm vi địa lý áp dụng đồng nhất mọi gói, hay tăng theo gói?</h4>
+              <p>Generali và AIA mở rộng phạm vi theo gói (gói thấp chỉ Việt Nam, gói cao mới ra toàn cầu). Dai-ichi nội trú luôn toàn cầu ở mọi gói. Cần khớp đúng gói khách chọn, không chỉ tên hãng.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h4>Danh sách "Bệnh đặc biệt" (chờ 90 ngày) của hãng này có bệnh khách đang quan tâm không?</h4>
+              <p>4 danh sách không trùng nhau (vd. Generali xếp đục thủy tinh thể vào nhóm này, Manulife xếp Gout/Parkinson mà Dai-ichi không có). Khách có bệnh nền — luôn tra đúng danh sách của hãng đang tư vấn.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h4>Hãng có điều khoản "miễn truy xét" theo mốc thời gian cố định không?</h4>
+              <p>Manulife và AIA: có, 24 tháng. Dai-ichi: không có mốc cố định — rủi ro bị từ chối vì khai thiếu kéo dài hơn (mốc "bệnh có sẵn" lùi 36 tháng). Generali: không có mốc tự động, xét theo mức độ ảnh hưởng của việc khai thiếu.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h4>Nếu mất hiệu lực, khách có bao lâu để khôi phục?</h4>
+              <p>Dai-ichi ngắn nhất: 10 tháng kể từ hết hạn gia hạn phí. Manulife/AIA/Generali: 2 năm. Đáng lưu ý khi tư vấn khách có nguy cơ đóng phí gián đoạn.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h4>Hãng có quyền lợi cộng thêm nào ngoài bảng quyền lợi chuẩn?</h4>
+              <p>AIA: Nhân đôi bảo vệ khi hết hạn mức &amp; điều trị viện công. Generali: Nhân đôi hạn mức cho Ung thư/Đột quỵ/NMCT + khám sức khỏe miễn phí hàng năm nếu không claim. Đây thường là điểm chốt khi hai thẻ có hạn mức gần bằng nhau.</p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="note-block info">
+          <span class="note-title">Cách dùng file này</span>
+          Mỗi tab bên trái có 2 chế độ: <b>Tóm tắt</b> — nhìn nhanh trước khi gặp khách, và <b>Chi tiết</b> — tra số khi khách hỏi sâu. Chuyển chế độ bằng nút góc trên bên phải. Số liệu đầy đủ từng tuổi/gói nằm trong file Excel so sánh — file này là bản rút gọn để nắm logic nhanh.
+        </div>
+      </section>
+
+      <!-- ============================================================ TỔNG QUAN ============================================================ -->
+      <section class="panel" id="panel-tongquan">
+        <p class="lede">4 hãng, 4 triết lý thiết kế sản phẩm khác nhau — nắm được điều này trước khi nhìn vào bất kỳ con số nào.</p>
+
+        <div class="view-summary">
+          <div class="card-grid">
+            <div class="co-card" style="--tag-color:var(--c-manu)">
+              <div class="co-name"><span class="tag manu">Manulife</span></div>
+              <ul>
+                <li>5 gói: Bạc → Kim Cương, hạn mức <b>theo năm HĐ</b></li>
+                <li>Đồng chi trả cố định theo tuổi (0%/20%)</li>
+                <li>Thai sản: add-on riêng, theo lần mang thai</li>
+              </ul>
+              <div class="co-usp"><b>Chọn khi:</b> khách ưu tiên hạn mức ung thư cao, hay khám ở viện tư lớn (Tâm Anh, Vinmec…)</div>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-dai)">
+              <div class="co-name"><span class="tag dai">Dai-ichi</span></div>
+              <ul>
+                <li>5 gói: Cơ Bản → Thịnh Vượng, hạn mức <b>trọn đời tham gia/1 bệnh</b></li>
+                <li>Đồng chi trả khách tự chọn 0/20/30%</li>
+                <li>Thai sản: <b>sản phẩm riêng</b>, không nằm trong thẻ này</li>
+              </ul>
+              <div class="co-usp"><b>Chọn khi:</b> khách hay ra nước ngoài — nội trú toàn cầu ở mọi gói</div>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-aia)">
+              <div class="co-name"><span class="tag aia">AIA</span></div>
+              <ul>
+                <li>4 gói: Cơ Bản → Hoàn Hảo, hạn mức theo năm HĐ</li>
+                <li>Đồng chi trả 0% hầu hết độ tuổi (5–74)</li>
+                <li>Thai sản: trong gói chính, <b>chỉ 2 gói cao nhất</b></li>
+              </ul>
+              <div class="co-usp"><b>Chọn khi:</b> khách trẻ cần cả bảo vệ sức khỏe lẫn kế hoạch sinh con trong 1 thẻ</div>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-gen)">
+              <div class="co-name"><span class="tag gen">Generali</span></div>
+              <ul>
+                <li>5 gói: Tiết Kiệm → Kim Cương, hạn mức theo năm HĐ</li>
+                <li>Đồng chi trả 0% (trừ Tiết Kiệm có thể chọn 20%)</li>
+                <li>Thai sản: add-on riêng, theo năm HĐ</li>
+              </ul>
+              <div class="co-usp"><b>Chọn khi:</b> khách cần hạn mức cao nhất thị trường (Kim Cương: 5 tỷ/năm)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="view-detail">
+          <table class="cmp">
+            <thead><tr><th>Hạng mục</th><th>Manulife</th><th>Dai-ichi</th><th>AIA</th><th>Generali</th></tr></thead>
+            <tbody>
+              <tr><th>Số chương trình</th><td class="manu-col">5 (Bạc → Kim Cương)</td><td class="dai-col">5 (Cơ Bản → Thịnh Vượng)</td><td class="aia-col">4 (Cơ Bản → Hoàn Hảo)</td><td class="gen-col">5 (Tiết Kiệm → Kim Cương)</td></tr>
+              <tr><th>Cơ sở tính hạn mức</th><td class="manu-col">Theo năm hợp đồng</td><td class="dai-col">Trọn thời gian tham gia / 1 Bệnh</td><td class="aia-col">Theo năm hợp đồng</td><td class="gen-col">Theo năm hợp đồng</td></tr>
+              <tr><th>Tuổi tham gia</th><td class="manu-col">30 ngày – 65 tuổi</td><td class="dai-col">30 ngày – 65 tuổi (nội trú); 60 tuổi (ngoại trú/nha khoa)</td><td class="aia-col">30 ngày – 70 tuổi</td><td class="gen-col">15 ngày – 65 tuổi; thai sản 18–44</td></tr>
+              <tr><th>Tuổi tái tục tối đa</th><td class="manu-col">75 tuổi</td><td class="dai-col">75 tuổi (nội trú); 65 (ngoại trú/nha khoa)</td><td class="aia-col">100 tuổi</td><td class="gen-col">75 tuổi; thai sản đến 50</td></tr>
+              <tr><th>Đồng chi trả</th><td class="manu-col">Cố định theo tuổi: 20% (0–4t) / 0% (≥5t)</td><td class="dai-col">Bắt buộc 30% (0–5t); khách CHỌN 20% hoặc 0% (≥6t, không có 30%)</td><td class="aia-col">Mặc định 0% (5–74t); khách tự trả 20% ở 2 đầu tuổi (0–4t &amp; ≥75t)</td><td class="gen-col">0% mặc định; Tiết Kiệm chọn 0%/20%</td></tr>
+              <tr><th>Phạm vi địa lý — nội trú</th><td class="manu-col">Tăng theo gói: VN (Bạc, Titan) → Đông Nam Á (từ Vàng trở lên)</td><td class="dai-col">Toàn cầu (mọi gói)</td><td class="aia-col">VN hoặc Toàn cầu trừ Mỹ (theo lựa chọn)</td><td class="gen-col">Tăng theo gói: VN → Toàn cầu</td></tr>
+              <tr><th>Thai sản</th><td class="manu-col">Add-on riêng, theo lần mang thai</td><td class="dai-col">Không có — sản phẩm riêng biệt</td><td class="aia-col">Trong gói chính, chỉ 2 gói cao nhất, theo năm</td><td class="gen-col">Add-on riêng, theo năm HĐ</td></tr>
+              <tr><th>Miễn truy xét</th><td class="manu-col">24 tháng</td><td class="dai-col">Không có mốc cố định</td><td class="aia-col">24 tháng</td><td class="gen-col">Không có mốc tự động</td></tr>
+              <tr><th>Khôi phục hiệu lực</th><td class="manu-col">2 năm</td><td class="dai-col">10 tháng</td><td class="aia-col">2 năm</td><td class="gen-col">2 năm</td></tr>
+              <tr><th>Quyền lợi cộng thêm</th><td class="manu-col">—</td><td class="dai-col">—</td><td class="aia-col">Nhân đôi bảo vệ khi hết hạn mức + điều trị viện công</td><td class="gen-col">Nhân đôi hạn mức Ung thư/Đột quỵ/NMCT; khám SK miễn phí/năm nếu không claim</td></tr>
+            </tbody>
+          </table>
+          <p class="foot-source">Nguồn: QTĐK chính thức của từng hãng (bản mới nhất đã đối chiếu). Số liệu chi tiết theo từng gói/tuổi — xem file Excel.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================ SO SÁNH NHANH ============================================================ -->
+      <section class="panel" id="panel-sosanhnhanh">
+        <p class="lede">Một bảng duy nhất, ghép lại nội dung của toàn bộ các tab — dùng khi cần liếc nhanh tất cả các nhóm quyền lợi cùng lúc, không phải bấm qua từng tab.</p>
+
+        <table class="cmp">
+          <thead><tr><th>Nhóm quyền lợi</th><th>Manulife</th><th>Dai-ichi</th><th>AIA</th><th>Generali</th></tr></thead>
+          <tbody>
+            <tr>
+              <th>Nội trú</th>
+              <td class="manu-col">125tr–2 tỷ/năm · ĐCT 20% (0–4t) rồi 0% · phạm vi VN→ĐNÁ theo gói</td>
+              <td class="dai-col">150tr–2 tỷ/<b>trọn đời/bệnh</b> · ĐCT khách chọn · toàn cầu mọi gói</td>
+              <td class="aia-col">150tr–1,2 tỷ/năm · ĐCT ~0% (5–74t) · VN hoặc toàn cầu trừ Mỹ</td>
+              <td class="gen-col">120tr–5 tỷ/năm (cao nhất) · ĐCT 0% · phạm vi tăng theo gói</td>
+            </tr>
+            <tr>
+              <th>Ngoại trú</th>
+              <td class="manu-col">6–60tr/năm · ĐCT 20% · toàn cầu · không có ở Bạc</td>
+              <td class="dai-col">5–25tr/năm · VN · không có ở Cơ Bản</td>
+              <td class="aia-col">6–48tr/năm · ĐCT 80% cố định · VN · có ở mọi gói</td>
+              <td class="gen-col">20–120tr/năm · VN→toàn cầu · không có ở Tiết Kiệm</td>
+            </tr>
+            <tr>
+              <th>Nha khoa</th>
+              <td class="manu-col">3–25tr/năm · từ gói Titan</td>
+              <td class="dai-col">10,5–17,5tr/năm · <b>chỉ 2 gói cao nhất</b></td>
+              <td class="aia-col">1–10tr/năm · mọi gói · không giới hạn/lần khám</td>
+              <td class="gen-col">10–60tr/năm · từ gói Tiêu Chuẩn</td>
+            </tr>
+            <tr>
+              <th>Thai sản</th>
+              <td class="manu-col">Add-on, 12–70tr/<b>lần mang thai</b> · 4/5 gói</td>
+              <td class="dai-col"><b>Không có trong thẻ này</b> — sản phẩm riêng</td>
+              <td class="aia-col">Trong gói chính, <b>chỉ 2 gói cao nhất</b>, 25–40tr/năm, ĐCT leo thang 50→80→100%</td>
+              <td class="gen-col">Add-on, 25–120tr/<b>năm</b> · 4/5 gói</td>
+            </tr>
+            <tr>
+              <th>Thời gian chờ</th>
+              <td class="manu-col">0 / 30 / 90 / 270 ngày</td>
+              <td class="dai-col">0 / 30 / 90 ngày (không có thai sản)</td>
+              <td class="aia-col">0 / 30 / 90 / 270 ngày</td>
+              <td class="gen-col">0 / 30 / 90 / 270 ngày</td>
+            </tr>
+            <tr>
+              <th>Loại trừ — điểm khác biệt</th>
+              <td class="manu-col">Loại trừ chiến tranh/khủng bố rõ ràng · loại trừ HIV nhưng miễn trừ cho nhân viên y tế/công an nếu nhiễm khi làm nhiệm vụ</td>
+              <td class="dai-col">Không có điều khoản loại trừ chiến tranh/khủng bố · không có mốc miễn truy xét cố định (khác 3 hãng kia)</td>
+              <td class="aia-col">Loại trừ HIV <b>không có ngoại lệ</b> cho nhân viên y tế/công an · loại trừ đục thủy tinh thể ở <b>mọi độ tuổi</b> (rộng hơn 3 hãng kia)</td>
+              <td class="gen-col">Loại trừ nồng độ cồn ghi ngưỡng cụ thể (theo QĐ 320/QĐ-BYT), rõ hơn cách ghi chung chung của 3 hãng kia</td>
+            </tr>
+            <tr>
+              <th>Miễn truy xét / Khôi phục hiệu lực</th>
+              <td class="manu-col">24 tháng / 2 năm</td>
+              <td class="dai-col">Không có mốc cố định / 10 tháng (ngắn nhất)</td>
+              <td class="aia-col">24 tháng / 2 năm</td>
+              <td class="gen-col">Không có mốc tự động / 2 năm</td>
+            </tr>
+            <tr>
+              <th>Phí — mức độ sẵn có dữ liệu</th>
+              <td class="manu-col">Đầy đủ theo từng tuổi (0–74)</td>
+              <td class="dai-col">Đầy đủ 13/13 nhóm tuổi (Nội trú + Ngoại trú + Răng)</td>
+              <td class="aia-col">Đầy đủ theo nhóm tuổi 5 năm</td>
+              <td class="gen-col">Đầy đủ Nội trú (15 nhóm tuổi); Ngoại trú/Nha khoa/Thai sản chưa có</td>
+            </tr>
+            <tr>
+              <th>Quyền lợi cộng thêm riêng</th>
+              <td class="manu-col">—</td>
+              <td class="dai-col">—</td>
+              <td class="aia-col">Nhân đôi bảo vệ tại viện công</td>
+              <td class="gen-col">Nhân đôi hạn mức Ung thư/Đột quỵ/NMCT + khám SK miễn phí/năm</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="foot-source">ĐCT = Đồng chi trả. Đây là bảng rút gọn để nhìn nhanh — số liệu đầy đủ theo từng gói/tuổi nằm ở các tab riêng và trong file Excel.</p>
+      </section>
+
+      <!-- ============================================================ NỘI TRÚ ============================================================ -->
+      <section class="panel" id="panel-noitru">
+        <p class="lede">Quyền lợi bắt buộc, mọi gói đều có. Đây là nơi khác biệt cơ sở tính hạn mức (câu hỏi #1 trong khung phân tích) ảnh hưởng rõ nhất.</p>
+
+        <div class="view-summary">
+          <div class="card-grid">
+            <div class="co-card" style="--tag-color:var(--c-manu)"><div class="co-name"><span class="tag manu">Manulife</span></div>
+              <ul><li>Hạn mức: 125tr – 2 tỷ /năm; phạm vi tăng theo gói (VN → Đông Nam Á từ Vàng trở lên)</li><li>Đồng chi trả chỉ 20%, và chỉ áp dụng 0–4 tuổi — từ 5 tuổi là 0%</li><li>Ung thư: đủ 5 phương pháp, <b>thuốc đích/miễn dịch không bị giới hạn riêng</b> — dùng chung trần với hạn mức tổng; K vú có thêm tái tạo tuyến vú</li></ul>
+              <div class="co-usp"><b>Điểm mạnh:</b> tiền công chăm sóc tính riêng ở viện tư hạch toán tách bạch (Tâm Anh/Vinmec/Hồng Ngọc) → thực nhận cao hơn</div>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-dai)"><div class="co-name"><span class="tag dai">Dai-ichi</span></div>
+              <ul><li>Hạn mức: 150tr – 2 tỷ /trọn đời/bệnh</li><li>Phòng &amp; giường tối đa 100 ngày/năm</li><li>Ung thư: hóa/xạ trị 100% CPYT + trúng đích/miễn dịch có trần riêng</li></ul>
+              <div class="co-usp"><b>Điểm mạnh:</b> có chi trả Bệnh bẩm sinh trẻ em ngay trong thẻ chính (Manulife loại trừ hoàn toàn)</div>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-aia)"><div class="co-name"><span class="tag aia">AIA</span></div>
+              <ul><li>Hạn mức: 150tr – 1,2 tỷ /năm</li><li>Phòng &amp; giường tối đa 100 ngày/năm</li><li>Ung thư: 100% CPYT, không giới hạn riêng</li></ul>
+              <div class="co-usp"><b>Điểm mạnh:</b> Nhân đôi bảo vệ +100% hạn mức nếu hết hạn mức &amp; điều trị viện công — không đồng chi trả trẻ em ở viện công</div>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-gen)"><div class="co-name"><span class="tag gen">Generali</span></div>
+              <ul><li>Hạn mức: 120tr – 5 tỷ /năm (cao nhất thị trường)</li><li>Phòng &amp; giường tối đa 60 ngày (100 ngày nếu điều trị nước ngoài, Kim Cương)</li><li>Ung thư/Đột quỵ/NMCT: 100% CPYT, gộp chung 1 mục</li></ul>
+              <div class="co-usp"><b>Điểm mạnh:</b> Nhân đôi hạn mức riêng cho Ung thư/Đột quỵ/NMCT (+100%, dùng 1 lần/đời, hiệu lực 36 tháng)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="view-summary">
+          <table class="cmp">
+            <caption>Cấy ghép nội tạng &amp; Ngoại trú đặc biệt — 2 mục hay bị tư vấn sai vì tưởng như nhau giữa các hãng</caption>
+            <thead><tr><th>Hạng mục</th><th>Manulife</th><th>Dai-ichi</th><th>AIA</th><th>Generali</th></tr></thead>
+            <tbody>
+              <tr><th>Cấy ghép — danh sách tạng</th><td class="manu-col">6 tạng: tim, phổi, gan, tụy, thận, tủy xương</td><td class="dai-col">⚠ Chỉ 4 tạng — <b>không có phổi, tụy</b></td><td class="aia-col">6 tạng (đủ)</td><td class="gen-col">6 tạng (đủ)</td></tr>
+              <tr><th>Cấy ghép — chi phí người hiến</th><td class="manu-col">50% chi phí phẫu thuật</td><td class="dai-col">≤50%, trên nền mức trần trọn đời</td><td class="aia-col">50% chi phí phẫu thuật</td><td class="gen-col"><b>Số tiền cụ thể/năm</b>, không theo %</td></tr>
+              <tr><th>Ngoại trú đặc biệt trong thẻ Nội trú</th><td class="manu-col" colspan="4" style="text-align:center">✅ Cả 4 hãng đều bao gồm sẵn: Phẫu thuật trong ngày, Cấp cứu tai nạn, Lọc máu — <b>không cần mua thêm Ngoại trú</b> cho các mục này</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="view-detail">
+          <table class="cmp">
+            <thead><tr><th>Hạng mục</th><th>Manulife</th><th>Dai-ichi</th><th>AIA</th><th>Generali</th></tr></thead>
+            <tbody>
+              <tr><th>Hạn mức (khoảng theo gói)</th><td class="manu-col">125tr – 2 tỷ /năm</td><td class="dai-col">150tr – 2 tỷ /trọn đời/bệnh</td><td class="aia-col">150tr – 1,2 tỷ /năm</td><td class="gen-col">120tr – 5 tỷ /năm</td></tr>
+              <tr><th>Phạm vi địa lý</th><td class="manu-col"><b>Tăng theo gói:</b> Việt Nam (Bạc, Titan) → Đông Nam Á (từ Vàng trở lên)</td><td class="dai-col">Toàn cầu, đồng nhất mọi gói</td><td class="aia-col">VN hoặc Toàn cầu trừ Mỹ — theo lựa chọn của khách trên GCN, không theo gói</td><td class="gen-col"><b>Tăng theo gói:</b> VN (Tiết Kiệm, Tiêu Chuẩn) → Toàn cầu trừ Mỹ (Cao Cấp, VIP) → Toàn cầu (Kim Cương)</td></tr>
+              <tr><th>Đồng chi trả</th><td class="manu-col">20% chỉ ở 30 ngày–4 tuổi; 0% từ 5 tuổi trở lên — mức thấp và thời gian áp dụng ngắn</td><td class="dai-col">Bắt buộc 30% (0–5t); khách CHỌN 20% hoặc 0% (≥6t)</td><td class="aia-col">Mặc định 0% (5–74t); khách tự trả 20% tại CSYT tư (0–4t) và ≥75t</td><td class="gen-col">0% mặc định; Tiết Kiệm được chọn 0%/20%</td></tr>
+              <tr><th>Phòng &amp; giường — số ngày tối đa</th><td class="manu-col">60 ngày/năm</td><td class="dai-col">100 ngày/năm</td><td class="aia-col">100 ngày/năm</td><td class="gen-col">60 ngày (100 nếu ĐT nước ngoài, Kim Cương)</td></tr>
+              <tr><th>ICU — số ngày tối đa</th><td class="manu-col">60 ngày/năm</td><td class="dai-col">100 ngày/năm</td><td class="aia-col">30 ngày/năm</td><td class="gen-col">100 ngày/năm</td></tr>
+              <tr><th>Trợ cấp nằm viện tại BV công</th><td class="manu-col">Có, từ gói Vàng</td><td class="dai-col">Không có dòng riêng</td><td class="aia-col">Có, khi dùng BHYT, mọi gói</td><td class="gen-col">Có, từ gói Tiêu Chuẩn</td></tr>
+              <tr><th>Vật lý trị liệu — cơ sở tính</th><td class="manu-col">Theo từng đợt điều trị</td><td class="dai-col">Theo năm hợp đồng</td><td class="aia-col">Theo chi phí y tế (không giới hạn riêng)</td><td class="gen-col">Theo năm hợp đồng</td></tr>
+              <tr><th>Cấy ghép nội tạng — danh sách tạng</th><td class="manu-col">Tim, phổi, gan, tụy, thận, tủy xương (6 tạng)</td><td class="dai-col">⚠ Chỉ 4 tạng: thận, tim, gan, tủy xương — <b>không có phổi, tụy</b></td><td class="aia-col">Tim, phổi, gan, tụy, thận, tủy xương (6 tạng)</td><td class="gen-col">Thận, tim, gan, phổi, tụy, tủy xương (6 tạng)</td></tr>
+              <tr><th>Cấy ghép — chi phí người nhận (NĐBH)</th><td class="manu-col">Theo CPYT, trong hạn mức Nội trú năm</td><td class="dai-col">Theo CPYT, có mức trần riêng theo gói (75tr–1 tỷ) tính <b>trọn đời tham gia</b></td><td class="aia-col">Theo CPYT, trong hạn mức Nội trú năm</td><td class="gen-col">Theo CPYT, trong hạn mức Nội trú năm</td></tr>
+              <tr><th>Cấy ghép — chi phí người hiến</th><td class="manu-col">50% chi phí phẫu thuật (theo % người nhận)</td><td class="dai-col">≤50% mức trần cấy ghép của người nhận (theo %, nhưng trên nền mức trần trọn đời)</td><td class="aia-col">50% chi phí phẫu thuật (theo % người nhận)</td><td class="gen-col"><b>Hạn mức tiền cụ thể/năm</b> (50tr–2,5 tỷ) — không tính theo % người nhận</td></tr>
+              <tr><th>Ung thư — phạm vi phương pháp</th><td class="manu-col">Đủ 5 phương pháp (phẫu thuật, hóa trị, xạ trị, liệu pháp trúng đích, liệu pháp miễn dịch), gộp cả nội trú + trong ngày</td><td class="dai-col">4 phương pháp (hóa trị, xạ trị, trúng đích, miễn dịch); phẫu thuật tính theo mục Nội trú riêng</td><td class="aia-col">Xạ trị, hóa trị + các phương pháp tích cực khác (gồm trúng đích, miễn dịch), gộp nội trú/trong ngày/ngoại trú</td><td class="gen-col">Theo CPYT, gộp chung Ung thư + Đột quỵ + Nhồi máu cơ tim, không tách phương pháp</td></tr>
+              <tr><th>Ung thư — hạn mức thuốc đích/liệu pháp miễn dịch</th><td class="manu-col"><b>Không có trần riêng</b> — dùng chung hạn mức Nội trú tổng (đến 2 tỷ)</td><td class="dai-col">⚠ <b>Có trần riêng theo gói: 10–100tr/năm</b> — thấp hơn nhiều so với hạn mức tổng (150tr–2 tỷ)</td><td class="aia-col"><b>Không có trần riêng</b> — dùng chung hạn mức năm (đến 1,2 tỷ)</td><td class="gen-col"><b>Không có trần riêng</b> — dùng chung hạn mức năm (đến 5 tỷ)</td></tr>
+              <tr><th>Ung thư vú — quyền lợi thêm</th><td class="manu-col">Có tái tạo tuyến vú sau đoạn nhũ</td><td class="dai-col">—</td><td class="aia-col">—</td><td class="gen-col">—</td></tr>
+              <tr><th>PT trong ngày — định nghĩa</th><td class="manu-col">Không nằm qua đêm, <b>bắt buộc &gt;6 giờ điều trị tại BV</b> mới được tính; gây tê tại chỗ/chỉ để chẩn đoán KHÔNG tính là Phẫu thuật</td><td class="dai-col">PT khi Điều trị ngoại trú/trong ngày — không có ngưỡng giờ tối thiểu</td><td class="aia-col">Không bao gồm Vật lý trị liệu — không có ngưỡng giờ tối thiểu</td><td class="gen-col">Chưa trích được định nghĩa chi tiết từ QTĐK</td></tr>
+              <tr><th>Cấp cứu do tai nạn — mốc thời gian</th><td class="manu-col">Trong vòng 24 giờ kể từ khi xảy ra Tai nạn</td><td class="dai-col">Trong vòng 24 giờ — giống hệt Manulife</td><td class="aia-col">Không giới hạn 24h rõ ràng; ⚠ áp dụng cho cả <b>Tai nạn HOẶC Bệnh</b> (rộng hơn, không chỉ tai nạn)</td><td class="gen-col">Chưa trích được định nghĩa chi tiết từ QTĐK</td></tr>
+              <tr><th>Mục riêng không hãng khác có</th><td class="manu-col">—</td><td class="dai-col">+ Tổn thương răng do tai nạn (≤7 ngày từ khi xảy ra tai nạn)</td><td class="aia-col">+ Điều trị trong ngày cho 4 bệnh cụ thể: viêm phế quản, viêm phổi, sốt xuất huyết, cúm (≤3 lần/năm)</td><td class="gen-col">—</td></tr>
+              <tr><th>Ngoại trú đặc biệt trong thẻ Nội trú</th><td class="manu-col">PT trong ngày, cấp cứu tai nạn, lọc máu — nằm sẵn trong Nội trú, <b>không cần mua thêm Ngoại trú</b></td><td class="dai-col">PT/trong ngày, cấp cứu tai nạn, chạy thận, tổn thương răng do tai nạn — nằm sẵn trong Nội trú</td><td class="aia-col">PT/thủ thuật trong ngày, 4 bệnh cụ thể (viêm phế quản/phổi/SXH/cúm), lọc máu, cấp cứu — nằm sẵn trong Quyền lợi chính</td><td class="gen-col">PT trong ngày, điều trị thận nhân tạo, cấp cứu — nằm sẵn trong Nội trú</td></tr>
+              <tr><th>Quyền lợi cộng thêm</th><td class="manu-col">—</td><td class="dai-col">—</td><td class="aia-col">Nhân đôi bảo vệ (+100% hạn mức, viện công, hết hạn mức năm)</td><td class="gen-col">Nhân đôi hạn mức Ung thư/Đột quỵ/NMCT (+100%, 1 lần/đời)</td></tr>
+            </tbody>
+          </table>
+          <div class="note-block warn">
+            <span class="note-title">Lưu ý khi so sánh</span>
+            Con số "hạn mức" của Dai-ichi (trọn đời/1 bệnh) không so trực tiếp được với 3 hãng còn lại (theo năm). Một khách trẻ, khỏe thường sẽ thấy hạn mức Dai-ichi "rộng rãi" hơn nhiều so với con số hiển thị, vì không bị reset — nhưng ngược lại nếu dùng hết cho 1 bệnh mãn tính, sẽ không được cấp lại như các hãng tính theo năm.
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ NGOẠI TRÚ ============================================================ -->
+      <section class="panel" id="panel-ngoaitru">
+        <p class="lede">Quyền lợi tùy chọn — khách phải đã có Nội trú mới mua thêm được, ở cả 4 hãng.</p>
+
+        <div class="view-summary">
+          <div class="card-grid">
+            <div class="co-card" style="--tag-color:var(--c-manu)"><div class="co-name"><span class="tag manu">Manulife</span></div>
+              <ul><li>6 – 60 triệu/năm (không có ở gói Bạc)</li><li>Đồng chi trả 20%, mọi tuổi</li><li>Phạm vi: toàn cầu</li></ul>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-dai)"><div class="co-name"><span class="tag dai">Dai-ichi</span></div>
+              <ul><li>5 – 25 triệu/năm (không có ở gói Cơ Bản)</li><li>Nằm trong hạn mức trọn đời chung với nội trú</li><li>Phạm vi: Việt Nam</li></ul>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-aia)"><div class="co-name"><span class="tag aia">AIA</span></div>
+              <ul><li>6 – 48 triệu/năm, mọi gói</li><li>Đồng chi trả 80% cố định, mọi tuổi (đơn giản hơn 3 hãng kia)</li><li>Có thêm Tư vấn/Điều trị tâm thần (2 gói cao)</li></ul>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-gen)"><div class="co-name"><span class="tag gen">Generali</span></div>
+              <ul><li>20 – 120 triệu/năm (không có ở gói Tiết Kiệm)</li><li>Đồng chi trả 20% (2 gói thấp, chỉ viện tư) hoặc 0%</li><li>Có riêng hạn mức Đông y tách khỏi Tây y</li></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="view-detail">
+          <table class="cmp">
+            <thead><tr><th>Hạng mục</th><th>Manulife</th><th>Dai-ichi</th><th>AIA</th><th>Generali</th></tr></thead>
+            <tbody>
+              <tr><th>Hạn mức (khoảng theo gói)</th><td class="manu-col">6 – 60 triệu/năm</td><td class="dai-col">5 – 25 triệu/năm</td><td class="aia-col">6 – 48 triệu/năm</td><td class="gen-col">20 – 120 triệu/năm</td></tr>
+              <tr><th>Gói thấp nhất có Ngoại trú?</th><td class="manu-col">Không — chỉ từ Titan</td><td class="dai-col">Không — chỉ từ Phổ Thông</td><td class="aia-col">Có — cả Cơ Bản</td><td class="gen-col">Không — chỉ từ Tiêu Chuẩn</td></tr>
+              <tr><th>Đồng chi trả</th><td class="manu-col">20%, mọi tuổi</td><td class="dai-col"><b>0%</b> — Dai-ichi không áp dụng đồng chi trả cho Ngoại trú (chi trả 100% trong hạn mức)</td><td class="aia-col">AIA trả 80% (khách tự trả 20%), mọi tuổi</td><td class="gen-col">20% (Tiêu Chuẩn/Cao Cấp, chỉ viện tư) hoặc 0%</td></tr>
+              <tr><th>Phạm vi địa lý</th><td class="manu-col"><b>Việt Nam</b> (Titan, Vàng, Bạch Kim) → <b>Toàn cầu</b> chỉ ở gói Kim Cương</td><td class="dai-col">Việt Nam</td><td class="aia-col">Việt Nam</td><td class="gen-col">Tăng theo gói (VN → Toàn cầu)</td></tr>
+              <tr><th>Vật lý trị liệu</th><td class="manu-col">Hạn mức riêng/năm</td><td class="dai-col">Gộp trong lần khám Tây y</td><td class="aia-col">Gộp trong lần khám</td><td class="gen-col">Gộp trong Tây y/lần khám</td></tr>
+              <tr><th>Y học cổ truyền (Đông y)</th><td class="manu-col">—</td><td class="dai-col">Không áp dụng ở đa số gói</td><td class="aia-col">—</td><td class="gen-col">Có hạn mức riêng/lần khám</td></tr>
+              <tr><th>Quyền lợi riêng biệt</th><td class="manu-col">—</td><td class="dai-col">—</td><td class="aia-col">Tư vấn/Điều trị tâm thần (2 gói cao, 2–4tr/năm)</td><td class="gen-col">Tiêm chủng phòng bệnh (chỉ Kim Cương, 2tr/năm)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============================================================ NHA KHOA ============================================================ -->
+      <section class="panel" id="panel-nhakhoa">
+        <p class="lede">Quyền lợi tùy chọn — điều kiện tham gia khác nhau đáng kể giữa các hãng.</p>
+
+        <div class="view-summary">
+          <div class="card-grid">
+            <div class="co-card" style="--tag-color:var(--c-manu)"><div class="co-name"><span class="tag manu">Manulife</span></div>
+              <ul><li>3 – 25 triệu/năm</li><li>Điều kiện: đã có Ngoại trú</li></ul>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-dai)"><div class="co-name"><span class="tag dai">Dai-ichi</span></div>
+              <ul><li>10,5 – 17,5 triệu/năm</li><li>⚠ Chỉ bán kèm 2 gói cao nhất (Cao Cấp, Thịnh Vượng)</li></ul>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-aia)"><div class="co-name"><span class="tag aia">AIA</span></div>
+              <ul><li>1 – 10 triệu/năm, mọi gói (kể cả Cơ Bản)</li><li>Không giới hạn riêng theo từng lần khám</li></ul>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-gen)"><div class="co-name"><span class="tag gen">Generali</span></div>
+              <ul><li>10 – 60 triệu/năm (không có ở Tiết Kiệm)</li><li>Cạo vôi răng tính riêng theo lần</li></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="view-detail">
+          <table class="cmp">
+            <thead><tr><th>Hạng mục</th><th>Manulife</th><th>Dai-ichi</th><th>AIA</th><th>Generali</th></tr></thead>
+            <tbody>
+              <tr><th>Hạn mức (khoảng theo gói)</th><td class="manu-col">3 – 25 triệu/năm</td><td class="dai-col">10,5 – 17,5 triệu/năm</td><td class="aia-col">1 – 10 triệu/năm</td><td class="gen-col">10 – 60 triệu/năm</td></tr>
+              <tr><th>Gói nào được mua?</th><td class="manu-col">Từ Titan trở lên</td><td class="dai-col"><b>Chỉ 2 gói cao nhất</b> (Cao Cấp, Thịnh Vượng)</td><td class="aia-col">Mọi gói, kể cả Cơ Bản</td><td class="gen-col">Từ Tiêu Chuẩn trở lên</td></tr>
+              <tr><th>Điều kiện tham gia</th><td class="manu-col">Đã có Ngoại trú</td><td class="dai-col">Đã có Ngoại trú</td><td class="aia-col">Đã có Ngoại trú, gói tương đương</td><td class="gen-col">Không bắt buộc có Ngoại trú trước</td></tr>
+              <tr><th>Giới hạn theo lần khám</th><td class="manu-col">Có, riêng theo hạng mục</td><td class="dai-col">Có</td><td class="aia-col"><b>Không có</b> — chỉ 1 hạn mức năm chung</td><td class="gen-col">Có (cạo vôi răng); còn lại theo CPYT</td></tr>
+              <tr><th>Loại trừ chung</th><td class="manu-col">Implant, cầu răng, răng giả</td><td class="dai-col">Implant, cầu răng</td><td class="aia-col">Implant, cầu răng</td><td class="gen-col">Implant, cầu răng, vật liệu quý hiếm</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============================================================ THAI SẢN ============================================================ -->
+      <section class="panel" id="panel-thaisan">
+        <p class="lede">Điểm khác biệt cấu trúc lớn nhất trong 4 thẻ — 4 hãng, 4 mô hình hoàn toàn khác nhau. Đọc kỹ trước khi tư vấn khách có kế hoạch sinh con.</p>
+
+        <div class="note-block danger">
+          <span class="note-title">Đừng so trực tiếp con số</span>
+          "25 triệu" ở Manulife (theo <b>lần mang thai</b>) và "25 triệu" ở AIA/Generali (theo <b>năm hợp đồng</b>) không phải cùng một thứ. Luôn hỏi lại đơn vị tính trước khi so sánh.
+        </div>
+
+        <div class="view-summary">
+          <div class="card-grid">
+            <div class="co-card" style="--tag-color:var(--c-manu)"><div class="co-name"><span class="tag manu">Manulife</span></div>
+              <ul><li>Add-on riêng, 4/5 gói (trừ Bạc)</li><li>12 – 70 triệu / <b>lần mang thai</b></li><li>Đồng chi trả 20%, mọi tuổi trong 18–45</li></ul>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-dai)"><div class="co-name"><span class="tag dai">Dai-ichi</span></div>
+              <ul><li><b>Không có trong thẻ này</b></li><li>Phải mua sản phẩm riêng: "Chăm Sóc Thai Sản Toàn Diện 24/7"</li><li>Phí riêng, độc lập với thẻ sức khỏe</li></ul>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-aia)"><div class="co-name"><span class="tag aia">AIA</span></div>
+              <ul><li>Nằm trong gói chính — <b>chỉ Toàn Diện &amp; Hoàn Hảo</b></li><li>25 – 40 triệu / <b>năm hợp đồng</b></li><li>Tỷ lệ chi trả leo thang: Năm 1: 50% · Năm 2: 80% · Từ năm 3: 100%</li></ul>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-gen)"><div class="co-name"><span class="tag gen">Generali</span></div>
+              <ul><li>Add-on riêng, 4/5 gói (trừ Tiết Kiệm)</li><li>25 – 120 triệu / <b>năm hợp đồng</b></li><li>Tuổi tối đa riêng: kết thúc ở 50 tuổi (khác 75 của Nội trú)</li></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="view-detail">
+          <table class="cmp">
+            <thead><tr><th>Hạng mục</th><th>Manulife</th><th>Dai-ichi</th><th>AIA</th><th>Generali</th></tr></thead>
+            <tbody>
+              <tr><th>Cấu trúc sản phẩm</th><td class="manu-col">Quyền lợi lựa chọn thêm</td><td class="dai-col">Sản phẩm bảo hiểm riêng biệt</td><td class="aia-col">Một phần của Quyền lợi chính</td><td class="gen-col">Quyền lợi lựa chọn thêm</td></tr>
+              <tr><th>Gói được tham gia</th><td class="manu-col">Titan → Kim Cương (không có ở Bạc)</td><td class="dai-col">Phổ Thông → Thịnh Vượng (SP riêng, 4 gói)</td><td class="aia-col"><b>Chỉ</b> Toàn Diện, Hoàn Hảo</td><td class="gen-col">Tiêu Chuẩn → Kim Cương (không có ở Tiết Kiệm)</td></tr>
+              <tr><th>Hạn mức &amp; đơn vị tính</th><td class="manu-col">12 – 70 triệu <b>/lần mang thai</b></td><td class="dai-col">Xem QTĐK sản phẩm thai sản riêng</td><td class="aia-col">25 – 40 triệu <b>/năm HĐ</b></td><td class="gen-col">25 – 120 triệu <b>/năm HĐ</b></td></tr>
+              <tr><th>Đồng chi trả</th><td class="manu-col">20%, cố định</td><td class="dai-col">Theo SP riêng</td><td class="aia-col">Leo thang theo năm tái tục: 50% → 80% → 100%</td><td class="gen-col">20% (2 gói thấp) hoặc 0% (2 gói cao)</td></tr>
+              <tr><th>Độ tuổi áp dụng</th><td class="manu-col">18–45 tuổi</td><td class="dai-col">Theo SP riêng</td><td class="aia-col">18–45 tuổi</td><td class="gen-col">18–44 tuổi; kết thúc ở 50 tuổi</td></tr>
+              <tr><th>Phạm vi địa lý</th><td class="manu-col">Việt Nam (Titan, Vàng, Bạch Kim) → Toàn cầu chỉ ở gói Kim Cương — cùng khuôn mẫu với Ngoại trú/Nha khoa</td><td class="dai-col">Theo SP riêng</td><td class="aia-col">Việt Nam</td><td class="gen-col">VN (3 gói thấp) / Toàn cầu (Kim Cương)</td></tr>
+              <tr><th>Bệnh bẩm sinh con</th><td class="manu-col">Loại trừ</td><td class="dai-col">Có chi trả (trong thẻ SK chính, không cần SP thai sản riêng)</td><td class="aia-col">Loại trừ trong QL thai sản (chăm sóc sơ sinh không gồm dị tật bẩm sinh)</td><td class="gen-col">Loại trừ</td></tr>
+            </tbody>
+          </table>
+          <div class="note-block warn">
+            <span class="note-title">Riêng AIA — tư vấn tỷ lệ leo thang</span>
+            Vì tỷ lệ chi trả tăng theo năm tái tục (không phải theo hạn mức), "có lãi" khi sinh con phụ thuộc <b>chi phí sinh thực tế</b> so với phí đã đóng — không phải cứ chờ lâu là luôn lợi hơn. Xem file Excel, sheet "Minh họa Thai sản AIA" cho ví dụ số cụ thể theo từng năm.
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ THỜI GIAN CHỜ ============================================================ -->
+      <section class="panel" id="panel-thoigiancho">
+        <p class="lede">Cấu trúc thời gian chờ khá giống nhau giữa 4 hãng — khác biệt nằm ở <b>danh sách bệnh</b> xếp vào nhóm chờ 90 ngày.</p>
+
+        <div class="view-summary">
+          <table class="cmp">
+            <thead><tr><th>Trường hợp</th><th>Manulife</th><th>Dai-ichi</th><th>AIA</th><th>Generali</th></tr></thead>
+            <tbody>
+              <tr><th>Tai nạn</th><td class="manu-col">0 ngày</td><td class="dai-col">0 ngày</td><td class="aia-col">0 ngày</td><td class="gen-col">0 ngày</td></tr>
+              <tr><th>Bệnh thông thường</th><td class="manu-col">30 ngày</td><td class="dai-col">30 ngày (hoặc 10 ngày sau khôi phục)</td><td class="aia-col">30 ngày</td><td class="gen-col">30 ngày</td></tr>
+              <tr><th>Nhóm bệnh đặc biệt</th><td class="manu-col">90 ngày</td><td class="dai-col">90 ngày</td><td class="aia-col">90 ngày</td><td class="gen-col">90 ngày</td></tr>
+              <tr><th>Thai sản</th><td class="manu-col">270 ngày</td><td class="dai-col">— (SP riêng)</td><td class="aia-col">270 ngày</td><td class="gen-col">270 ngày</td></tr>
+            </tbody>
+          </table>
+          <div class="note-block warn">
+            <span class="note-title">Danh sách "bệnh đặc biệt" (chờ 90 ngày) KHÔNG giống nhau</span>
+            Cả 4 hãng đều có danh sách riêng (u/bướu, tim mạch, tiểu đường, sỏi, thoát vị… là điểm chung) nhưng lệch nhau ở các bệnh cụ thể — ví dụ Generali và Dai-ichi liệt kê đục thủy tinh thể/Parkinson/Gout vào nhóm này, AIA cũng có danh sách tương tự nhưng không hoàn toàn trùng khớp câu chữ. <b>Khách có bệnh nền → luôn tra đúng danh sách gốc của hãng đang tư vấn</b>, đừng suy từ hãng này sang hãng khác.
+          </div>
+        </div>
+
+        <div class="view-detail">
+          <table class="cmp">
+            <thead><tr><th>Hạng mục</th><th>Manulife</th><th>Dai-ichi</th><th>AIA</th><th>Generali</th></tr></thead>
+            <tbody>
+              <tr><th>Mốc tính thời gian chờ</th><td class="manu-col">Ngày hiệu lực / khôi phục gần nhất, tùy ngày nào sau</td><td class="dai-col">Ngày chấp thuận / khôi phục gần nhất, tùy ngày nào sau</td><td class="aia-col">Ngày chấp thuận / khôi phục / thay đổi chương trình, tùy ngày nào sau</td><td class="gen-col">Ngày hiệu lực / khôi phục gần nhất, tùy ngày nào sau</td></tr>
+              <tr><th>Áp dụng khi nâng gói</th><td class="manu-col">Chờ lại cho phần tăng thêm</td><td class="dai-col">Năm đầu vẫn theo gói cũ với bệnh có trước; bệnh mới theo gói mới</td><td class="aia-col">Chờ lại cho phần tăng thêm/quyền lợi mới</td><td class="gen-col">Chờ lại cho phần tăng thêm</td></tr>
+              <tr><th>Miễn chờ khi giảm gói / tái tục</th><td class="manu-col">Có</td><td class="dai-col">Có</td><td class="aia-col">Có (ngụ ý)</td><td class="gen-col">Có</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============================================================ LOẠI TRỪ ============================================================ -->
+      <section class="panel" id="panel-loaitru">
+        <p class="lede">Danh mục loại trừ dài và tương tự nhau ở khung chính (bệnh có sẵn, thẩm mỹ, thể thao mạo hiểm...). Bảng dưới chỉ nêu các điểm <b>khác biệt đáng chú ý</b> khi tư vấn.</p>
+
+        <div class="view-summary">
+          <table class="cmp">
+            <thead><tr><th>Điểm khác biệt</th><th>Manulife</th><th>Dai-ichi</th><th>AIA</th><th>Generali</th></tr></thead>
+            <tbody>
+              <tr><th>Ngoại lệ HIV cho nhân viên y tế/công an</th><td class="manu-col">Có</td><td class="dai-col">Có</td><td class="aia-col"><b>Không</b></td><td class="gen-col">Có</td></tr>
+              <tr><th>Loại trừ chiến tranh/khủng bố</th><td class="manu-col">Có, quy định rõ</td><td class="dai-col"><b>Không có mục này</b></td><td class="aia-col">Có</td><td class="gen-col">Có</td></tr>
+              <tr><th>Tật khúc xạ / đục thủy tinh thể</th><td class="manu-col">Loại trừ chung; đục TTT chỉ loại trừ &gt;60 tuổi</td><td class="dai-col">Đục TTT thuộc nhóm Bệnh đặc biệt (chờ 90 ngày rồi vẫn chi trả)</td><td class="aia-col">Loại trừ <b>mọi độ tuổi</b> (rộng nhất)</td><td class="gen-col">Đục TTT thuộc nhóm chờ 90 ngày</td></tr>
+              <tr><th>Điều trị tâm thần</th><td class="manu-col">Loại trừ hoàn toàn</td><td class="dai-col">Loại trừ hoàn toàn</td><td class="aia-col">Loại trừ, <b>trừ</b> 2 gói cao (qua QL Ngoại trú)</td><td class="gen-col">Loại trừ hoàn toàn</td></tr>
+              <tr><th>Ngưỡng tốc độ vi phạm giao thông</th><td class="manu-col">Vượt ≥5km/h</td><td class="dai-col">Không nêu ngưỡng cụ thể</td><td class="aia-col">Vượt ≥5km/h</td><td class="gen-col">Không nêu ngưỡng cụ thể</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="view-detail">
+          <div class="note-block info">
+            <span class="note-title">Nhóm loại trừ chung cả 4 hãng (không lặp lại chi tiết)</span>
+            Bệnh có sẵn chưa khai báo · Bệnh bẩm sinh/dị tật (trừ khi có QL riêng chi trả) · Điều trị thử nghiệm/chưa công nhận · Tự tử/tự gây thương tích · Thương tích do rượu/bia/ma túy · Hành vi phạm tội · Vô sinh/kế hoạch hóa gia đình · Thẩm mỹ (trừ do tai nạn) · Khám sức khỏe định kỳ/tiêm chủng (trừ dại/uốn ván do tai nạn) · Thể thao mạo hiểm/chuyên nghiệp · Gian lận bảo hiểm.
+          </div>
+          <table class="cmp">
+            <thead><tr><th>Hạng mục</th><th>Manulife</th><th>Dai-ichi</th><th>AIA</th><th>Generali</th></tr></thead>
+            <tbody>
+              <tr><th>Nha khoa (ngoài QL riêng)</th><td class="manu-col">Loại trừ, trừ tổn thương răng do tai nạn</td><td class="dai-col">Loại trừ với 3 gói thấp, trừ tổn thương do tai nạn</td><td class="aia-col">Loại trừ, trừ cấp cứu tai nạn trong 24h</td><td class="gen-col">Loại trừ, trừ tổn thương do tai nạn</td></tr>
+              <tr><th>Y học thay thế / Đông y</th><td class="manu-col">Loại trừ với Nội trú</td><td class="dai-col">Loại trừ với Nội trú</td><td class="aia-col">Loại trừ, trừ khi là 1 phần cần thiết của Nội trú tại khoa YHCT</td><td class="gen-col">Không loại trừ với Nội trú (khác 3 hãng còn lại)</td></tr>
+              <tr><th>Nồng độ cồn khi lái xe</th><td class="manu-col">Vượt mức quy định BYT</td><td class="dai-col">Vượt mức quy định BYT</td><td class="aia-col">Vượt mức quy định BYT</td><td class="gen-col">Ngưỡng cụ thể: &gt;10,9 mmol/l theo QĐ 320/QĐ-BYT</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============================================================ PHÍ ============================================================ -->
+      <section class="panel" id="panel-phi">
+        <p class="lede">Biểu phí đầy đủ theo từng tuổi/gói nằm trong file Excel (sheet "Biểu phí - [Hãng]"). Ở đây chỉ nêu cách đọc và những gì cần lưu ý khi so phí giữa các hãng.</p>
+
+        <div class="view-summary">
+          <div class="two-col">
+            <div class="usp-card">
+              <div class="co-head"><span class="dot" style="background:var(--c-manu)"></span><span>Manulife</span></div>
+              <ul><li>Biểu phí đầy đủ theo <b>từng tuổi</b> (0–74), 4 quyền lợi × 5 gói</li><li>Phí tăng mạnh sau tuổi 60</li></ul>
+            </div>
+            <div class="usp-card">
+              <div class="co-head"><span class="dot" style="background:var(--c-aia)"></span><span>AIA</span></div>
+              <ul><li>Biểu phí đầy đủ theo <b>nhóm tuổi 5 năm</b>, 2 phạm vi địa lý</li><li>Phí Quyền lợi chính đã gồm sẵn thai sản (2 gói cao) — không cộng thêm riêng</li></ul>
+            </div>
+            <div class="usp-card">
+              <div class="co-head"><span class="dot" style="background:var(--c-dai)"></span><span>Dai-ichi</span></div>
+              <ul><li>Biểu phí <b>đầy đủ 13 nhóm tuổi</b> (0–75), lấy từ Bảng phí chính thức — cả 2 mức đồng chi trả (20%/30% và 0%)</li><li>Có biểu phí đầy đủ Ngoại trú + Chăm sóc răng, và sản phẩm Thai sản riêng (18–45 tuổi)</li></ul>
+            </div>
+            <div class="usp-card">
+              <div class="co-head"><span class="dot" style="background:var(--c-gen)"></span><span>Generali</span></div>
+              <ul><li>Biểu phí Nội trú <b>đầy đủ 15 nhóm tuổi</b> (0–75), do Hương cung cấp trực tiếp từ ảnh biểu phí chính thức</li><li>Chưa có biểu phí Ngoại trú/Nha khoa/Thai sản — cần bổ sung riêng</li></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="view-detail">
+          <table class="cmp">
+            <caption>Phí Nội trú / Quyền lợi chính — Manulife &amp; AIA, theo nhóm tuổi 5 năm. Hiển thị khoảng (gói thấp nhất – gói cao nhất), đơn vị đồng/năm.</caption>
+            <thead><tr><th>Nhóm tuổi</th><th>Manulife (Bạc–Kim Cương)</th><th>AIA (Cơ Bản–Hoàn Hảo, PVĐL VN)</th></tr></thead>
+            <tbody>
+              <tr><th>0–4 tuổi</th><td class="manu-col">3.040.000 – 19.990.000</td><td class="aia-col">2.976.000 – 15.309.000</td></tr>
+              <tr><th>5–9 tuổi</th><td class="manu-col">1.760.000 – 13.480.000</td><td class="aia-col">1.930.000 – 9.269.000</td></tr>
+              <tr><th>10–14 tuổi</th><td class="manu-col">1.480.000 – 11.190.000</td><td class="aia-col">1.121.000 – 5.920.000</td></tr>
+              <tr><th>15–19 tuổi</th><td class="manu-col">1.360.000 – 9.620.000</td><td class="aia-col">1.396.000 – 6.874.000</td></tr>
+              <tr><th>20–24 tuổi</th><td class="manu-col">1.500.000 – 10.170.000</td><td class="aia-col">1.517.000 – 7.845.000</td></tr>
+              <tr><th>25–29 tuổi</th><td class="manu-col">1.620.000 – 11.140.000</td><td class="aia-col">1.818.000 – 9.089.000</td></tr>
+              <tr><th>30–34 tuổi</th><td class="manu-col">1.750.000 – 12.490.000</td><td class="aia-col">2.233.000 – 9.940.000</td></tr>
+              <tr><th>35–39 tuổi</th><td class="manu-col">1.880.000 – 13.060.000</td><td class="aia-col">2.463.000 – 11.081.000</td></tr>
+              <tr><th>40–44 tuổi</th><td class="manu-col">2.070.000 – 13.550.000</td><td class="aia-col">2.716.000 – 12.428.000</td></tr>
+              <tr><th>45–49 tuổi</th><td class="manu-col">2.370.000 – 15.740.000</td><td class="aia-col">3.350.000 – 14.806.000</td></tr>
+              <tr><th>50–54 tuổi</th><td class="manu-col">3.020.000 – 19.380.000</td><td class="aia-col">3.844.000 – 17.884.000</td></tr>
+              <tr><th>55–59 tuổi</th><td class="manu-col">3.850.000 – 23.850.000</td><td class="aia-col">4.152.000 – 20.444.000</td></tr>
+              <tr><th>60–64 tuổi</th><td class="manu-col">5.980.000 – 40.400.000</td><td class="aia-col">4.784.000 – 23.768.000</td></tr>
+            </tbody>
+          </table>
+
+          <table class="cmp">
+            <caption>Phí Nội trú — Dai-ichi, đầy đủ theo đúng mốc tuổi riêng của hãng (Bảng phí chính thức, đối chiếu 25/09/2026). Đơn vị: đồng/năm, khoảng Cơ Bản–Thịnh Vượng.</caption>
+            <thead><tr><th>Nhóm tuổi (mốc riêng Dai-ichi)</th><th>Đồng chi trả 20% hoặc 30%</th><th>Đồng chi trả 0%</th></tr></thead>
+            <tbody>
+              <tr><th>0 – 5 tuổi</th><td class="dai-col">860.000 – 4.090.000</td><td class="dai-col">Không áp dụng (bắt buộc 30% ở nhóm tuổi này)</td></tr>
+              <tr><th>6 – 18 tuổi</th><td class="dai-col">810.000 – 3.140.000</td><td class="dai-col">1.070.000 – 4.180.000</td></tr>
+              <tr><th>19 – 25 tuổi</th><td class="dai-col">1.020.000 – 3.890.000</td><td class="dai-col">1.360.000 – 5.180.000</td></tr>
+              <tr><th>26 – 30 tuổi</th><td class="dai-col">1.120.000 – 4.260.000</td><td class="dai-col">1.490.000 – 5.670.000</td></tr>
+              <tr><th>31 – 35 tuổi</th><td class="dai-col">1.200.000 – 4.590.000</td><td class="dai-col">1.600.000 – 6.110.000</td></tr>
+              <tr><th>36 – 40 tuổi</th><td class="dai-col">1.290.000 – 4.940.000</td><td class="dai-col">1.720.000 – 6.580.000</td></tr>
+              <tr><th>41 – 45 tuổi</th><td class="dai-col">1.380.000 – 5.280.000</td><td class="dai-col">1.840.000 – 7.040.000</td></tr>
+              <tr><th>46 – 50 tuổi</th><td class="dai-col">1.600.000 – 6.110.000</td><td class="dai-col">2.130.000 – 8.140.000</td></tr>
+              <tr><th>51 – 55 tuổi</th><td class="dai-col">1.810.000 – 6.610.000</td><td class="dai-col">2.410.000 – 8.810.000</td></tr>
+              <tr><th>56 – 60 tuổi</th><td class="dai-col">2.270.000 – 8.280.000</td><td class="dai-col">3.020.000 – 11.030.000</td></tr>
+              <tr><th>61 – 65 tuổi</th><td class="dai-col">2.820.000 – 10.290.000</td><td class="dai-col">3.760.000 – 13.720.000</td></tr>
+              <tr><th>66 – 70 tuổi</th><td class="dai-col">4.340.000 – 15.850.000</td><td class="dai-col">5.780.000 – 21.130.000</td></tr>
+              <tr><th>71 – 75 tuổi</th><td class="dai-col">6.090.000 – 22.250.000</td><td class="dai-col">8.120.000 – 29.660.000</td></tr>
+            </tbody>
+          </table>
+
+          <table class="cmp">
+            <caption>Phí Nội trú — Generali, theo nhóm tuổi 5 năm (ảnh biểu phí chính thức, do Hương cung cấp 25/09/2026). Đơn vị: đồng/năm.</caption>
+            <thead><tr><th>Nhóm tuổi</th><th>Tiết kiệm — ĐCT 20%</th><th>Tiết Kiệm (0%) – Kim Cương</th></tr></thead>
+            <tbody>
+              <tr><th>0 – 5 tuổi</th><td class="gen-col">2.495.000</td><td class="gen-col">3.082.000 – 33.218.000</td></tr>
+              <tr><th>6 – 10 tuổi</th><td class="gen-col">999.000</td><td class="gen-col">1.236.000 – 13.729.000</td></tr>
+              <tr><th>11 – 15 tuổi</th><td class="gen-col">1.046.000</td><td class="gen-col">1.294.000 – 13.853.000</td></tr>
+              <tr><th>16 – 20 tuổi</th><td class="gen-col">1.056.000</td><td class="gen-col">1.305.000 – 13.803.000</td></tr>
+              <tr><th>21 – 25 tuổi</th><td class="gen-col">1.255.000</td><td class="gen-col">1.549.000 – 17.284.000</td></tr>
+              <tr><th>26 – 30 tuổi</th><td class="gen-col">1.295.000</td><td class="gen-col">1.595.000 – 18.608.000</td></tr>
+              <tr><th>31 – 35 tuổi</th><td class="gen-col">1.441.000</td><td class="gen-col">1.781.000 – 19.679.000</td></tr>
+              <tr><th>36 – 40 tuổi</th><td class="gen-col">1.505.000</td><td class="gen-col">1.860.000 – 20.956.000</td></tr>
+              <tr><th>41 – 45 tuổi</th><td class="gen-col">1.574.000</td><td class="gen-col">1.943.000 – 22.095.000</td></tr>
+              <tr><th>46 – 50 tuổi</th><td class="gen-col">1.951.000</td><td class="gen-col">2.407.000 – 24.948.000</td></tr>
+              <tr><th>51 – 55 tuổi</th><td class="gen-col">2.352.000</td><td class="gen-col">2.894.000 – 28.096.000</td></tr>
+              <tr><th>56 – 60 tuổi</th><td class="gen-col">3.783.000</td><td class="gen-col">4.657.000 – 42.471.000</td></tr>
+              <tr><th>61 – 65 tuổi</th><td class="gen-col">4.465.000</td><td class="gen-col">5.499.000 – 48.469.000</td></tr>
+              <tr><th>66 – 70 tuổi</th><td class="gen-col">6.199.000</td><td class="gen-col">7.622.000 – 65.813.000</td></tr>
+              <tr><th>71 – 75 tuổi</th><td class="gen-col">7.695.000</td><td class="gen-col">9.469.000 – 73.920.000</td></tr>
+            </tbody>
+          </table>
+          <p class="foot-source">Dai-ichi: nguồn chính thức, file "BẢNG PHÍ BẢO HIỂM SẢN PHẨM BẢO HIỂM CHĂM SÓC SỨC KHỎE TOÀN CẦU 247.pdf" (CV 10322/BTC-QLBH). Generali: ảnh biểu phí chính thức do Hương cung cấp trực tiếp — chỉ có Nội trú, Ngoại trú/Nha khoa/Thai sản chưa có. Cột "Tiết kiệm — ĐCT 20%" chỉ áp dụng cho gói Tiết Kiệm (gói duy nhất được chọn đồng chi trả).</p>
+
+          <div class="note-block warn">
+            <span class="note-title">3 lỗi thường gặp khi so phí</span>
+            <b>1)</b> So phí 2 hãng có Đồng chi trả khác nhau mà không quy đổi về cùng mức. <b>2)</b> So phí gói "tương đương tên gọi" (vd. "Cao Cấp" hãng này với "Cao Cấp" hãng khác) mà không kiểm tra hạn mức có thực sự gần nhau không. <b>3)</b> Quên rằng phí AIA gói Toàn Diện/Hoàn Hảo đã bao gồm thai sản — so trực tiếp với phí Nội trú thuần của hãng khác sẽ lệch.
+          </div>
+          <p style="font-size:13.5px; color:var(--ink-soft)">Số liệu chính xác theo từng tuổi: mở file Excel → sheet <code class="k">Biểu phí - Manulife</code>, <code class="k">Biểu phí - AIA</code>, <code class="k">Biểu phí - Dai-ichi</code>, và sheet <code class="k">Minh họa Thai sản AIA</code> cho ví dụ ROI cụ thể.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================ BẢO LÃNH & BỒI THƯỜNG ============================================================ -->
+      <section class="panel" id="panel-baolanh">
+        <p class="lede">Mạng lưới bảo lãnh viện phí thay đổi liên tục nên số liệu dưới đây ghi rõ nguồn và thời điểm — không phải phần "cố định" như QTĐK.</p>
+
+        <div class="view-summary">
+          <div class="card-grid">
+            <div class="co-card" style="--tag-color:var(--c-manu)"><div class="co-name"><span class="tag manu">Manulife</span></div>
+              <ul><li>Xử lý qua đối tác thuê ngoài <b>Insmart</b></li><li>~300–420 CSYT trong nước (63/63 tỉnh) + <b>72 CSYT quốc tế</b> (8 quốc gia, Nội trú only, chỉ gói Vàng+)</li><li>Ngoại trú bảo lãnh 24/7; Nội trú xác nhận trong giờ hành chính</li></ul>
+              <div class="co-usp"><b>Thời hạn bồi thường:</b> 30 ngày · Đã chi trả <b>9.060 tỷ đồng</b> quyền lợi bảo hiểm năm 2025 (+15% so với 2024) — chiếm <b>~10%</b> tổng chi trả quyền lợi bảo hiểm toàn ngành (nhân thọ + phi nhân thọ, ~91.845 tỷ đồng, theo Cục QLGSBH – Bộ Tài chính)</div>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-dai)"><div class="co-name"><span class="tag dai">Dai-ichi</span></div>
+              <ul><li>Tự xử lý nội bộ (không qua TPA)</li><li><b>281 CSYT trong nước</b> (danh sách chính thức, cập nhật 26/02/2026) — 29 tỉnh/thành có viện</li><li>⚠ Chỉ ~20% viện bảo lãnh đủ cả 5 loại quyền lợi; ~80% chỉ bảo lãnh 1–3 loại (thường chỉ Nội trú)</li></ul>
+              <div class="co-usp"><b>Thời hạn bồi thường:</b> 10 ngày làm việc — nhanh nhất 4 hãng</div>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-aia)"><div class="co-name"><span class="tag aia">AIA</span></div>
+              <ul><li><b>476 CSYT trong nước</b> (chính thức, cập nhật 12/03/2026) — lớn hơn Manulife, chỉ sau Generali</li><li>⚠ Chỉ ~24% (115/476) bảo lãnh đủ cả 4 loại (Nội trú+Ngoại trú+Nha khoa+Thai sản); ~76% chỉ bảo lãnh 1–3 loại</li></ul>
+              <div class="co-usp"><b>Thời hạn bồi thường:</b> 30 ngày</div>
+            </div>
+            <div class="co-card" style="--tag-color:var(--c-gen)"><div class="co-name"><span class="tag gen">Generali</span></div>
+              <ul><li>Tự xử lý nội bộ</li><li><b>562 CSYT trong nước</b> (danh sách chính thức, cập nhật 09/2026) — mạng lưới <b>lớn nhất 4 hãng</b></li><li>Bảo lãnh 24/7 (trừ Lễ, Tết) — áp dụng cả Nội trú lẫn Ngoại trú</li></ul>
+              <div class="co-usp"><b>⚠ Không bảo lãnh:</b> tai nạn, cấp cứu, và cả trường hợp đồng bảo hiểm (khách có ≥2 thẻ sức khỏe)</div>
+            </div>
+          </div>
+          <div class="note-block danger">
+            <span class="note-title">Đính chính so với lần trả lời trước</span>
+            Trước đó tôi trích dẫn "1.000+ bệnh viện" cho Dai-ichi từ một trang đại lý — đây là marketing chưa xác minh. Danh sách chính thức Dai-ichi cung cấp cho thấy con số thật là <b>281 CSYT trong nước</b>. Với Generali, trước đó tôi nói "không có số liệu công khai" — nay có danh sách chính thức: <b>562 CSYT</b>, thực ra là mạng lưới <b>lớn nhất trong 4 hãng</b>.
+          </div>
+        </div>
+
+        <div class="view-detail">
+          <table class="cmp">
+            <caption>Nguồn: QTĐK từng hãng (thời hạn bồi thường) + trang dịch vụ công khai/tài liệu do người dùng cung cấp (mạng lưới). Số liệu mạng lưới có thể thay đổi không báo trước.</caption>
+            <thead><tr><th>Hạng mục</th><th>Manulife</th><th>Dai-ichi</th><th>AIA</th><th>Generali</th></tr></thead>
+            <tbody>
+              <tr><th>Đơn vị xử lý bảo lãnh</th><td class="manu-col">Thuê ngoài — Insmart</td><td class="dai-col">Nội bộ (DLVN trực tiếp)</td><td class="aia-col">Nội bộ (từ 7/2024)</td><td class="gen-col">Nội bộ</td></tr>
+              <tr><th>Mạng lưới CSYT trong nước</th><td class="manu-col">~300–420 (nguồn dao động theo thời điểm tra), 63/63 tỉnh thành</td><td class="dai-col">281 (chính thức, 26/02/2026), 29 tỉnh/thành</td><td class="aia-col"><b>476 (chính thức, 12/03/2026)</b></td><td class="gen-col"><b>562 (chính thức, 09/2026) — lớn nhất 4 hãng</b></td></tr>
+              <tr><th>Mạng lưới CSYT quốc tế</th><td class="manu-col">72 CSYT, 8 quốc gia/vùng lãnh thổ (chính thức, 09/09/2026) — Thái Lan 30, Trung Quốc 11, Ấn Độ 8, Malaysia 7, Đài Loan 5, Cam-pu-chia 5, Singapore 5, Hồng Kông 1. ⚠ Chỉ áp dụng Nội trú, và chỉ khách gói Vàng trở lên mới dùng được</td><td class="dai-col"><b>68 CSYT, 8 quốc gia</b> (chính thức) — Thái Lan 28, Malaysia 10, Ấn Độ 8, Đài Loan 8, Singapore 5, Cam-pu-chia 4, Trung Quốc 4, Hồng Kông 1. Nội trú only, nhưng áp dụng <b>mọi gói</b> (không giới hạn theo tier như Manulife)</td><td class="aia-col">Chưa có danh sách quốc tế cụ thể — QTĐK cho chọn phạm vi Toàn cầu trừ Mỹ</td><td class="gen-col">Chưa có danh sách quốc tế cụ thể — QTĐK cho phạm vi mở theo gói (Cao Cấp+)</td></tr>
+              <tr><th>2 khu vực nhiều CSYT nhất</th><td class="manu-col">Không có breakdown chi tiết</td><td class="dai-col">TP.HCM 110 (39%) · Hà Nội 61 (22%) — chiếm 61%</td><td class="aia-col">Không có breakdown chi tiết</td><td class="gen-col">TP.HCM 317 (56%) · Hà Nội 75 (13%) — chiếm 70%, tập trung hơn cả Dai-ichi</td></tr>
+              <tr><th>% viện bảo lãnh đủ mọi quyền lợi đã mua</th><td class="manu-col">Chưa có số liệu</td><td class="dai-col">⚠ Chỉ ~20% (56/281) bảo lãnh đủ Nội trú+Ngoại trú+Nha khoa+Thai sản; ~80% chỉ bảo lãnh 1–3 loại</td><td class="aia-col">⚠ Chỉ ~24% (115/476) bảo lãnh đủ cả 4 loại; ~76% chỉ bảo lãnh 1–3 loại — cùng vấn đề như Dai-ichi</td><td class="gen-col">Cơ cấu hợp lý theo loại hình: bệnh viện có cả Nội trú+Ngoại trú; phòng khám/nha khoa chỉ Ngoại trú (không phải thiếu sót, là bản chất loại hình CSYT)</td></tr>
+              <tr><th>Bảo lãnh — giờ hoạt động</th><td class="manu-col">Ngoại trú 24/7; Nội trú giờ hành chính</td><td class="dai-col">Chưa có thông tin cụ thể</td><td class="aia-col">Chưa có thông tin cụ thể</td><td class="gen-col"><b>24/7 cho cả Nội trú lẫn Ngoại trú</b> (trừ Lễ, Tết)</td></tr>
+              <tr><th>Giới hạn theo hồ sơ</th><td class="manu-col">Không có</td><td class="dai-col">Không có</td><td class="aia-col">Không có</td><td class="gen-col">Một số viện giới hạn riêng — vd. Vinmec Central Park chỉ bảo lãnh hồ sơ <b>dưới 20 triệu</b>, vượt mức phải tạm ứng</td></tr>
+              <tr><th>Loại trừ bảo lãnh đáng chú ý</th><td class="manu-col">Không bảo lãnh nếu chưa đóng đủ phí đến hạn</td><td class="dai-col">Không bảo lãnh nếu: đang trong 21 ngày xem xét, có bệnh nền trước tham gia, HĐ mất hiệu lực/thiếu phí</td><td class="aia-col">Có thể từ chối nếu thiếu thông tin/cần xác minh — khách khám trước, đòi bồi thường sau</td><td class="gen-col"><b>Không bảo lãnh tai nạn, cấp cứu, VÀ trường hợp đồng bảo hiểm</b> (khách có ≥2 thẻ sức khỏe) — phạm vi loại trừ rộng nhất 4 hãng</td></tr>
+              <tr><th>Thời hạn giải quyết bồi thường (QTĐK)</th><td class="manu-col">30 ngày kể từ đủ hồ sơ</td><td class="dai-col"><b>10 ngày làm việc</b> (tối đa 30 nếu cần xác minh)</td><td class="aia-col">30 ngày kể từ đủ hồ sơ</td><td class="gen-col">30 ngày kể từ đủ hồ sơ</td></tr>
+              <tr><th>Trả lãi nếu trễ hạn?</th><td class="manu-col">Có — lãi suất vay trên HĐ</td><td class="dai-col">Không thấy quy định trong QTĐK</td><td class="aia-col">Có — lãi suất tạm ứng</td><td class="gen-col">Có — lãi suất tạm ứng HĐ công bố</td></tr>
+            </tbody>
+          </table>
+          <div class="note-block warn">
+            <span class="note-title">Cách dùng số liệu mạng lưới khi tư vấn</span>
+            Đừng nói chung chung "viện X có bảo lãnh hãng Y" — với Dai-ichi đặc biệt, phải tra đúng viện đó bảo lãnh <b>loại quyền lợi nào</b> (nhiều viện lớn như BV Đại học Y Dược, FV chỉ bảo lãnh Nội trú, không có Ngoại trú/Thai sản). Luôn tra danh sách cập nhật mới nhất trên website hãng trước khi cam kết với khách.
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ USP ============================================================ -->
+      <section class="panel" id="panel-usp">
+        <p class="lede">Điểm bán hàng mạnh nhất của từng thẻ — dùng khi chốt lý do chọn hãng này thay vì hãng kia.</p>
+
+        <div class="usp-grid">
+          <div class="usp-card" style="--tag-color:var(--c-manu)">
+            <div class="co-head"><span class="dot"></span><span>Manulife</span></div>
+            <ul>
+              <li><b>Ung thư trọn gói:</b> đủ 5 phương pháp (phẫu thuật, hóa trị, xạ trị, liệu pháp trúng đích, liệu pháp miễn dịch), gộp cả nội trú lẫn trong ngày — và quan trọng nhất: <b>thuốc đích/liệu pháp miễn dịch dùng chung trần với hạn mức Nội trú tổng</b> (không bị giới hạn riêng như Dai-ichi, nơi 2 phương pháp này chỉ được cấp 10–100tr/năm dù hạn mức tổng cao đến 2 tỷ). Ung thư vú có thêm chi phí tái tạo tuyến vú.</li>
+              <li><b>Đồng chi trả thấp và ngắn:</b> chỉ 20% — và chỉ áp dụng ở giai đoạn 0–4 tuổi, từ 5 tuổi trở đi là 0%. Dễ giải thích với khách hơn cơ chế "khách tự chọn mức" của Dai-ichi/Generali.</li>
+              <li><b>Tiền giường lợi thế ở viện tư hạch toán tách bạch</b> (Tâm Anh, Vinmec, Hồng Ngọc — nơi tiền công chăm sóc tính riêng vào Chi phí y tế khác) — bất lợi tương đối ở viện công.</li>
+              <li><b>Phí rẻ</b> ở độ tuổi sau 5 và trước 50 so với mặt bằng chung.</li>
+              <li>Phù hợp khách hay du lịch/công tác nước ngoài (từ gói Vàng+) — bảo lãnh trực tiếp tại <b>72 CSYT ở 8 quốc gia/vùng lãnh thổ</b> (Thái Lan, Trung Quốc, Ấn Độ, Malaysia, Đài Loan, Cam-pu-chia, Singapore, Hồng Kông) — chỉ áp dụng Nội trú.</li>
+              <li><b>Claim minh bạch, chi trả nhanh:</b> đã chi trả 9.060 tỷ đồng quyền lợi bảo hiểm năm 2025 (+15% so với 2024), chiếm khoảng <b>10% tổng chi trả quyền lợi bảo hiểm toàn ngành</b> (nhân thọ + phi nhân thọ, ~91.845 tỷ đồng — nguồn: Cục Quản lý, giám sát bảo hiểm, Bộ Tài chính).</li>
+            </ul>
+          </div>
+          <div class="usp-card" style="--tag-color:var(--c-dai)">
+            <div class="co-head"><span class="dot"></span><span>Dai-ichi</span></div>
+            <ul>
+              <li>Nội trú <b>toàn cầu ở mọi gói</b> — không cần chọn gói cao mới có phạm vi rộng.</li>
+              <li>Chi trả bệnh <b>bẩm sinh ở trẻ em</b> và biến chứng thai sản ngay trong thẻ chính (Manulife loại trừ bẩm sinh hoàn toàn).</li>
+              <li>Phí thẻ nội trú những năm đầu cho trẻ nhỏ tương đối thấp.</li>
+            </ul>
+          </div>
+          <div class="usp-card" style="--tag-color:var(--c-aia)">
+            <div class="co-head"><span class="dot"></span><span>AIA</span></div>
+            <ul>
+              <li><b>Không đồng chi trả cho trẻ em điều trị tại viện công.</b></li>
+              <li><b>Nhân đôi hạn mức</b> (kể cả Ung thư) khi dùng hết hạn mức năm &amp; điều trị tại viện công.</li>
+              <li>Tái tục đến <b>100 tuổi</b> — dài nhất thị trường.</li>
+              <li>Gói thai sản (Toàn Diện/Hoàn Hảo) phù hợp khách trẻ chuẩn bị sinh con — nhưng cần tư vấn rõ tỷ lệ chi trả leo thang theo năm (50% → 80% → 100%), không phải năm nào cũng hưởng như nhau.</li>
+            </ul>
+          </div>
+          <div class="usp-card" style="--tag-color:var(--c-gen)">
+            <div class="co-head"><span class="dot"></span><span>Generali</span></div>
+            <ul>
+              <li><b>Không đồng chi trả</b> từ gói Tiêu Chuẩn trở lên.</li>
+              <li>Hạn mức <b>cao nhất thị trường</b> — gói Kim Cương lên tới 5 tỷ/năm.</li>
+              <li><b>Khám sức khỏe miễn phí hàng năm</b> nếu không phát sinh claim — quyền lợi độc quyền trong 4 hãng.</li>
+              <li>Nhân đôi hạn mức riêng cho Ung thư/Đột quỵ/Nhồi máu cơ tim.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-gap note-block info">
+          <span class="note-title">Dùng bảng này thế nào khi gặp khách</span>
+          Không dẫn dắt bằng tên hãng — dẫn dắt bằng <b>nhu cầu khách</b>: hay đi nước ngoài → Dai-ichi/AIA (phạm vi rộng); đã có bệnh nền cần biết rõ danh sách chờ → tra đúng bảng "Thời gian chờ" của hãng đó; ngân sách phí mỏng nhưng cần hạn mức lớn → Generali; đang có kế hoạch sinh con trong 1–2 năm tới → cân nhắc AIA nhưng giải thích rõ cơ chế leo thang.
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var sidebar = document.getElementById('sidebar');
+  var sideToggle = document.getElementById('sideToggle');
+  var navButtons = document.querySelectorAll('.nav-btn');
+  var panels = document.querySelectorAll('.panel');
+  var btnSummary = document.getElementById('btnSummary');
+  var btnDetail = document.getElementById('btnDetail');
+  var topEyebrow = document.getElementById('topEyebrow');
+  var topTitle = document.getElementById('topTitle');
+  var topSub = document.getElementById('topSub');
+  var mobileTitle = document.getElementById('mobileTitle');
+  var mobileOpen = document.getElementById('mobileOpen');
+  var scrim = document.getElementById('scrim');
+
+  var meta = {
+    framework:  {n:'01 · Phương pháp',        t:'Cách phân tích & so sánh',      s:'Khung câu hỏi dùng trước khi đặt hai thẻ sức khỏe cạnh nhau — để không so nhầm hai thứ khác bản chất.'},
+    tongquan:   {n:'02 · Bức tranh chung',     t:'Tổng quan 4 hãng',              s:'Triết lý thiết kế sản phẩm và các con số khung của từng hãng.'},
+    sosanhnhanh:{n:'02b · Nhìn nhanh tất cả',  t:'So sánh nhanh — tất cả nhóm',   s:'Một bảng duy nhất gộp Nội trú, Ngoại trú, Nha khoa, Thai sản, Thời gian chờ, Loại trừ và Phí.'},
+    noitru:     {n:'03 · Quyền lợi bắt buộc',  t:'Điều trị nội trú',              s:'Quyền lợi mọi gói đều có — nơi khác biệt cơ sở tính hạn mức ảnh hưởng rõ nhất.'},
+    ngoaitru:   {n:'04 · Quyền lợi tùy chọn',  t:'Điều trị ngoại trú',            s:'Cần có Nội trú trước mới mua thêm được — ở cả 4 hãng.'},
+    nhakhoa:    {n:'05 · Quyền lợi tùy chọn',  t:'Chăm sóc răng',                 s:'Điều kiện tham gia khác nhau đáng kể — đặc biệt lưu ý Dai-ichi.'},
+    thaisan:    {n:'06 · Điểm khác biệt lớn nhất', t:'Thai sản',                  s:'4 hãng, 4 mô hình khác nhau — dễ tư vấn sai nhất nếu không đọc kỹ.'},
+    thoigiancho:{n:'07 · Điều kiện áp dụng',   t:'Thời gian chờ',                 s:'Cấu trúc giống nhau, danh sách bệnh cụ thể khác nhau.'},
+    loaitru:    {n:'08 · Điều kiện áp dụng',   t:'Loại trừ chính',                s:'Chỉ nêu các điểm khác biệt đáng chú ý — nhóm loại trừ chung xem ở chế độ Chi tiết.'},
+    phi:        {n:'09 · Chi phí',             t:'Biểu phí',                      s:'Cách đọc và lưu ý khi so phí — số liệu đầy đủ nằm trong file Excel.'},
+    baolanh:    {n:'09b · Trải nghiệm dịch vụ', t:'Bảo lãnh & Bồi thường',         s:'Mạng lưới viện, đơn vị xử lý, thời hạn bồi thường — số liệu thay đổi liên tục nên ghi rõ nguồn/thời điểm.'},
+    usp:        {n:'10 · Tư vấn bán hàng',     t:'USP từng hãng',                 s:'Điểm bán hàng mạnh nhất của từng thẻ, theo nhu cầu khách.'}
+  };
+
+  function showPanel(key){
+    panels.forEach(function(p){ p.classList.toggle('active', p.id === 'panel-' + key); });
+    navButtons.forEach(function(b){ b.classList.toggle('active', b.dataset.panel === key); });
+    var m = meta[key];
+    if(m){
+      topEyebrow.textContent = m.n;
+      topTitle.textContent = m.t;
+      topSub.textContent = m.s;
+      mobileTitle.textContent = m.t;
+    }
+    document.querySelector('.content').scrollTo && document.querySelector('.content').scrollTo(0,0);
+    window.scrollTo(0,0);
+    closeMobile();
+  }
+
+  navButtons.forEach(function(b){
+    b.addEventListener('click', function(){ showPanel(b.dataset.panel); });
+  });
+
+  sideToggle.addEventListener('click', function(){
+    sidebar.classList.toggle('collapsed');
+  });
+
+  btnSummary.addEventListener('click', function(){
+    document.body.setAttribute('data-view','summary');
+    btnSummary.classList.add('active'); btnDetail.classList.remove('active');
+  });
+  btnDetail.addEventListener('click', function(){
+    document.body.setAttribute('data-view','detail');
+    btnDetail.classList.add('active'); btnSummary.classList.remove('active');
+  });
+
+  function openMobile(){ sidebar.classList.add('mobile-open'); scrim.classList.add('show'); }
+  function closeMobile(){ sidebar.classList.remove('mobile-open'); scrim.classList.remove('show'); }
+  mobileOpen.addEventListener('click', openMobile);
+  scrim.addEventListener('click', closeMobile);
+})();
+</script>
+
+</body>
+</html>
